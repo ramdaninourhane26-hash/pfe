@@ -79,7 +79,7 @@ nav a.active::before {
 }
 
 .book-btn {
-    background: linear-gradient(135deg, #FF7A00, #27AE60);
+    background: linear-gradient(135deg, #27AE60, #27AE60);
     color: white;
     border: none;
     padding: 12px 28px;
@@ -367,7 +367,7 @@ nav a.active::before {
 .submit-btn {
     width: 100%;
     padding: 15px;
-    background: linear-gradient(135deg, #FF7A00, #27AE60);
+    background: linear-gradient(135deg, #27AE60, #27AE60);
     color: white;
     border: none;
     border-radius: 10px;
