@@ -122,23 +122,39 @@ nav {
 }
 
 .book-btn {
-    background: linear-gradient(135deg, #FF7A00 0%, #27AE60 100%);
-    color: white;
-    border: none;
-    padding: 12px 28px;
-    border-radius: 50px;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s;
-    box-shadow: 0 4px 15px rgba(39,174,96,0.3);
-    white-space: nowrap;
-}
-
-.book-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(39,174,96,0.4);
-}
+        background: linear-gradient(135deg, #FF7A00 0%, #27AE60 100%);
+        border: none;
+        padding: 0;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: all 0.3s;
+        box-shadow: 0 4px 15px rgba(39,174,96,0.3);
+        overflow: hidden;
+    }
+    
+    .book-btn a {
+        display: inline-block;
+        padding: 12px 28px;
+        color: white;
+        text-decoration: none;
+        font-size: 1rem;
+        font-weight: 600;
+        font-family: inherit;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    
+    .book-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(39,174,96,0.4);
+       
+    }
+    
+    .book-btn:hover a {
+        color: rgb(255, 255, 255);
+    }
 
 
 /* ─── HERO BANNER (plus clair et harmonieux) ─── */
@@ -1610,10 +1626,10 @@ nav {
   <nav id="navMenu">
     <a href="index.html">Home</a>
     <a href="about.html" class="active">About Us</a>
-    <a href="#">Feedback</a>
+    <a href="feedback.html">Feedback</a>
     <a href="blog.html">Blog</a>
   </nav>
-  <button class="book-btn" onclick="window.location.href='#'">Book Consultation</button>
+  <button class="book-btn" onclick="window.location.href='#'"><a href="login.html">Book Consultation</a></button>
 </header>
 
 <!-- ═══ HERO BANNER (clair) ═══ -->

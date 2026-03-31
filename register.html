@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Up - NutriLife AI</title>
+    <title>Sign Up — NutriLife</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -12,8 +13,8 @@
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-           background: linear-gradient(135deg, #27AE60 0%, #d7cabd 100%);
+            font-family: 'Nunito', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -22,14 +23,14 @@
             overflow-x: hidden;
         }
 
-        /* Animated Background Elements */
+        /* Animated Background Elements - same as home */
         body::before {
             content: '🍎';
             position: absolute;
-            font-size: 300px;
-            opacity: 0.1;
-            top: -100px;
-            left: -100px;
+            font-size: 280px;
+            opacity: 0.03;
+            top: -80px;
+            left: -80px;
             pointer-events: none;
             animation: float 20s infinite ease-in-out;
         }
@@ -37,17 +38,17 @@
         body::after {
             content: '🥗';
             position: absolute;
-            font-size: 250px;
-            opacity: 0.1;
-            bottom: -80px;
-            right: -80px;
+            font-size: 240px;
+            opacity: 0.03;
+            bottom: -60px;
+            right: -60px;
             pointer-events: none;
             animation: float 15s infinite ease-in-out reverse;
         }
 
         @keyframes float {
             0%, 100% { transform: translate(0, 0) rotate(0deg); }
-            50% { transform: translate(30px, -30px) rotate(10deg); }
+            50% { transform: translate(20px, -20px) rotate(5deg); }
         }
 
         /* Main Container */
@@ -59,22 +60,21 @@
             z-index: 1;
         }
 
-        /* Card Layout */
+        /* Card Layout - same style as home book */
         .signup-card {
             display: flex;
             background: white;
-            border-radius: 32px;
+            border-radius: 28px;
             overflow: hidden;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
             transition: transform 0.3s ease;
         }
 
-        /* Left Side - Benefits */
+        /* Left Side - Benefits (matching home hero) */
         .benefits-side {
             flex: 1;
-            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            background: linear-gradient(135deg, #e8f5e9 0%, #ffffff 100%);
             padding: 3rem;
-            color: white;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
@@ -83,31 +83,37 @@
         }
 
         .benefits-side::before {
+            content: '🌱';
+            position: absolute;
+            font-size: 180px;
+            opacity: 0.06;
+            bottom: -40px;
+            right: -40px;
+            pointer-events: none;
+            transform: rotate(-15deg);
+        }
+
+        .benefits-side::after {
             content: '';
             position: absolute;
-            top: -50%;
-            right: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(39, 174, 96, 0.2) 0%, transparent 70%);
-            animation: pulse 8s ease-in-out infinite;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #27AE60, #FF7A00);
         }
 
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); opacity: 0.5; }
-            50% { transform: scale(1.1); opacity: 0.8; }
-        }
-
-        .logo {
-            font-size: 2.5rem;
+         .logo {
+            color: #27AE60;
             font-weight: 800;
-            background: linear-gradient(135deg, #27AE60, #27AE60);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            margin-bottom: 2rem;
-            position: relative;
-            z-index: 1;
+            font-size: 1.8rem;
+            font-family: 'Playfair Display', serif;
+            text-decoration: none;
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: scale(1.02);
         }
 
         .benefits-content {
@@ -116,36 +122,40 @@
         }
 
         .benefits-content h1 {
+            font-family: 'Playfair Display', serif;
             font-size: 2.5rem;
             margin-bottom: 1rem;
             line-height: 1.2;
+            color: #1e293b;
         }
 
         .benefits-content h1 span {
-            background: linear-gradient(135deg, #FF7A00, #27AE60);
+            background: linear-gradient(135deg, #27AE60, #FF7A00);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
+            font-style: italic;
         }
 
         .benefits-content p {
-            font-size: 1.1rem;
-            opacity: 0.8;
+            font-size: 1rem;
+            color: #475569;
             line-height: 1.6;
             margin-bottom: 2rem;
         }
 
         .benefits-list {
             list-style: none;
-            margin-top: 2rem;
+            margin-top: 1.5rem;
         }
 
         .benefits-list li {
             display: flex;
             align-items: center;
             gap: 12px;
-            margin-bottom: 1rem;
-            font-size: 0.95rem;
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
+            color: #475569;
         }
 
         .benefits-list li::before {
@@ -153,12 +163,13 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 24px;
-            height: 24px;
-            background: rgba(39, 174, 96, 0.2);
+            width: 22px;
+            height: 22px;
+            background: rgba(39, 174, 96, 0.1);
             border-radius: 50%;
             color: #27AE60;
             font-weight: bold;
+            font-size: 12px;
         }
 
         /* Right Side - Form */
@@ -176,16 +187,18 @@
         }
 
         .form-header h2 {
+            font-family: 'Playfair Display', serif;
             font-size: 1.8rem;
-            color: #0f172a;
+            color: #1e293b;
             margin-bottom: 0.5rem;
         }
 
         .form-header p {
             color: #64748b;
+            font-size: 0.9rem;
         }
 
-        /* Role Selection */
+        /* Role Selection - modern pill style */
         .role-selection {
             margin-bottom: 1.5rem;
         }
@@ -195,7 +208,7 @@
             margin-bottom: 0.75rem;
             color: #334155;
             font-weight: 600;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
 
         .role-options {
@@ -216,30 +229,31 @@
         }
 
         .role-card {
-            padding: 0.8rem;
-            border: 2px solid #e2e8f0;
-            border-radius: 16px;
+            padding: 0.9rem;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 20px;
             text-align: center;
             transition: all 0.3s ease;
             background: white;
+            cursor: pointer;
         }
 
         .role-option input:checked + .role-card {
             border-color: #27AE60;
-            background: linear-gradient(135deg, rgba(39, 174, 96, 0.05), rgba(255, 122, 0, 0.05));
+            background: linear-gradient(135deg, rgba(39, 174, 96, 0.05), rgba(255, 122, 0, 0.03));
             box-shadow: 0 4px 12px rgba(39, 174, 96, 0.1);
         }
 
         .role-icon {
-            font-size: 1.8rem;
+            font-size: 1.6rem;
             margin-bottom: 0.3rem;
         }
 
         .role-title {
-            font-weight: 600;
-            color: #0f172a;
-            margin-bottom: 0.25rem;
-            font-size: 0.9rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 0.2rem;
+            font-size: 0.85rem;
         }
 
         .role-desc {
@@ -263,8 +277,8 @@
             display: block;
             margin-bottom: 0.4rem;
             color: #334155;
-            font-weight: 500;
-            font-size: 0.85rem;
+            font-weight: 600;
+            font-size: 0.8rem;
         }
 
         .input-wrapper {
@@ -281,12 +295,12 @@
 
         .form-group input, .form-group select {
             width: 100%;
-            padding: 0.7rem 1rem 0.7rem 2.6rem;
-            border: 2px solid #e2e8f0;
+            padding: 0.75rem 1rem 0.75rem 2.6rem;
+            border: 1.5px solid #e2e8f0;
             border-radius: 14px;
             font-size: 0.9rem;
             transition: all 0.3s ease;
-            font-family: inherit;
+            font-family: 'Nunito', sans-serif;
         }
 
         .form-group input:focus, .form-group select:focus {
@@ -295,10 +309,22 @@
             box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.1);
         }
 
+        /* Multi-select styling */
+        .form-group select[multiple] {
+            padding: 0.6rem;
+            height: auto;
+            min-height: 90px;
+        }
+
+        .form-group select[multiple] option {
+            padding: 0.4rem;
+            font-size: 0.85rem;
+        }
+
         /* Range Slider for Weight & Height */
         .range-wrapper {
             display: flex;
-            gap: 1rem;
+            gap: 0.8rem;
             align-items: center;
         }
 
@@ -307,9 +333,9 @@
             color: white;
             padding: 0.3rem 0.8rem;
             border-radius: 40px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            min-width: 70px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            min-width: 65px;
             text-align: center;
         }
 
@@ -327,18 +353,18 @@
 
         input[type="range"]::-webkit-slider-runnable-track {
             width: 100%;
-            height: 6px;
+            height: 5px;
             background: #e2e8f0;
             border-radius: 3px;
         }
 
         input[type="range"]::-webkit-slider-thumb {
             -webkit-appearance: none;
-            width: 18px;
-            height: 18px;
+            width: 16px;
+            height: 16px;
             border-radius: 50%;
             background: #27AE60;
-            margin-top: -6px;
+            margin-top: -5.5px;
             cursor: pointer;
             transition: all 0.2s;
         }
@@ -371,7 +397,7 @@
 
         /* Terms Checkbox */
         .terms-group {
-            margin: 1rem 0;
+            margin: 1.2rem 0;
         }
 
         .checkbox-label {
@@ -393,25 +419,28 @@
         .checkbox-label a {
             color: #27AE60;
             text-decoration: none;
+            font-weight: 600;
         }
 
         .checkbox-label a:hover {
             text-decoration: underline;
         }
 
-        /* Sign Up Button */
+        /* Sign Up Button - same as home book button */
         .signup-btn {
             width: 100%;
             padding: 0.9rem;
-            background: linear-gradient(135deg, #FF7A00, #27AE60);
+            background: linear-gradient(135deg, #FF7A00 0%, #27AE60 100%);
             color: white;
             border: none;
             border-radius: 50px;
             font-size: 1rem;
-            font-weight: 600;
+            font-weight: 700;
             cursor: pointer;
             transition: all 0.3s ease;
             margin-bottom: 1rem;
+            font-family: 'Nunito', sans-serif;
+            box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
         }
 
         .signup-btn:hover {
@@ -419,10 +448,10 @@
             box-shadow: 0 10px 25px -5px rgba(39, 174, 96, 0.4);
         }
 
-        /* Error & Success Messages */
+        /* Messages */
         .message {
-            padding: 0.6rem;
-            border-radius: 12px;
+            padding: 0.7rem;
+            border-radius: 14px;
             margin-bottom: 1rem;
             font-size: 0.8rem;
             text-align: center;
@@ -446,8 +475,8 @@
 
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            75% { transform: translateX(5px); }
+            25% { transform: translateX(-4px); }
+            75% { transform: translateX(4px); }
         }
 
         /* Login Link */
@@ -468,35 +497,6 @@
             text-decoration: underline;
         }
 
-        /* Responsive */
-        @media (max-width: 768px) {
-            .signup-card {
-                flex-direction: column;
-            }
-            
-            .benefits-side {
-                padding: 1.5rem;
-            }
-            
-            .form-side {
-                padding: 1.5rem;
-                max-height: none;
-            }
-            
-            .benefits-content h1 {
-                font-size: 1.5rem;
-            }
-            
-            .form-row {
-                grid-template-columns: 1fr;
-                gap: 0;
-            }
-            
-            .role-options {
-                flex-direction: column;
-            }
-        }
-
         /* BMI Indicator */
         .bmi-indicator {
             margin-top: 0.5rem;
@@ -506,6 +506,7 @@
             font-size: 0.75rem;
             text-align: center;
             display: none;
+            border: 1px solid rgba(39, 174, 96, 0.15);
         }
 
         .bmi-indicator.show {
@@ -513,19 +514,67 @@
         }
 
         .bmi-value {
-            font-weight: 700;
+            font-weight: 800;
             color: #27AE60;
+        }
+
+        /* Small helper text */
+        .helper-text {
+            font-size: 0.65rem;
+            color: #94a3b8;
+            margin-top: 0.3rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .signup-card {
+                flex-direction: column;
+            }
+            
+            .benefits-side {
+                padding: 2rem;
+            }
+            
+            .form-side {
+                padding: 2rem;
+                max-height: none;
+            }
+            
+            .benefits-content h1 {
+                font-size: 1.8rem;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .signup-container {
+                margin: 1rem;
+            }
+            
+            .benefits-side, .form-side {
+                padding: 1.5rem;
+            }
+            
+            .role-options {
+                flex-direction: column;
+            }
+            
+            .role-card {
+                padding: 0.7rem;
+            }
         }
     </style>
 </head>
 <body>
     <div class="signup-container">
         <div class="signup-card">
-            <!-- Left Side - Benefits -->
+            <!-- Left Side - Benefits (matching home style) -->
             <div class="benefits-side">
-                <div class="logo">
-                    NutriLife <span>🍎</span>
-                </div>
+                <a href="index.html" class="logo">NutriLife 🍎</a>
                 <div class="benefits-content">
                     <h1>Start Your Journey to<br><span>Better Health</span> Today</h1>
                     <p>Join thousands of users who have transformed their lives with personalized nutrition plans, AI-powered tracking, and expert guidance.</p>
@@ -538,7 +587,7 @@
                         <li>💰 Flexible Payment Plans</li>
                     </ul>
                 </div>
-                <div style="font-size: 0.75rem; opacity: 0.6; margin-top: 1.5rem;">
+                <div style="font-size: 0.7rem; color: #94a3b8; margin-top: 2rem;">
                     © 2024 NutriLife. All rights reserved.
                 </div>
             </div>
@@ -620,21 +669,23 @@
                     </div>
 
                     <div class="form-row">
-                        <!-- Weight Field -->
+                        <!-- Weight Field with Range Slider -->
                         <div class="form-group">
                             <label>Weight (kg)</label>
-                            <div class="input-wrapper">
-                                <span class="input-icon">⚖️</span>
-                                <input type="number" id="weight" placeholder="e.g., 65" step="0.1" min="20" max="300">
+                            <div class="range-wrapper">
+                                <input type="range" id="weightRange" min="30" max="200" value="70" step="1">
+                                <span class="range-value" id="weightValue">70 kg</span>
                             </div>
+                            <input type="hidden" id="weight" value="70">
                         </div>
-                        <!-- Height Field -->
+                        <!-- Height Field with Range Slider -->
                         <div class="form-group">
                             <label>Height (cm)</label>
-                            <div class="input-wrapper">
-                                <span class="input-icon">📏</span>
-                                <input type="number" id="height" placeholder="e.g., 165" step="0.1" min="100" max="250">
+                            <div class="range-wrapper">
+                                <input type="range" id="heightRange" min="120" max="220" value="165" step="1">
+                                <span class="range-value" id="heightValue">165 cm</span>
                             </div>
+                            <input type="hidden" id="height" value="165">
                         </div>
                     </div>
 
@@ -697,7 +748,7 @@
                         <label>Health Conditions (Select all that apply)</label>
                         <div class="input-wrapper">
                             <span class="input-icon">🏥</span>
-                            <select id="healthConditions" multiple style="height: 80px;">
+                            <select id="healthConditions" multiple>
                                 <option>Weight Loss Resistance</option>
                                 <option>Hormonal Imbalances (PCOS, Thyroid)</option>
                                 <option>Metabolic Disorders (Diabetes)</option>
@@ -707,7 +758,7 @@
                                 <option>Other</option>
                             </select>
                         </div>
-                        <small style="color: #64748b; font-size: 0.65rem;">Hold Ctrl/Cmd to select multiple</small>
+                        <div class="helper-text">Hold Ctrl/Cmd to select multiple</div>
                     </div>
 
                     <!-- Specialization (for Nutritionists) -->
@@ -731,7 +782,7 @@
                     <div class="terms-group">
                         <label class="checkbox-label">
                             <input type="checkbox" id="terms" required>
-                            <span>I agree to the <a href="#" onclick="alert('Terms and Conditions would open here')">Terms of Service</a> and <a href="#" onclick="alert('Privacy Policy would open here')">Privacy Policy</a></span>
+                            <span>I agree to the <a href="#" onclick="alert('📜 Terms and Conditions would open here')">Terms of Service</a> and <a href="#" onclick="alert('🔒 Privacy Policy would open here')">Privacy Policy</a></span>
                         </label>
                     </div>
 
@@ -746,10 +797,30 @@
     </div>
 
     <script>
+        // Range sliders for weight and height
+        const weightRange = document.getElementById('weightRange');
+        const weightValue = document.getElementById('weightValue');
+        const weightHidden = document.getElementById('weight');
+        const heightRange = document.getElementById('heightRange');
+        const heightValue = document.getElementById('heightValue');
+        const heightHidden = document.getElementById('height');
+
+        weightRange.addEventListener('input', function() {
+            weightValue.textContent = this.value + ' kg';
+            weightHidden.value = this.value;
+            calculateBMI();
+        });
+
+        heightRange.addEventListener('input', function() {
+            heightValue.textContent = this.value + ' cm';
+            heightHidden.value = this.value;
+            calculateBMI();
+        });
+
         // BMI Calculation Function
         function calculateBMI() {
-            const weight = parseFloat(document.getElementById('weight').value);
-            const height = parseFloat(document.getElementById('height').value);
+            const weight = parseFloat(weightHidden.value);
+            const height = parseFloat(heightHidden.value);
             const bmiIndicator = document.getElementById('bmiIndicator');
             const bmiValueSpan = document.getElementById('bmiValue');
             const bmiCategorySpan = document.getElementById('bmiCategory');
@@ -762,60 +833,40 @@
                 bmiValueSpan.textContent = bmiRounded;
                 
                 let category = '';
-                let color = '';
                 
                 if (bmi < 18.5) {
                     category = 'Underweight';
-                    color = '#f59e0b';
                 } else if (bmi >= 18.5 && bmi < 25) {
                     category = 'Normal weight ✓';
-                    color = '#27AE60';
                 } else if (bmi >= 25 && bmi < 30) {
                     category = 'Overweight';
-                    color = '#f59e0b';
                 } else {
                     category = 'Obese';
-                    color = '#ef4444';
                 }
                 
                 bmiCategorySpan.textContent = category;
-                bmiCategorySpan.style.color = color;
                 bmiIndicator.classList.add('show');
             } else {
                 bmiIndicator.classList.remove('show');
             }
         }
 
-        // Add event listeners for weight and height
-        const weightInput = document.getElementById('weight');
-        const heightInput = document.getElementById('height');
-        
-        weightInput.addEventListener('input', calculateBMI);
-        heightInput.addEventListener('input', calculateBMI);
-
         // Show/hide conditional fields based on role
         const roleInputs = document.querySelectorAll('input[name="role"]');
         const healthConditionsGroup = document.getElementById('healthConditionsGroup');
         const specializationGroup = document.getElementById('specializationGroup');
         const genderSelect = document.getElementById('gender');
-        const weightField = document.getElementById('weight');
-        const heightField = document.getElementById('height');
+        const weightRow = document.querySelectorAll('.range-wrapper');
 
         roleInputs.forEach(input => {
             input.addEventListener('change', function() {
                 if (this.value === 'user') {
                     healthConditionsGroup.style.display = 'block';
                     specializationGroup.style.display = 'none';
-                    // Make weight/height required for users
-                    weightField.required = true;
-                    heightField.required = true;
                     genderSelect.required = true;
                 } else if (this.value === 'nutritionist') {
                     healthConditionsGroup.style.display = 'none';
                     specializationGroup.style.display = 'block';
-                    // Not required for nutritionists
-                    weightField.required = false;
-                    heightField.required = false;
                     genderSelect.required = false;
                 }
             });
@@ -870,6 +921,24 @@
             strengthText.style.color = color;
         }
 
+        // Password confirmation check
+        const confirmPasswordInput = document.getElementById('confirmPassword');
+        const passwordInput = document.getElementById('password');
+        
+        function checkPasswordMatch() {
+            const confirmValue = confirmPasswordInput.value;
+            const passwordValue = passwordInput.value;
+            
+            if (confirmValue && passwordValue !== confirmValue) {
+                confirmPasswordInput.style.borderColor = '#dc2626';
+            } else {
+                confirmPasswordInput.style.borderColor = '#e2e8f0';
+            }
+        }
+        
+        passwordInput.addEventListener('keyup', checkPasswordMatch);
+        confirmPasswordInput.addEventListener('keyup', checkPasswordMatch);
+        
         // Handle Sign Up
         function handleSignup(event) {
             event.preventDefault();
@@ -882,8 +951,8 @@
             const terms = document.getElementById('terms').checked;
             const role = document.querySelector('input[name="role"]:checked').value;
             const gender = document.getElementById('gender').value;
-            const weight = document.getElementById('weight').value;
-            const height = document.getElementById('height').value;
+            const weight = weightHidden.value;
+            const height = heightHidden.value;
             
             const errorMessage = document.getElementById('errorMessage');
             const successMessage = document.getElementById('successMessage');
@@ -914,12 +983,12 @@
                     showError('Please select your gender');
                     return;
                 }
-                if (!weight || weight < 20 || weight > 300) {
-                    showError('Please enter a valid weight (20-300 kg)');
+                if (!weight || weight < 30 || weight > 200) {
+                    showError('Please enter a valid weight (30-200 kg)');
                     return;
                 }
-                if (!height || height < 100 || height > 250) {
-                    showError('Please enter a valid height (100-250 cm)');
+                if (!height || height < 120 || height > 220) {
+                    showError('Please enter a valid height (120-220 cm)');
                     return;
                 }
             }
@@ -965,7 +1034,6 @@
                 registeredAt: new Date().toISOString()
             };
             
-            // In a real app, you would send this to your backend
             localStorage.setItem('newUser', JSON.stringify(userData));
             
             // Show success message
@@ -990,38 +1058,8 @@
             }, 500);
         }
         
-        // Password confirmation check
-        const confirmPasswordInput = document.getElementById('confirmPassword');
-        const passwordInput = document.getElementById('password');
-        
-        function checkPasswordMatch() {
-            const confirmValue = confirmPasswordInput.value;
-            const passwordValue = passwordInput.value;
-            
-            if (confirmValue && passwordValue !== confirmValue) {
-                confirmPasswordInput.style.borderColor = '#dc2626';
-            } else {
-                confirmPasswordInput.style.borderColor = '#e2e8f0';
-            }
-        }
-        
-        passwordInput.addEventListener('keyup', checkPasswordMatch);
-        confirmPasswordInput.addEventListener('keyup', checkPasswordMatch);
-        
-        // Email validation
-        const emailInput = document.getElementById('email');
-        emailInput.addEventListener('blur', function() {
-            const email = this.value;
-            if (email && (!email.includes('@') || !email.includes('.'))) {
-                this.style.borderColor = '#dc2626';
-            } else {
-                this.style.borderColor = '#e2e8f0';
-            }
-        });
-        
-        emailInput.addEventListener('focus', function() {
-            this.style.borderColor = '#e2e8f0';
-        });
+        // Initialize BMI calculation
+        calculateBMI();
     </script>
 </body>
 </html>

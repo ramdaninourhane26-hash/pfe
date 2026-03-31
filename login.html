@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - NutriLife AI</title>
+    <title>Login — NutriLife</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -12,8 +13,8 @@
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #27AE60 0%, #d7cabd 100%);
+            font-family: 'Nunito', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -22,14 +23,14 @@
             overflow-x: hidden;
         }
 
-        /* Animated Background Elements */
+        /* Animated Background Elements - same as home */
         body::before {
             content: '🍎';
             position: absolute;
-            font-size: 300px;
-            opacity: 0.05;
-            top: -100px;
-            left: -100px;
+            font-size: 280px;
+            opacity: 0.03;
+            top: -80px;
+            left: -80px;
             pointer-events: none;
             animation: float 20s infinite ease-in-out;
         }
@@ -37,17 +38,17 @@
         body::after {
             content: '🥗';
             position: absolute;
-            font-size: 250px;
-            opacity: 0.05;
-            bottom: -80px;
-            right: -80px;
+            font-size: 240px;
+            opacity: 0.03;
+            bottom: -60px;
+            right: -60px;
             pointer-events: none;
             animation: float 15s infinite ease-in-out reverse;
         }
 
         @keyframes float {
             0%, 100% { transform: translate(0, 0) rotate(0deg); }
-            50% { transform: translate(30px, -30px) rotate(10deg); }
+            50% { transform: translate(20px, -20px) rotate(5deg); }
         }
 
         /* Main Container */
@@ -59,23 +60,21 @@
             z-index: 1;
         }
 
-        /* Card Layout */
+        /* Card Layout - same style as home book */
         .login-card {
             display: flex;
             background: white;
-            border-radius: 32px;
+            border-radius: 28px;
             overflow: hidden;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-            backdrop-filter: blur(10px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
             transition: transform 0.3s ease;
         }
 
-        /* Left Side - Branding */
+        /* Left Side - Branding (matching home hero) */
         .brand-side {
             flex: 1;
-            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            background: linear-gradient(135deg, #e8f5e9 0%, #ffffff 100%);
             padding: 3rem;
-            color: white;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
@@ -84,32 +83,38 @@
         }
 
         .brand-side::before {
-            content: '';
+            content: '🌱';
             position: absolute;
-            top: -50%;
-            right: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(39, 174, 96, 0.1) 0%, transparent 70%);
-            animation: pulse 8s ease-in-out infinite;
+            font-size: 180px;
+            opacity: 0.06;
+            bottom: -40px;
+            right: -40px;
+            pointer-events: none;
+            transform: rotate(-15deg);
         }
 
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); opacity: 0.5; }
-            50% { transform: scale(1.1); opacity: 0.8; }
+        .brand-side::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #27AE60, #FF7A00);
         }
 
         .logo {
-            font-size: 2.5rem;
+            color: #27AE60;
             font-weight: 800;
-            background: linear-gradient(135deg, #27AE60, #27AE60);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            margin-bottom: 2rem;
-            position: relative;
-            z-index: 1;
-        }
+            font-size: 1.8rem;
+            font-family: 'Playfair Display', serif;
+            text-decoration: none;
+            transition: transform 0.3s ease;
+           }
+
+        .logo:hover {
+              transform: scale(1.02);
+          }
 
         .brand-content {
             position: relative;
@@ -117,36 +122,40 @@
         }
 
         .brand-content h1 {
+            font-family: 'Playfair Display', serif;
             font-size: 2.5rem;
             margin-bottom: 1rem;
             line-height: 1.2;
+            color: #1e293b;
         }
 
         .brand-content h1 span {
-            background: linear-gradient(135deg, #00ff37, #27AE60);
+            background: linear-gradient(135deg, #27AE60, #FF7A00);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
+            font-style: italic;
         }
 
         .brand-content p {
-            font-size: 1.1rem;
-            opacity: 0.8;
+            font-size: 1rem;
+            color: #475569;
             line-height: 1.6;
             margin-bottom: 2rem;
         }
 
         .features-list {
             list-style: none;
-            margin-top: 2rem;
+            margin-top: 1.5rem;
         }
 
         .features-list li {
             display: flex;
             align-items: center;
             gap: 12px;
-            margin-bottom: 1rem;
-            font-size: 0.95rem;
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
+            color: #475569;
         }
 
         .features-list li::before {
@@ -154,12 +163,13 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 24px;
-            height: 24px;
-            background: rgba(39, 174, 96, 0.2);
+            width: 22px;
+            height: 22px;
+            background: rgba(39, 174, 96, 0.1);
             border-radius: 50%;
             color: #27AE60;
             font-weight: bold;
+            font-size: 12px;
         }
 
         /* Right Side - Form */
@@ -175,16 +185,18 @@
         }
 
         .form-header h2 {
+            font-family: 'Playfair Display', serif;
             font-size: 1.8rem;
-            color: #0f172a;
+            color: #1e293b;
             margin-bottom: 0.5rem;
         }
 
         .form-header p {
             color: #64748b;
+            font-size: 0.9rem;
         }
 
-        /* Role Tabs */
+        /* Role Tabs - modern pill style */
         .role-tabs {
             display: flex;
             gap: 0.5rem;
@@ -204,15 +216,15 @@
             cursor: pointer;
             font-weight: 600;
             transition: all 0.3s ease;
-            font-family: inherit;
-            font-size: 0.9rem;
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.85rem;
             color: #64748b;
         }
 
         .role-tab.active {
             background: white;
             color: #27AE60;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
         }
 
         .role-tab:hover:not(.active) {
@@ -228,8 +240,8 @@
             display: block;
             margin-bottom: 0.5rem;
             color: #334155;
-            font-weight: 500;
-            font-size: 0.9rem;
+            font-weight: 600;
+            font-size: 0.85rem;
         }
 
         .input-wrapper {
@@ -241,17 +253,17 @@
         .input-icon {
             position: absolute;
             left: 1rem;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
         }
 
         .form-group input {
             width: 100%;
             padding: 0.875rem 1rem 0.875rem 2.8rem;
-            border: 2px solid #e2e8f0;
+            border: 1.5px solid #e2e8f0;
             border-radius: 16px;
-            font-size: 1rem;
+            font-size: 0.95rem;
             transition: all 0.3s ease;
-            font-family: inherit;
+            font-family: 'Nunito', sans-serif;
         }
 
         .form-group input:focus {
@@ -266,7 +278,7 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 1.5rem;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
 
         .checkbox {
@@ -274,11 +286,12 @@
             align-items: center;
             gap: 0.5rem;
             cursor: pointer;
+            color: #64748b;
         }
 
         .checkbox input {
-            width: 18px;
-            height: 18px;
+            width: 16px;
+            height: 16px;
             cursor: pointer;
             accent-color: #27AE60;
         }
@@ -293,11 +306,11 @@
             text-decoration: underline;
         }
 
-        /* Login Button */
+        /* Login Button - same as home book button */
         .login-btn {
             width: 100%;
             padding: 1rem;
-            background: linear-gradient(135deg, #27ae60, #27ae60);
+            background: linear-gradient(135deg, #FF7A00 0%, #27AE60 100%);
             color: white;
             border: none;
             border-radius: 50px;
@@ -306,6 +319,8 @@
             cursor: pointer;
             transition: all 0.3s ease;
             margin-bottom: 1.5rem;
+            font-family: 'Nunito', sans-serif;
+            box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
         }
 
         .login-btn:hover {
@@ -317,19 +332,20 @@
             transform: translateY(0);
         }
 
-        /* Demo Credentials */
+        /* Demo Credentials - card style like home */
         .demo-credentials {
             background: #f8fafc;
-            border-radius: 16px;
+            border-radius: 20px;
             padding: 1rem;
             margin-top: 1.5rem;
+            border: 1px solid rgba(39, 174, 96, 0.1);
         }
 
         .demo-title {
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: #64748b;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
+            margin-bottom: 0.75rem;
+            font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
@@ -338,24 +354,43 @@
             display: flex;
             flex-direction: column;
             gap: 0.5rem;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
         }
 
         .demo-item {
             display: flex;
             justify-content: space-between;
-            padding: 0.25rem 0;
-            border-bottom: 1px dashed #e2e8f0;
+            align-items: center;
+            padding: 0.5rem 0.75rem;
+            background: white;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
+        }
+
+        .demo-item:hover {
+            border-color: #27AE60;
+            background: #ffffff;
+            transform: translateX(4px);
         }
 
         .demo-role {
-            font-weight: 600;
+            font-weight: 700;
             color: #27AE60;
+            font-size: 0.8rem;
         }
 
         .demo-email {
             font-family: monospace;
             color: #475569;
+            font-size: 0.75rem;
+        }
+
+        .demo-pwd {
+            font-family: monospace;
+            color: #94a3b8;
+            font-size: 0.7rem;
         }
 
         /* Error Message */
@@ -365,7 +400,7 @@
             padding: 0.75rem;
             border-radius: 12px;
             margin-bottom: 1rem;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             display: none;
             text-align: center;
         }
@@ -377,15 +412,15 @@
 
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            75% { transform: translateX(5px); }
+            25% { transform: translateX(-4px); }
+            75% { transform: translateX(4px); }
         }
 
         /* Sign Up Link */
         .signup-link {
             text-align: center;
             margin-top: 1.5rem;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             color: #64748b;
         }
 
@@ -400,7 +435,7 @@
         }
 
         /* Responsive */
-        @media (max-width: 768px) {
+        @media (max-width: 900px) {
             .login-card {
                 flex-direction: column;
             }
@@ -414,7 +449,36 @@
             }
             
             .brand-content h1 {
-                font-size: 1.8rem;
+                font-size: 2rem;
+            }
+            
+            .features-list li {
+                font-size: 0.85rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .login-container {
+                margin: 1rem;
+            }
+            
+            .brand-side, .form-side {
+                padding: 1.5rem;
+            }
+            
+            .role-tabs {
+                gap: 0.3rem;
+            }
+            
+            .role-tab {
+                padding: 0.6rem 0.8rem;
+                font-size: 0.75rem;
+            }
+            
+            .demo-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 4px;
             }
         }
     </style>
@@ -422,11 +486,9 @@
 <body>
     <div class="login-container">
         <div class="login-card">
-            <!-- Left Side - Branding -->
+            <!-- Left Side - Branding (matching home style) -->
             <div class="brand-side">
-                <div class="logo">
-                    NutriLife <span>🍎</span>
-                </div>
+                <a href="index.html" class="logo">NutriLife 🍎</a>
                 <div class="brand-content">
                     <h1>Your Journey to<br><span>Better Health</span> Starts Here</h1>
                     <p>Personalized nutrition plans, AI-powered calorie tracking, and expert guidance to help you achieve your wellness goals.</p>
@@ -438,7 +500,7 @@
                         <li>24/7 Support</li>
                     </ul>
                 </div>
-                <div style="font-size: 0.8rem; opacity: 0.6; margin-top: 2rem;">
+                <div style="font-size: 0.7rem; color: #94a3b8; margin-top: 2rem;">
                     © 2024 NutriLife. All rights reserved.
                 </div>
             </div>
@@ -484,7 +546,7 @@
                         <label class="checkbox">
                             <input type="checkbox" id="rememberMe"> Remember me
                         </label>
-                        <a href="#" class="forgot-link" onclick="alert('Password reset link will be sent to your email.')">Forgot Password?</a>
+                        <a href="#" class="forgot-link" onclick="alert('📧 Password reset link will be sent to your email.')">Forgot Password?</a>
                     </div>
 
                     <button type="submit" class="login-btn">Login →</button>
@@ -492,28 +554,28 @@
 
                 <!-- Demo Credentials -->
                 <div class="demo-credentials">
-                    <div class="demo-title">📋 Demo Credentials</div>
+                    <div class="demo-title">📋 Demo Credentials (click to auto-fill)</div>
                     <div class="demo-list">
-                        <div class="demo-item">
+                        <div class="demo-item" data-demo-role="user">
                             <span class="demo-role">👤 User:</span>
                             <span class="demo-email">user@nutrilife.com</span>
-                            <span>password123</span>
+                            <span class="demo-pwd">••••••••</span>
                         </div>
-                        <div class="demo-item">
+                        <div class="demo-item" data-demo-role="nutritionist">
                             <span class="demo-role">👩‍⚕️ Nutritionist:</span>
                             <span class="demo-email">nutritionist@nutrilife.com</span>
-                            <span>password123</span>
+                            <span class="demo-pwd">••••••••</span>
                         </div>
-                        <div class="demo-item">
+                        <div class="demo-item" data-demo-role="admin">
                             <span class="demo-role">⚙️ Admin:</span>
                             <span class="demo-email">admin@nutrilife.com</span>
-                            <span>password123</span>
+                            <span class="demo-pwd">••••••••</span>
                         </div>
                     </div>
                 </div>
 
                 <div class="signup-link">
-                    Don't have an account? <a href="#" onclick="alert('Sign up form would open here.')">Sign up now</a>
+                    Don't have an account? <a href="register.html" onclick="alert('✨ Sign up form would open here. Join our community!')">Sign up now</a>
                 </div>
             </div>
         </div>
@@ -522,6 +584,13 @@
     <script>
         let selectedRole = 'user';
 
+        // Demo credentials mapping
+        const demoCredentials = {
+            user: { email: 'user@nutrilife.com', password: 'password123' },
+            nutritionist: { email: 'nutritionist@nutrilife.com', password: 'password123' },
+            admin: { email: 'admin@nutrilife.com', password: 'password123' }
+        };
+
         // Role Tab Switching
         document.querySelectorAll('.role-tab').forEach(tab => {
             tab.addEventListener('click', function() {
@@ -529,8 +598,26 @@
                 this.classList.add('active');
                 selectedRole = this.getAttribute('data-role');
                 
+                // Auto-fill demo credentials for selected role
+                const cred = demoCredentials[selectedRole];
+                if (cred) {
+                    document.getElementById('email').value = cred.email;
+                    document.getElementById('password').value = cred.password;
+                }
+                
                 // Clear any previous error
                 document.getElementById('errorMessage').classList.remove('show');
+            });
+        });
+
+        // Click on demo item to switch role and fill credentials
+        document.querySelectorAll('.demo-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const role = this.getAttribute('data-demo-role');
+                const tab = document.querySelector(`.role-tab[data-role="${role}"]`);
+                if (tab) {
+                    tab.click();
+                }
             });
         });
 
@@ -629,41 +716,14 @@
             }
         }
         
-        // Auto-fill demo credentials based on role
-        function autoFillCredentials(role) {
-            const credentials = {
-                user: { email: 'user@nutrilife.com', password: 'password123' },
-                nutritionist: { email: 'nutritionist@nutrilife.com', password: 'password123' },
-                admin: { email: 'admin@nutrilife.com', password: 'password123' }
-            };
-            
-            const cred = credentials[role];
+        // Auto-fill initial credentials for user role
+        function initAutoFill() {
+            const cred = demoCredentials['user'];
             if (cred) {
                 document.getElementById('email').value = cred.email;
                 document.getElementById('password').value = cred.password;
             }
         }
-        
-        // Add click to demo items for auto-fill
-        document.querySelectorAll('.demo-item').forEach(item => {
-            item.style.cursor = 'pointer';
-            item.addEventListener('click', function() {
-                const text = this.innerText;
-                if (text.includes('User')) {
-                    document.querySelector('[data-role="user"]').click();
-                    autoFillCredentials('user');
-                } else if (text.includes('Nutritionist')) {
-                    document.querySelector('[data-role="nutritionist"]').click();
-                    autoFillCredentials('nutritionist');
-                } else if (text.includes('Admin')) {
-                    document.querySelector('[data-role="admin"]').click();
-                    autoFillCredentials('admin');
-                }
-            });
-        });
-        
-        // Check session on page load
-        checkExistingSession();
         
         // Add Enter key support
         document.getElementById('loginForm').addEventListener('keypress', function(e) {
@@ -672,17 +732,21 @@
             }
         });
         
-        // Add some visual feedback for inputs
+        // Add visual feedback for inputs
         const inputs = document.querySelectorAll('.form-group input');
         inputs.forEach(input => {
             input.addEventListener('focus', function() {
-                this.parentElement.parentElement.style.transform = 'scale(1.02)';
-                this.parentElement.parentElement.style.transition = 'transform 0.2s';
+                this.parentElement.style.transform = 'scale(1.01)';
+                this.parentElement.style.transition = 'transform 0.2s';
             });
             input.addEventListener('blur', function() {
-                this.parentElement.parentElement.style.transform = 'scale(1)';
+                this.parentElement.style.transform = 'scale(1)';
             });
         });
+        
+        // Check session and initialize
+        checkExistingSession();
+        initAutoFill();
     </script>
 </body>
 </html>

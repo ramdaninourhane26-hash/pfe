@@ -66,20 +66,40 @@ nav a::before {
   border-radius: 2px; 
 }
 nav a:hover::before, nav a.active::before { width: 100%; }
-.book-btn { 
-  background: linear-gradient(135deg, var(--orange) 0%, var(--green) 100%); 
-  color: white; 
-  border: none; 
-  padding: 12px 28px; 
-  border-radius: 50px; 
-  font-size: 1rem; 
-  font-weight: 600; 
-  cursor: pointer; 
-  transition: all 0.3s; 
-  box-shadow: 0 4px 15px rgba(39,174,96,0.3); 
-}
-.book-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(39,174,96,0.4); }
-
+.book-btn {
+        background: linear-gradient(135deg, #FF7A00 0%, #27AE60 100%);
+        border: none;
+        padding: 0;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: all 0.3s;
+        box-shadow: 0 4px 15px rgba(39,174,96,0.3);
+        overflow: hidden;
+    }
+    
+    .book-btn a {
+        display: inline-block;
+        padding: 12px 28px;
+        color: white;
+        text-decoration: none;
+        font-size: 1rem;
+        font-weight: 600;
+        font-family: inherit;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    
+    .book-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(39,174,96,0.4);
+       
+    }
+    
+    .book-btn:hover a {
+        color: rgb(255, 255, 255);
+    }
 /* ─── BLOG HERO (plus clair, comme la home) ─── */
 .blog-hero {
   background: linear-gradient(135deg, #e8f5e9 0%, #ffffff 100%);
@@ -1072,10 +1092,10 @@ nav a:hover::before, nav a.active::before { width: 100%; }
   <nav>
     <a href="index.html">Home</a>
     <a href="about_us.html">About Us</a>
+    <a href="feedback.html">Feedback</a>
     <a href="blog.html" class="active">Blog</a>
-    <a href="#">Feedback</a>
   </nav>
-  <button class="book-btn">Book Consultation</button>
+  <button class="book-btn"><a href="login.html">Book Consultation</a></button>
 </header>
 
 <!-- BLOG HERO (style home) -->

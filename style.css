@@ -86,25 +86,41 @@ body{
         width: 100%;
     }
     
+    /* Bouton Book Consultation avec lien stylisé */
     .book-btn {
         background: linear-gradient(135deg, #FF7A00 0%, #27AE60 100%);
-        color: white;
         border: none;
-        padding: 12px 28px;
+        padding: 0;
         border-radius: 50px;
-        font-size: 1rem;
-        font-weight: 600;
         cursor: pointer;
         transition: all 0.3s;
         box-shadow: 0 4px 15px rgba(39,174,96,0.3);
-        white-space: nowrap;
+        overflow: hidden;
+    }
+    
+    .book-btn a {
+        display: inline-block;
+        padding: 12px 28px;
+        color: white;
+        text-decoration: none;
+        font-size: 1rem;
+        font-weight: 600;
+        font-family: inherit;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s;
     }
     
     .book-btn:hover {
         transform: translateY(-2px);
         box-shadow: 0 6px 20px rgba(39,174,96,0.4);
+       
     }
     
+    .book-btn:hover a {
+        color: rgb(255, 255, 255);
+    }
     
     /* Hero */
     .hero {
@@ -376,6 +392,11 @@ body{
         letter-spacing: 0.03em;
         box-shadow: 0 8px 22px rgba(255,122,0,0.35);
         transition: transform 0.2s, box-shadow 0.2s;
+      }
+      .start-btn a {
+        color: white;
+        text-decoration: none;
+        transition: color 0.2s;
       }
       .start-btn:hover {
         transform: translateY(-2px);
@@ -1484,46 +1505,64 @@ body{
 /* Mobile Landscape & Tablette Small (max-width: 768px) */
 @media (max-width: 768px) {
     /* Navbar */
-    .navbar {
-        padding: 0.8rem 5%;
+    @media (max-width: 768px) {
+        .menu-icon {
+            display: block;
+        }
+        
+        .logo {
+            font-size: 1.4rem;
+            order: 1;
+        }
+        
+        .book-btn {
+            order: 3;
+            padding: 8px 18px;
+            font-size: 0.85rem;
+        }
+        
+        nav {
+            position: fixed;
+            top: 70px;
+            left: -100%;
+            width: 100%;
+            height: calc(100vh - 70px);
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            flex-direction: column;
+            justify-content: center;
+            gap: 2rem;
+            transition: left 0.4s ease;
+            z-index: 999;
+        }
+        
+        nav.active {
+            left: 0;
+        }
+        
+        .navbar nav a {
+            font-size: 1.2rem;
+            padding: 0.8rem;
+        }
     }
     
-    nav {
-        position: fixed;
-        top: 70px;
-        left: -100%;
-        width: 100%;
-        height: calc(100vh - 70px);
-        background: rgba(255, 255, 255, 0.98);
-        backdrop-filter: blur(10px);
-        flex-direction: column;
-        justify-content: center;
-        gap: 2rem;
-        transition: left 0.4s ease;
-        z-index: 999;
-    }
-    
-    nav.active {
-        left: 0;
-    }
-    
-    .navbar nav a {
-        font-size: 1.2rem;
-        padding: 0.8rem;
-    }
-    
-    .navbar nav a::before {
-        bottom: 0;
-    }
-    
-    .book-btn {
-        margin-right: 0.5rem;
-        padding: 8px 18px;
-        font-size: 0.85rem;
-    }
-    
-    .logo {
-        font-size: 1.4rem;
+    @media (max-width: 480px) {
+        .navbar {
+            padding: 0.6rem 4%;
+        }
+        
+        .logo {
+            font-size: 1.2rem;
+        }
+        
+        .book-btn {
+            padding: 6px 14px;
+            font-size: 0.75rem;
+        }
+        
+        .menu-icon {
+            font-size: 1.5rem;
+        }
     }
     
     /* Menu Icon (Hamburger) - Add this to your HTML */
