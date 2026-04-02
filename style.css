@@ -20,13 +20,13 @@ body{
     }
     
     .logo {
-        color: #27AE60;
-        font-weight: 800;
-        font-size: 22px;
-        font-family: 'Playfair Display', serif;
-        text-decoration: none;
-        transition: transform 0.3s ease;
-    }
+            color: var(--green);
+            font-weight: 800;
+            font-size: 1.8rem;
+            font-family: 'Playfair Display', serif;
+            text-decoration: none;
+            transition: transform 0.3s ease;
+        }
     
     .logo:hover {
         transform: scale(1.02);
@@ -380,7 +380,7 @@ body{
         display: inline-flex;
         align-items: center;
         gap: 10px;
-        background: linear-gradient(135deg, #FF7A00 0%, #FF9A40 100%);
+        background: linear-gradient(135deg, #FF7A00 0%, #27AE60 100%);
         color: white;
         border: none;
         padding: 16px 34px;
@@ -455,7 +455,7 @@ body{
         font-family: Arial, sans-serif;
       }
       .nav-btn:hover {
-        border-color: #FF7A00;
+        border-color: #eb0f17;
         color: #FF7A00;
         transform: scale(1.08);
       }
@@ -894,7 +894,7 @@ body{
     }
 
     .newsletter-mini button {
-        background: #ff7b00;
+        background: linear-gradient(135deg, #FF7A00 0%, #27AE60 100%);
         color: white;
         border: none;
         padding: 12px 28px;
@@ -1357,7 +1357,7 @@ body{
     }
 
     .newsletter-form button {
-        background: #FF7A00;
+        background: linear-gradient(135deg, #FF7A00 0%, #27AE60 100%);
         color: white;
         border: none;
         padding: 12px 24px;
@@ -1370,7 +1370,7 @@ body{
     }
 
     .newsletter-form button:hover {
-        background: #ff7b00d8;
+        background: linear-gradient(135deg, #FF7A00 0%, #27AE60 100%);
         transform: translateY(-2px);
         box-shadow: 0 5px 15px rgba(39, 174, 96, 0.3);
     }

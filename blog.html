@@ -27,7 +27,7 @@ body {
   --bg-card: #ffffff;
 }
 
-/* ─── NAVBAR (identique à la home) ─── */
+/* ─── NAVBAR ─── */
 .navbar {
   display: flex; justify-content: space-between; align-items: center;
   padding: 1rem 5%;
@@ -35,12 +35,12 @@ body {
   box-shadow: 0 4px 20px rgba(0,0,0,0.08);
   position: sticky; top: 0; z-index: 1000;
 }
-.logo { 
-  color: var(--green); 
-  font-weight: 800; 
-  font-size: 22px; 
-  font-family: 'Playfair Display', serif; 
-  text-decoration: none; 
+.logo {
+  color: var(--green);
+  font-weight: 800;
+  font-size: 1.8rem;
+  font-family: 'Playfair Display', serif;
+  text-decoration: none;
   transition: transform 0.3s ease;
 }
 .logo:hover { transform: scale(1.02); }
@@ -67,40 +67,37 @@ nav a::before {
 }
 nav a:hover::before, nav a.active::before { width: 100%; }
 .book-btn {
-        background: linear-gradient(135deg, #FF7A00 0%, #27AE60 100%);
-        border: none;
-        padding: 0;
-        border-radius: 50px;
-        cursor: pointer;
-        transition: all 0.3s;
-        box-shadow: 0 4px 15px rgba(39,174,96,0.3);
-        overflow: hidden;
-    }
-    
-    .book-btn a {
-        display: inline-block;
-        padding: 12px 28px;
-        color: white;
-        text-decoration: none;
-        font-size: 1rem;
-        font-weight: 600;
-        font-family: inherit;
-        background: transparent;
-        border: none;
-        cursor: pointer;
-        transition: all 0.3s;
-    }
-    
-    .book-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(39,174,96,0.4);
-       
-    }
-    
-    .book-btn:hover a {
-        color: rgb(255, 255, 255);
-    }
-/* ─── BLOG HERO (plus clair, comme la home) ─── */
+  background: linear-gradient(135deg, #FF7A00 0%, #27AE60 100%);
+  border: none;
+  padding: 0;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 4px 15px rgba(39,174,96,0.3);
+  overflow: hidden;
+}
+.book-btn a {
+  display: inline-block;
+  padding: 12px 28px;
+  color: white;
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: inherit;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.book-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(39,174,96,0.4);
+}
+.book-btn:hover a {
+  color: rgb(255, 255, 255);
+}
+
+/* ─── BLOG HERO ─── */
 .blog-hero {
   background: linear-gradient(135deg, #e8f5e9 0%, #ffffff 100%);
   padding: 60px 5% 50px;
@@ -158,7 +155,7 @@ nav a:hover::before, nav a.active::before { width: 100%; }
   line-height: 1.6;
 }
 
-/* ─── CATEGORY TABS (style moderne) ─── */
+/* ─── CATEGORY TABS ─── */
 .cat-tabs-wrap {
   background: white;
   border-bottom: 1px solid var(--border);
@@ -214,10 +211,132 @@ nav a:hover::before, nav a.active::before { width: 100%; }
   background: rgba(255,255,255,0.25);
 }
 
-/* ─── BOOK SECTION (style home) ─── */
+/* ADD ARTICLE BUTTON & FORM - SEULEMENT POUR ARTICLES */
+.add-article-wrapper {
+  max-width: 1400px;
+  margin: 20px auto 0;
+  padding: 0 5%;
+  display: flex;
+  justify-content: flex-end;
+}
+.add-btn {
+  background: var(--green);
+  border: none;
+  padding: 12px 28px;
+  border-radius: 50px;
+  color: white;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-size: 14px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+.add-btn:hover {
+  background: var(--green-light);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(39,174,96,0.3);
+}
+.add-form-panel {
+  background: white;
+  border-radius: 28px;
+  margin: 0 5% 20px;
+  padding: 24px 28px;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.08);
+  border: 1px solid var(--border);
+  display: none;
+  animation: slideDown 0.3s ease;
+}
+.add-form-panel.open {
+  display: block;
+}
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.form-group.full-width {
+  grid-column: span 2;
+}
+.form-group label {
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-light);
+}
+.form-group input, .form-group textarea, .form-group select {
+  padding: 12px 16px;
+  border-radius: 16px;
+  border: 1.5px solid var(--border);
+  font-family: 'Nunito', sans-serif;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+.form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+  outline: none;
+  border-color: var(--green);
+  box-shadow: 0 0 0 3px rgba(39,174,96,0.1);
+}
+.form-group textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+  margin-top: 16px;
+}
+.form-actions button {
+  padding: 10px 24px;
+  border-radius: 40px;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-submit {
+  background: linear-gradient(135deg, var(--green), var(--green-light));
+  color: white;
+}
+.btn-cancel {
+  background: #f1f5f9;
+  color: var(--text-mid);
+}
+.btn-submit:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(39,174,96,0.3); }
+.btn-cancel:hover { background: #e2e8f0; }
+.info-badge {
+  background: rgba(39,174,96,0.1);
+  padding: 8px 16px;
+  border-radius: 12px;
+  font-size: 13px;
+  color: var(--green);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.info-badge::before {
+  content: "📌";
+  font-size: 14px;
+}
+
+/* ─── BOOK SECTION ─── */
 .book-section { padding: 48px 5%; background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); }
 .book-wrapper { max-width: 1300px; margin: 0 auto; position: relative; }
-
 .book {
   width: 100%;
   min-height: 580px;
@@ -228,8 +347,6 @@ nav a:hover::before, nav a.active::before { width: 100%; }
   position: relative;
   background: white;
 }
-
-/* LEFT IMAGE */
 .image-side {
   width: 45%;
   position: relative;
@@ -320,8 +437,6 @@ nav a:hover::before, nav a.active::before { width: 100%; }
   pointer-events: none;
   z-index: 4;
 }
-
-/* SPINE */
 .book-spine {
   position: absolute;
   left: 45%;
@@ -334,8 +449,6 @@ nav a:hover::before, nav a.active::before { width: 100%; }
   background: linear-gradient(to right, rgba(0,0,0,0.15) 0%, rgba(255,255,255,0.1) 50%, rgba(0,0,0,0.12) 100%);
   border-radius: 2px;
 }
-
-/* RIGHT TEXT */
 .text-side {
   flex: 1;
   background: white;
@@ -354,7 +467,6 @@ nav a:hover::before, nav a.active::before { width: 100%; }
   opacity: 0;
   transform: translateY(12px);
 }
-
 .page-indicator {
   display: flex;
   align-items: center;
@@ -373,7 +485,6 @@ nav a:hover::before, nav a.active::before { width: 100%; }
   letter-spacing: 0.1em;
   font-weight: 600;
 }
-
 .slide-cat-pill {
   display: inline-flex;
   align-items: center;
@@ -396,7 +507,6 @@ nav a:hover::before, nav a.active::before { width: 100%; }
   text-transform: uppercase;
   letter-spacing: 0.08em;
 }
-
 .text-content h2 {
   font-family: 'Playfair Display', serif;
   font-size: clamp(26px, 3vw, 38px);
@@ -406,14 +516,12 @@ nav a:hover::before, nav a.active::before { width: 100%; }
   margin-bottom: 20px;
 }
 .text-content h2 em { font-style: italic; color: var(--orange); }
-
 .text-content .excerpt {
   font-size: 16px;
   color: var(--text-mid);
   line-height: 1.7;
   margin-bottom: 24px;
 }
-
 .key-points {
   display: flex;
   flex-direction: column;
@@ -436,7 +544,6 @@ nav a:hover::before, nav a.active::before { width: 100%; }
   flex-shrink: 0;
   margin-top: 6px;
 }
-
 .author-row {
   display: flex;
   align-items: center;
@@ -465,7 +572,6 @@ nav a:hover::before, nav a.active::before { width: 100%; }
   font-size: 11px;
   color: var(--text-light);
 }
-
 .read-btn {
   display: inline-flex;
   align-items: center;
@@ -491,7 +597,6 @@ nav a:hover::before, nav a.active::before { width: 100%; }
 .read-btn:hover .arrow {
   transform: translateX(4px);
 }
-
 .bottom-bar {
   display: flex;
   align-items: center;
@@ -546,7 +651,7 @@ nav a:hover::before, nav a.active::before { width: 100%; }
   cursor: not-allowed;
 }
 
-/* ─── GRID SECTION (comme les cartes de la home) ─── */
+/* ─── GRID SECTION ─── */
 .grid-section {
   padding: 60px 5%;
   max-width: 1400px;
@@ -574,7 +679,6 @@ nav a:hover::before, nav a.active::before { width: 100%; }
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 28px;
 }
-
 .article-card {
   background: white;
   border: 1px solid var(--border);
@@ -666,7 +770,7 @@ nav a:hover::before, nav a.active::before { width: 100%; }
   transform: translateX(4px);
 }
 
-/* ─── MODAL (style cohérent) ─── */
+/* MODAL */
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -682,7 +786,6 @@ nav a:hover::before, nav a.active::before { width: 100%; }
   transition: opacity 0.3s;
 }
 .modal-overlay.open { opacity: 1; pointer-events: auto; }
-
 .modal {
   background: white;
   border-radius: 32px;
@@ -695,7 +798,6 @@ nav a:hover::before, nav a.active::before { width: 100%; }
   transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
 }
 .modal-overlay.open .modal { transform: translateY(0) scale(1); }
-
 .modal-hero {
   width: 100%;
   height: 200px;
@@ -761,112 +863,6 @@ nav a:hover::before, nav a.active::before { width: 100%; }
   line-height: 1.7;
   margin-bottom: 28px;
 }
-.recipe-stats {
-  display: flex;
-  gap: 0;
-  margin-bottom: 32px;
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  overflow: hidden;
-}
-.recipe-stat {
-  flex: 1;
-  padding: 14px;
-  text-align: center;
-  border-right: 1px solid var(--border);
-}
-.recipe-stat:last-child { border-right: none; }
-.recipe-stat .s-val {
-  font-family: 'Playfair Display', serif;
-  font-size: 22px;
-  font-weight: 900;
-  color: var(--dark);
-}
-.recipe-stat .s-lbl {
-  font-size: 10px;
-  color: var(--text-light);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-}
-.modal-section-title {
-  font-family: 'Playfair Display', serif;
-  font-size: 20px;
-  font-weight: 900;
-  color: var(--dark);
-  margin-bottom: 16px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.ingredients-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  margin-bottom: 32px;
-}
-.ingredient-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 14px;
-  background: var(--green-pale);
-  border-radius: 12px;
-}
-.ing-dot {
-  width: 6px;
-  height: 6px;
-  background: var(--green);
-  border-radius: 50%;
-}
-.ing-name {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--dark);
-}
-.ing-qty {
-  font-size: 12px;
-  color: var(--text-mid);
-  margin-left: auto;
-}
-.steps-list {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  margin-bottom: 32px;
-}
-.step-item {
-  display: flex;
-  gap: 14px;
-  align-items: flex-start;
-}
-.step-num {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: var(--orange);
-  color: white;
-  font-size: 13px;
-  font-weight: 800;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-.step-text {
-  font-size: 14px;
-  color: var(--text-mid);
-  line-height: 1.6;
-  padding-top: 4px;
-}
-.nutrition-row {
-  display: flex;
-  justify-content: space-between;
-  padding: 10px 0;
-  border-bottom: 1px solid var(--border);
-}
-.nutrition-row:last-child { border-bottom: none; }
-.nutrition-row .n-name { font-size: 13px; color: var(--text-mid); }
-.nutrition-row .n-val { font-size: 13px; font-weight: 700; color: var(--dark); }
 .modal-cta {
   margin-top: 32px;
   text-align: center;
@@ -887,7 +883,7 @@ nav a:hover::before, nav a.active::before { width: 100%; }
   box-shadow: 0 8px 20px rgba(39,174,96,0.3);
 }
 
-/* ─── FOOTER (identique à la home) ─── */
+/* FOOTER */
 .footer {
   background: white;
   border-top: 1px solid var(--border);
@@ -1003,90 +999,23 @@ nav a:hover::before, nav a.active::before { width: 100%; }
 .footer-bottom-links a:hover {
   color: var(--green);
 }
-
-/* Responsive */
 @media (max-width: 900px) {
-  .book {
-    flex-direction: column;
-    height: auto;
-  }
-  .image-side {
-    width: 100%;
-    height: 320px;
-  }
-  .book-spine {
-    display: none;
-  }
-  .text-side {
-    padding: 32px;
-  }
-  .ingredients-grid {
-    grid-template-columns: 1fr;
-  }
+  .book { flex-direction: column; }
+  .image-side { width: 100%; height: 320px; }
+  .book-spine { display: none; }
+  .text-side { padding: 32px; }
+  .form-row { grid-template-columns: 1fr; }
+  .form-group.full-width { grid-column: span 1; }
 }
-
 @media (max-width: 768px) {
-  nav {
-    gap: 1rem;
-  }
-  .cat-tab {
-    padding: 10px 20px;
-    font-size: 13px;
-  }
-  .text-side {
-    padding: 24px;
-  }
-  .article-grid {
-    grid-template-columns: 1fr;
-  }
-  .footer-grid {
-    gap: 2rem;
-  }
-  .footer-col {
-    text-align: center;
-  }
-  .footer-col h4::after {
-    left: 50%;
-    transform: translateX(-50%);
-  }
-  .footer-links a {
-    justify-content: center;
-  }
-  .social-icons {
-    justify-content: center;
-  }
-  .footer-bottom {
-    flex-direction: column;
-    text-align: center;
-  }
-}
-
-@media (max-width: 480px) {
-  .text-side {
-    padding: 20px;
-  }
-  .text-content h2 {
-    font-size: 24px;
-  }
-  .read-btn {
-    padding: 10px 24px;
-    font-size: 13px;
-  }
-  .recipe-stats {
-    flex-wrap: wrap;
-  }
-  .recipe-stat {
-    min-width: 50%;
-  }
-  .modal-body {
-    padding: 24px;
-  }
+  nav { gap: 1rem; }
+  .cat-tab { padding: 10px 20px; }
+  .article-grid { grid-template-columns: 1fr; }
 }
 </style>
 </head>
 <body>
 
-<!-- NAVBAR -->
 <header class="navbar">
   <a href="index.html" class="logo">NutriLife 🍎</a>
   <nav>
@@ -1098,210 +1027,93 @@ nav a:hover::before, nav a.active::before { width: 100%; }
   <button class="book-btn"><a href="login.html">Book Consultation</a></button>
 </header>
 
-<!-- BLOG HERO (style home) -->
 <section class="blog-hero">
   <div class="blog-eyebrow">Our Journal</div>
   <h1>Insights for a <em>healthier you</em></h1>
   <p>Articles, recipes, and wellness tips crafted by our nutritionist — science-backed, beautifully simple.</p>
 </section>
 
-<!-- CATEGORY TABS -->
 <div class="cat-tabs-wrap">
   <div class="cat-tabs">
-    <button class="cat-tab active" data-cat="articles" onclick="switchCat('articles',this)">
-      <span class="tab-icon">📰</span> Articles <span class="tab-count">4</span>
-    </button>
-    <button class="cat-tab" data-cat="recipes" onclick="switchCat('recipes',this)">
-      <span class="tab-icon">🍳</span> Healthy Recipes <span class="tab-count">3</span>
-    </button>
-    <button class="cat-tab" data-cat="wellness" onclick="switchCat('wellness',this)">
-      <span class="tab-icon">🧘</span> Wellness Tips <span class="tab-count">4</span>
-    </button>
+    <button class="cat-tab active" data-cat="articles" onclick="switchCat('articles',this)"><span class="tab-icon">📰</span> Articles <span class="tab-count" id="countArticles">4</span></button>
+    <button class="cat-tab" data-cat="recipes" onclick="switchCat('recipes',this)"><span class="tab-icon">🍳</span> Healthy Recipes <span class="tab-count" id="countRecipes">3</span></button>
+    <button class="cat-tab" data-cat="wellness" onclick="switchCat('wellness',this)"><span class="tab-icon">🧘</span> Wellness Tips <span class="tab-count" id="countWellness">4</span></button>
   </div>
 </div>
 
-<!-- BOOK SECTION (style home) -->
-<section class="book-section">
-  <div class="book-wrapper">
-    <div class="book" id="mainBook">
-      <div class="image-side" id="imageSide">
-        <img class="img-bg" id="imgBg" src="" alt="">
-        <div class="flip-page" id="flipPage">
-          <div class="flip-front">
-            <img id="imgFront" src="" alt="">
-            <div class="img-overlay"></div>
-            <div class="flip-shadow" id="flipShadow"></div>
-          </div>
-          <div class="flip-back">
-            <img id="imgBack" src="" alt="">
-            <div class="img-overlay"></div>
-          </div>
-        </div>
-        <div class="cast-shadow" id="castShadow"></div>
-        <div class="img-badge" id="imgBadge">📰 Articles</div>
-        <div class="img-read-time" id="imgReadTime">5 min read</div>
-      </div>
-      <div class="book-spine"></div>
-      <div class="text-side">
-        <div class="text-content" id="textContent">
-          <div class="page-indicator">
-            <div class="line"></div>
-            <span id="pageNum">01 — 04</span>
-          </div>
-          <div class="slide-cat-pill">
-            <div class="dot-tag"></div>
-            <span id="slideTag">Articles</span>
-          </div>
-          <h2 id="slideTitle">Understanding <em>insulin resistance</em></h2>
-          <p class="excerpt" id="slideExcerpt">Insulin resistance affects millions silently — and the right nutrition can reverse it. Here's what the science says.</p>
-          <div class="key-points" id="keyPoints"></div>
-          <div class="author-row">
-            <div class="author-avatar">👩‍⚕️</div>
-            <div>
-              <div class="author-name" id="authorName">Hadjer Bechinia</div>
-              <div class="author-date" id="authorDate">March 2026 · Clinical Nutritionist</div>
-            </div>
-          </div>
-          <button class="read-btn" id="readBtn" onclick="openCurrentModal()">
-            Read Full Article <span class="arrow">→</span>
-          </button>
-          <div class="bottom-bar">
-            <div class="progress-dots" id="dots"></div>
-            <div class="nav-btns">
-              <button class="nav-btn" id="prevBtn" onclick="prev()" disabled>‹</button>
-              <button class="nav-btn" id="nextBtn" onclick="next()">›</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- GRID SECTION (cartes comme home) -->
-<section class="grid-section">
-  <div class="grid-title" id="gridTitle">📰 More Articles</div>
-  <div class="article-grid" id="articleGrid"></div>
-</section>
-
-<!-- FOOTER -->
-<footer class="footer">
-  <div class="footer-container">
-    <div class="footer-grid">
-      <div class="footer-col">
-        <a href="index.html" class="footer-logo">NutriLife 🍎</a>
-        <p class="footer-description">Your trusted partner for personalized nutrition and a healthy lifestyle. Science-based solutions to transform your health.</p>
-        <div class="social-icons">
-          <a href="#" class="social-icon">📘</a>
-          <a href="#" class="social-icon">📷</a>
-          <a href="#" class="social-icon">🐦</a>
-          <a href="#" class="social-icon">💼</a>
-        </div>
-      </div>
-      <div class="footer-col">
-        <h4>Navigation</h4>
-        <ul class="footer-links">
-          <li><a href="index.html">🏠 Home</a></li>
-          <li><a href="about.html">📖 About Us</a></li>
-          <li><a href="blog.html">📝 Blog</a></li>
-          <li><a href="#">⭐ Feedback</a></li>
-        </ul>
-      </div>
-      <div class="footer-col">
-        <h4>Blog</h4>
-        <ul class="footer-links">
-          <li><a href="#" onclick="switchCat('articles',document.querySelector('[data-cat=articles]')); return false;">📰 Articles</a></li>
-          <li><a href="#" onclick="switchCat('recipes',document.querySelector('[data-cat=recipes]')); return false;">🍳 Healthy Recipes</a></li>
-          <li><a href="#" onclick="switchCat('wellness',document.querySelector('[data-cat=wellness]')); return false;">🧘 Wellness Tips</a></li>
-        </ul>
-      </div>
-      <div class="footer-col">
-        <h4>Contact</h4>
-        <ul class="footer-links">
-          <li><a href="#">📧 hello@nutrilife.com</a></li>
-          <li><a href="#">📞 +213 555 123 456</a></li>
-          <li><a href="#">📍 Algiers, Algeria</a></li>
-        </ul>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <div class="copyright">© 2026 NutriLife. All rights reserved.</div>
-      <div class="footer-bottom-links">
-        <a href="#">Privacy Policy</a>
-        <a href="#">Terms of Service</a>
-        <a href="#">Cookies</a>
-      </div>
-    </div>
-  </div>
-</footer>
-
-<!-- MODAL -->
-<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
-  <div class="modal" id="modalBox">
-    <button class="modal-close" onclick="closeModal()">✕</button>
-    <div class="modal-hero" id="modalHero"></div>
-    <div class="modal-body" id="modalBody"></div>
-  </div>
+<!-- ADD ARTICLE WRAPPER - SERA AFFICHE SEULEMENT QUAND activeCat === 'articles' -->
+<div class="add-article-wrapper" id="addArticleWrapper">
+  <button class="add-btn" id="toggleFormBtn">➕ Add New Article</button>
 </div>
+
+<div class="add-form-panel" id="addFormPanel">
+  <div class="info-badge">
+    <span>📝 Publishing in <strong>Articles</strong> category only</span>
+  </div>
+  <div class="form-row">
+    <div class="form-group full-width"><label>Article Title</label><input type="text" id="newTitle" placeholder="e.g., The power of fermented foods for gut health"></div>
+  </div>
+  <div class="form-row">
+    <div class="form-group"><label>Short excerpt (visible in slide)</label><input type="text" id="newExcerpt" placeholder="Brief summary of your article..."></div>
+    <div class="form-group"><label>Image URL (Unsplash or any)</label><input type="text" id="newImg" placeholder="https://images.unsplash.com/..."></div>
+  </div>
+  <div class="form-group full-width"><label>Key points (one per line, up to 3)</label><textarea id="newPoints" rows="3" placeholder="First key insight&#10;Second important point&#10;Third actionable tip"></textarea></div>
+  <div class="form-group full-width"><label>Full article content (will appear in modal)</label><textarea id="newBody" rows="4" placeholder="Write the complete article text here..."></textarea></div>
+  <div class="form-row">
+    <div class="form-group"><label>Read time</label><input type="text" id="newRead" value="5 min read"></div>
+    <div class="form-group"><label>Author name</label><input type="text" id="newAuthor" value="NutriLife Team"></div>
+  </div>
+  <div class="form-actions"><button class="btn-cancel" id="cancelFormBtn">Cancel</button><button class="btn-submit" id="submitArticleBtn">Publish Article ✨</button></div>
+</div>
+
+<section class="book-section"><div class="book-wrapper"><div class="book" id="mainBook"><div class="image-side" id="imageSide"><img class="img-bg" id="imgBg" src="" alt=""><div class="flip-page" id="flipPage"><div class="flip-front"><img id="imgFront" src="" alt=""><div class="img-overlay"></div><div class="flip-shadow" id="flipShadow"></div></div><div class="flip-back"><img id="imgBack" src="" alt=""><div class="img-overlay"></div></div></div><div class="cast-shadow" id="castShadow"></div><div class="img-badge" id="imgBadge">📰 Articles</div><div class="img-read-time" id="imgReadTime">5 min read</div></div><div class="book-spine"></div><div class="text-side"><div class="text-content" id="textContent"><div class="page-indicator"><div class="line"></div><span id="pageNum">01 — 04</span></div><div class="slide-cat-pill"><div class="dot-tag"></div><span id="slideTag">Articles</span></div><h2 id="slideTitle">Understanding <em>insulin resistance</em></h2><p class="excerpt" id="slideExcerpt">Insulin resistance affects millions silently — and the right nutrition can reverse it. Here's what the science says.</p><div class="key-points" id="keyPoints"></div><div class="author-row"><div class="author-avatar">👩‍⚕️</div><div><div class="author-name" id="authorName">Hadjer Bechinia</div><div class="author-date" id="authorDate">March 2026 · Clinical Nutritionist</div></div></div><button class="read-btn" id="readBtn" onclick="openCurrentModal()">Read Full Article <span class="arrow">→</span></button><div class="bottom-bar"><div class="progress-dots" id="dots"></div><div class="nav-btns"><button class="nav-btn" id="prevBtn" onclick="prev()" disabled>‹</button><button class="nav-btn" id="nextBtn" onclick="next()">›</button></div></div></div></div></div></div></section>
+
+<section class="grid-section"><div class="grid-title" id="gridTitle">📰 More Articles</div><div class="article-grid" id="articleGrid"></div></section>
+
+<footer class="footer"><div class="footer-container"><div class="footer-grid"><div class="footer-col"><a href="index.html" class="footer-logo">NutriLife 🍎</a><p class="footer-description">Your trusted partner for personalized nutrition and a healthy lifestyle.</p><div class="social-icons"><a href="#" class="social-icon">📘</a><a href="#" class="social-icon">📷</a><a href="#" class="social-icon">🐦</a><a href="#" class="social-icon">💼</a></div></div><div class="footer-col"><h4>Navigation</h4><ul class="footer-links"><li><a href="index.html">🏠 Home</a></li><li><a href="about.html">📖 About Us</a></li><li><a href="blog.html">📝 Blog</a></li></ul></div><div class="footer-col"><h4>Blog</h4><ul class="footer-links"><li><a href="#" onclick="switchCat('articles',document.querySelector('[data-cat=articles]')); return false;">📰 Articles</a></li><li><a href="#" onclick="switchCat('recipes',document.querySelector('[data-cat=recipes]')); return false;">🍳 Recipes</a></li><li><a href="#" onclick="switchCat('wellness',document.querySelector('[data-cat=wellness]')); return false;">🧘 Wellness</a></li></ul></div><div class="footer-col"><h4>Contact</h4><ul class="footer-links"><li><a href="#">📧 hello@nutrilife.com</a></li><li><a href="#">📍 Algiers, Algeria</a></li></ul></div></div><div class="footer-bottom"><div class="copyright">© 2026 NutriLife. All rights reserved.</div><div class="footer-bottom-links"><a href="#">Privacy Policy</a><a href="#">Terms</a></div></div></div></footer>
+
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)"><div class="modal" id="modalBox"><button class="modal-close" onclick="closeModal()">✕</button><div class="modal-hero" id="modalHero"></div><div class="modal-body" id="modalBody"></div></div></div>
 
 <script>
-/* ══════════════════════════════════════════
-   DATA (contenu enrichi)
-══════════════════════════════════════════ */
-const DATA = {
-  articles: {
-    label: "Articles", badgeIcon: "📰",
-    slides: [
-      { img: "https://images.unsplash.com/photo-1505253716362-afaea1d3d1af?w=800&q=80", title: "Understanding <em>insulin resistance</em>", excerpt: "Insulin resistance affects millions silently — and the right nutrition can reverse it.", points: ["How carbohydrate quality impacts insulin sensitivity", "Top foods that reduce inflammation", "Meal timing strategies that support glucose regulation"], author: "Hadjer Bechinia", date: "March 2026", read: "5 min read", num: "01 — 04", modal: { type: "article", title: "Understanding <em>insulin resistance</em>", body: "Insulin resistance is a condition where cells don't respond well to insulin. The good news: targeted nutrition interventions are among the most powerful tools we have. Research consistently shows that reducing refined carbohydrates, increasing fiber intake, and prioritizing anti-inflammatory foods can significantly improve insulin sensitivity within weeks." } },
-      { img: "https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=800&q=80", title: "PCOS nutrition: <em>what actually works</em>", excerpt: "Polycystic ovary syndrome is one of the most mismanaged conditions. We break down the dietary interventions that make a real difference.", points: ["Anti-inflammatory eating patterns for PCOS", "Inositol, magnesium & key micronutrients", "How to manage cravings and energy crashes"], author: "Hadjer Bechinia", date: "Feb 2026", read: "7 min read", num: "02 — 04", modal: { type: "article", title: "PCOS nutrition: <em>what actually works</em>", body: "PCOS affects 1 in 10 women. While there's no cure, nutrition is the most evidence-based intervention. A low-glycemic, anti-inflammatory diet consistently outperforms calorie restriction alone. The Mediterranean dietary pattern has shown the strongest evidence base in randomized trials." } },
-      { img: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=800&q=80", title: "Why <em>calorie counting</em> alone fails", excerpt: "Most people think nutrition is just math. But hormones, gut bacteria, and sleep quality matter far more than the numbers.", points: ["The limits of the calorie-in/calorie-out model", "How cortisol and sleep sabotage fat loss", "A smarter framework for sustainable weight management"], author: "Hadjer Bechinia", date: "Jan 2026", read: "6 min read", num: "03 — 04", modal: { type: "article", title: "Why <em>calorie counting</em> alone fails", body: "While energy balance matters, it ignores the fact that hormones, gut microbiome, sleep quality, and stress levels all profoundly affect how your body stores or burns fat. A better approach: focus on food quality over quantity. Prioritize protein and fiber. Manage stress actively. Fix sleep first." } },
-      { img: "https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=800&q=80", title: "The <em>gut-brain axis</em>: how food affects mood", excerpt: "90% of serotonin is produced in the gut. What you eat directly shapes your mental health.", points: ["Fermented foods and the microbiome connection", "Nutrients that support neurotransmitter production", "A 7-day mood-supporting meal framework"], author: "Hadjer Bechinia", date: "Dec 2025", read: "8 min read", num: "04 — 04", modal: { type: "article", title: "The <em>gut-brain axis</em>", body: "90% of serotonin is manufactured in the gut. A diverse, fiber-rich microbiome produces more short-chain fatty acids that support the blood-brain barrier and reduce neuroinflammation. Mood-supporting foods: fermented foods, prebiotic fibers, omega-3 fatty acids, and dark leafy greens." } }
-    ],
-    grid: [
-      { img: "🧬", title: "Thyroid health and nutrition", desc: "Foods that support thyroid function and what to avoid.", time: "6 min", tag: "articles", modal: { type: "article", title: "Thyroid health and nutrition", body: "Your thyroid depends on selenium, iodine, zinc, and iron. Brazil nuts, seaweed, and seafood are excellent sources. Cruciferous vegetables contain goitrogens — cooking neutralizes most of this effect." } },
-      { img: "❤️", title: "Heart-healthy eating in 2026", desc: "Evidence-based dietary patterns for cardiovascular protection.", time: "5 min", tag: "articles", modal: { type: "article", title: "Heart-healthy eating", body: "The Mediterranean and DASH diets remain the most evidence-backed. Key principles: replace saturated fats with olive oil, increase omega-3 intake, reduce sodium, and eat 7+ servings of colorful produce daily." } },
-      { img: "🦠", title: "Gut microbiome: your second brain", desc: "How gut bacteria influence weight, mood, and immunity.", time: "7 min", tag: "articles", modal: { type: "article", title: "Gut microbiome", body: "A diverse microbiome is associated with lower rates of obesity, depression, and chronic disease. Eat 30+ different plant foods per week, include fermented foods daily, and limit ultra-processed foods." } }
-    ]
-  },
-  recipes: {
-    label: "Healthy Recipes", badgeIcon: "🍳",
-    slides: [
-      { img: "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=800&q=80", title: "Hormone-balancing <em>golden turmeric bowl</em>", excerpt: "A vibrant, anti-inflammatory bowl that supports hormonal balance — ready in under 20 minutes.", points: ["Turmeric + black pepper for maximum bioavailability", "High-protein quinoa base stabilizes blood sugar", "Healthy fats from avocado and tahini"], author: "NutriLife Kitchen", date: "March 2026", read: "20 min prep", num: "01 — 03", modal: { type: "recipe", emoji: "🥗", bg: "linear-gradient(145deg,#c8e6d5,#9dd4af)", title: "Golden turmeric bowl", tags: ["Anti-inflammatory", "Gluten-Free"], desc: "A vibrant bowl combining turmeric's anti-inflammatory power with quinoa's blood-sugar-stabilizing properties.", stats: [{val:"420",lbl:"Calories"},{val:"28g",lbl:"Protein"},{val:"20 min",lbl:"Time"}], ingredients: [{n:"Quinoa",q:"100g"},{n:"Chickpeas",q:"120g"},{n:"Avocado",q:"½"},{n:"Turmeric",q:"1 tsp"},{n:"Tahini",q:"2 tbsp"}], steps: ["Cook quinoa.", "Roast chickpeas with turmeric.", "Make tahini dressing.", "Assemble bowl."], nutrition: [{n:"Calories",v:"420"},{n:"Protein",v:"28g"}] } },
-      { img: "https://images.unsplash.com/photo-1543352634-a1c51d9f1fa7?w=800&q=80", title: "High-protein <em>overnight oats</em>", excerpt: "No cook, no excuses. Prepped the night before, this breakfast delivers 28g of protein.", points: ["Greek yogurt + chia seeds boost protein", "Low glycemic — no energy crash", "5 flavour variations"], author: "NutriLife Kitchen", date: "Feb 2026", read: "5 min prep", num: "02 — 03", modal: { type: "recipe", emoji: "🥣", bg: "linear-gradient(145deg,#fde8d5,#f9c49a)", title: "High-protein overnight oats", tags: ["High Protein", "Meal Prep"], desc: "The ultimate busy-morning breakfast. Prepped in 5 minutes.", stats: [{val:"380",lbl:"Calories"},{val:"28g",lbl:"Protein"},{val:"5 min",lbl:"Prep"}], ingredients: [{n:"Rolled oats",q:"80g"},{n:"Greek yogurt",q:"150g"},{n:"Chia seeds",q:"2 tbsp"},{n:"Protein powder",q:"1 scoop"}], steps: ["Combine all ingredients.", "Refrigerate overnight.", "Top with berries before serving."], nutrition: [{n:"Calories",v:"380"},{n:"Protein",v:"28g"}] } },
-      { img: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=80", title: "Algerian-inspired <em>lentil harira</em>", excerpt: "A traditional recipe reimagined with extra fiber, plant protein, and anti-inflammatory spices.", points: ["30g plant protein per serving", "Rich in iron, folate, and B vitamins", "Gluten-free, diabetes-friendly"], author: "NutriLife Kitchen", date: "Jan 2026", read: "35 min cook", num: "03 — 03", modal: { type: "recipe", emoji: "🍲", bg: "linear-gradient(145deg,#fde8d5,#e8a87c)", title: "Lentil harira", tags: ["Plant Protein", "Gluten-Free"], desc: "A reimagined version of the North African harira.", stats: [{val:"350",lbl:"Calories"},{val:"30g",lbl:"Protein"},{val:"35 min",lbl:"Time"}], ingredients: [{n:"Red lentils",q:"200g"},{n:"Chickpeas",q:"150g"},{n:"Turmeric",q:"1 tsp"},{n:"Lemon",q:"1"}], steps: ["Sauté onions and spices.", "Add lentils and simmer.", "Finish with lemon juice."], nutrition: [{n:"Calories",v:"350"},{n:"Protein",v:"30g"}] } }
-    ],
-    grid: [
-      { img: "🥑", title: "Avocado & egg power toast", desc: "A 5-ingredient breakfast with healthy fats and protein.", time: "10 min", tag: "recipes", modal: { type: "recipe", emoji: "🥑", title: "Avocado power toast", tags: ["Quick"], stats: [{val:"390",lbl:"Calories"}], ingredients: [{n:"Avocado",q:"1"},{n:"Eggs",q:"2"}], steps: ["Toast bread.", "Mash avocado.", "Top with eggs."] } }
-    ]
-  },
-  wellness: {
-    label: "Wellness Tips", badgeIcon: "🧘",
-    slides: [
-      { img: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=800&q=80", title: "The <em>5 daily habits</em> that transform your metabolism", excerpt: "Small, consistent actions matter more than big overhauls.", points: ["Morning light exposure resets cortisol rhythm", "Protein-first meals reduce cravings", "10-minute post-meal walks lower glucose spikes"], author: "Hadjer Bechinia", date: "March 2026", read: "4 min read", num: "01 — 04", modal: { type: "article", title: "5 daily habits", body: "1. Morning light (10 min). 2. Protein-first meals. 3. Post-meal walks. 4. Cold water morning drink. 5. Consistent sleep/wake time." } },
-      { img: "https://images.unsplash.com/photo-1545205597-3d9d02c29597?w=800&q=80", title: "How <em>stress eating</em> works", excerpt: "Emotional eating isn't a lack of willpower — it's a hormonal response.", points: ["Cortisol's direct effect on cravings", "Mindful eating techniques", "When to use food as comfort"], author: "Hadjer Bechinia", date: "Feb 2026", read: "6 min read", num: "02 — 04", modal: { type: "article", title: "Stress eating", body: "Cortisol signals your brain for fast energy. 4-7-8 breathing activates the parasympathetic nervous system within 90 seconds." } }
-    ],
-    grid: [
-      { img: "😴", title: "The sleep-weight connection", desc: "Why 7-9 hours of sleep is your most powerful weight loss tool.", time: "4 min", tag: "wellness", modal: { type: "article", title: "Sleep-weight connection", body: "Sleep is when your body repairs and regulates hormones. Getting 7-9 hours is foundational." } }
-    ]
-  }
+// ORIGINAL FULL DATA
+let DATA = {
+  articles: { label: "Articles", badgeIcon: "📰", slides: [ { img: "https://images.unsplash.com/photo-1505253716362-afaea1d3d1af?w=800&q=80", title: "Understanding <em>insulin resistance</em>", excerpt: "Insulin resistance affects millions silently — and the right nutrition can reverse it.", points: ["How carbohydrate quality impacts insulin sensitivity", "Top foods that reduce inflammation", "Meal timing strategies"], author: "Hadjer Bechinia", date: "March 2026", read: "5 min read", num: "01 — 04", modal: { type: "article", title: "Understanding insulin resistance", body: "Insulin resistance is a condition where cells don't respond well to insulin. Targeted nutrition interventions are powerful." } }, { img: "https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=800&q=80", title: "PCOS nutrition: <em>what actually works</em>", excerpt: "PCOS is one of the most mismanaged conditions.", points: ["Anti-inflammatory eating patterns", "Inositol & magnesium", "Manage energy crashes"], author: "Hadjer Bechinia", date: "Feb 2026", read: "7 min read", num: "02 — 04", modal: { type: "article", title: "PCOS nutrition", body: "PCOS affects 1 in 10 women. Low-glycemic, anti-inflammatory diet outperforms calorie restriction." } }, { img: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=800&q=80", title: "Why <em>calorie counting</em> alone fails", excerpt: "Hormones matter more than numbers.", points: ["Limits of calorie-in/out", "Cortisol sabotages fat loss", "Focus on food quality"], author: "Hadjer Bechinia", date: "Jan 2026", read: "6 min read", num: "03 — 04", modal: { type: "article", title: "Calorie counting fails", body: "Energy balance matters, but hormones, sleep and stress are key." } }, { img: "https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=800&q=80", title: "The <em>gut-brain axis</em>", excerpt: "90% of serotonin is produced in the gut.", points: ["Fermented foods & microbiome", "Nutrients for mood", "7-day framework"], author: "Hadjer Bechinia", date: "Dec 2025", read: "8 min read", num: "04 — 04", modal: { type: "article", title: "Gut-brain axis", body: "A diverse fiber-rich microbiome supports mental health." } } ], grid: [ { img: "🧬", title: "Thyroid health", desc: "Foods that support thyroid.", time: "6 min", tag: "articles", modal: { type: "article", title: "Thyroid health", body: "Selenium, iodine, zinc are crucial." } }, { img: "❤️", title: "Heart-healthy eating", desc: "Mediterranean diet benefits.", time: "5 min", tag: "articles", modal: { type: "article", title: "Heart health", body: "Olive oil, omega-3, colorful produce." } }, { img: "🦠", title: "Gut microbiome", desc: "How gut bacteria influence weight.", time: "7 min", tag: "articles", modal: { type: "article", title: "Microbiome", body: "Eat 30+ plant foods weekly." } } ] },
+  recipes: { label: "Healthy Recipes", badgeIcon: "🍳", slides: [ { img: "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=800&q=80", title: "Golden <em>turmeric bowl</em>", excerpt: "Anti-inflammatory bowl.", points: ["Turmeric + black pepper", "Quinoa base", "Avocado"], author: "NutriLife Kitchen", date: "March 2026", read: "20 min", num: "01 — 03", modal: { type: "recipe", emoji: "🥗", title: "Golden bowl", tags: ["Anti-inflammatory"], stats:[{val:"420",lbl:"Calories"}], ingredients:[{n:"Quinoa",q:"100g"}], steps:["Cook quinoa."] } }, { img: "https://images.unsplash.com/photo-1543352634-a1c51d9f1fa7?w=800&q=80", title: "High-protein <em>overnight oats</em>", excerpt: "28g protein.", points: ["Greek yogurt", "Chia seeds"], author: "NutriLife", date: "Feb 2026", read: "5 min", num: "02 — 03", modal: { type: "recipe", emoji: "🥣", title: "Overnight oats", tags:["High Protein"], stats:[{val:"380",lbl:"Calories"}], ingredients:[{n:"Oats",q:"80g"}], steps:["Mix, refrigerate."] } }, { img: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=80", title: "Lentil <em>harira</em>", excerpt: "Algerian-inspired.", points: ["30g protein", "Rich in iron"], author: "NutriLife", date: "Jan 2026", read: "35 min", num: "03 — 03", modal: { type: "recipe", emoji: "🍲", title: "Lentil harira", tags:["Plant Protein"], stats:[{val:"350",lbl:"Calories"}], ingredients:[{n:"Lentils",q:"200g"}], steps:["Sauté, simmer."] } } ], grid: [ { img: "🥑", title: "Avocado toast", desc: "Quick breakfast.", time: "10 min", tag: "recipes", modal: { type: "recipe", title: "Avocado toast", tags:["Quick"], stats:[{val:"390",lbl:"Calories"}], ingredients:[{n:"Avocado",q:"1"}], steps:["Toast, mash."] } } ] },
+  wellness: { label: "Wellness Tips", badgeIcon: "🧘", slides: [ { img: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=800&q=80", title: "5 <em>daily habits</em> for metabolism", excerpt: "Small actions matter.", points: ["Morning light", "Protein-first meals", "Post-meal walks"], author: "Hadjer", date: "March 2026", read: "4 min", num: "01 — 04", modal: { type: "article", title: "5 habits", body: "Morning light, protein, walks." } }, { img: "https://images.unsplash.com/photo-1545205597-3d9d02c29597?w=800&q=80", title: "How <em>stress eating</em> works", excerpt: "Hormonal response.", points: ["Cortisol effect", "Mindful eating"], author: "Hadjer", date: "Feb 2026", read: "6 min", num: "02 — 04", modal: { type: "article", title: "Stress eating", body: "Cortisol triggers cravings." } } ], grid: [ { img: "😴", title: "Sleep-weight connection", desc: "7-9 hours matters.", time: "4 min", tag: "wellness", modal: { type: "article", title: "Sleep", body: "Sleep regulates hormones." } } ] }
 };
 
-/* ══════════════════════════════════════════
-   STATE & DOM
-══════════════════════════════════════════ */
 let activeCat = 'articles', current = 0, isAnimating = false;
-const flipPage = document.getElementById('flipPage'), imgFront = document.getElementById('imgFront'), imgBack = document.getElementById('imgBack'), imgBg = document.getElementById('imgBg'), flipShadow = document.getElementById('flipShadow'), castShadow = document.getElementById('castShadow'), textEl = document.getElementById('textContent'), titleEl = document.getElementById('slideTitle'), excerptEl = document.getElementById('slideExcerpt'), kpEl = document.getElementById('keyPoints'), tagEl = document.getElementById('slideTag'), numEl = document.getElementById('pageNum'), badgeEl = document.getElementById('imgBadge'), readTimeEl = document.getElementById('imgReadTime'), authorNameEl = document.getElementById('authorName'), authorDateEl = document.getElementById('authorDate'), readBtn = document.getElementById('readBtn'), dotsWrap = document.getElementById('dots'), prevBtn = document.getElementById('prevBtn'), nextBtn = document.getElementById('nextBtn'), mainBook = document.getElementById('mainBook'), gridTitle = document.getElementById('gridTitle'), articleGrid = document.getElementById('articleGrid');
+const flipPage = document.getElementById('flipPage'), imgFront = document.getElementById('imgFront'), imgBack = document.getElementById('imgBack'), imgBg = document.getElementById('imgBg'), flipShadow = document.getElementById('flipShadow'), castShadow = document.getElementById('castShadow'), textEl = document.getElementById('textContent'), titleEl = document.getElementById('slideTitle'), excerptEl = document.getElementById('slideExcerpt'), kpEl = document.getElementById('keyPoints'), tagEl = document.getElementById('slideTag'), numEl = document.getElementById('pageNum'), badgeEl = document.getElementById('imgBadge'), readTimeEl = document.getElementById('imgReadTime'), authorNameEl = document.getElementById('authorName'), authorDateEl = document.getElementById('authorDate'), readBtn = document.getElementById('readBtn'), dotsWrap = document.getElementById('dots'), prevBtn = document.getElementById('prevBtn'), nextBtn = document.getElementById('nextBtn'), gridTitle = document.getElementById('gridTitle'), articleGrid = document.getElementById('articleGrid');
+const addArticleWrapper = document.getElementById('addArticleWrapper');
+
+function updateCounters() {
+  document.getElementById('countArticles').innerText = DATA.articles.slides.length;
+  document.getElementById('countRecipes').innerText = DATA.recipes.slides.length;
+  document.getElementById('countWellness').innerText = DATA.wellness.slides.length;
+}
+
+function toggleAddButtonVisibility() {
+  // Afficher le bouton d'ajout SEULEMENT si on est dans la catégorie Articles
+  if (activeCat === 'articles') {
+    addArticleWrapper.style.display = 'flex';
+  } else {
+    addArticleWrapper.style.display = 'none';
+    // Fermer le formulaire si ouvert et qu'on change de catégorie
+    formPanel.classList.remove('open');
+  }
+}
 
 function applySlide(s) {
   const cat = DATA[activeCat];
   titleEl.innerHTML = s.title;
   excerptEl.textContent = s.excerpt;
   tagEl.textContent = cat.label;
-  numEl.textContent = s.num;
+  let total = DATA[activeCat].slides.length;
+  numEl.textContent = `${String(current+1).padStart(2,'0')} — ${String(total).padStart(2,'0')}`;
   badgeEl.textContent = cat.badgeIcon + ' ' + cat.label;
   readTimeEl.textContent = s.read;
   authorNameEl.textContent = s.author;
-  authorDateEl.textContent = s.date + ' · ' + (activeCat === 'recipes' ? 'NutriLife Kitchen' : 'Clinical Nutritionist');
+  authorDateEl.textContent = s.date + (activeCat === 'recipes' ? ' · NutriLife Kitchen' : ' · Clinical Nutritionist');
   readBtn.innerHTML = cat.label === 'Healthy Recipes' ? 'View Full Recipe <span class="arrow">→</span>' : 'Read Full Article <span class="arrow">→</span>';
   kpEl.innerHTML = s.points.map(p => `<div class="kp"><div class="kp-dot"></div><span>${p}</span></div>`).join('');
 }
@@ -1351,95 +1163,127 @@ function prev() { goTo(Math.max(current - 1, 0)); }
 
 function switchCat(cat, btn) {
   if (cat === activeCat) return;
-  activeCat = cat;
-  current = 0;
+  activeCat = cat; current = 0;
   document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
   btn.classList.add('active');
-  mainBook.className = 'book';
-  flipPage.style.transition = 'none';
-  flipPage.style.transform = 'rotateY(0deg)';
-  flipShadow.style.opacity = '0';
-  castShadow.style.opacity = '0';
   const first = DATA[cat].slides[0];
-  imgFront.src = first.img;
-  imgBg.src = first.img;
-  imgBack.src = '';
-  buildDots();
-  updateDots();
+  imgFront.src = first.img; imgBg.src = first.img; imgBack.src = '';
+  buildDots(); updateDots();
   textEl.classList.add('fading');
   setTimeout(() => { applySlide(first); textEl.classList.remove('fading'); }, 120);
   renderGrid();
+  toggleAddButtonVisibility(); // Cacher/montrer le bouton selon la catégorie
 }
 
 function renderGrid() {
   const cat = DATA[activeCat];
   gridTitle.innerHTML = cat.badgeIcon + ' More ' + cat.label;
-  articleGrid.innerHTML = cat.grid.map(a => `
-    <div class="article-card" onclick="openModalFromGrid(${JSON.stringify(a.modal).replace(/"/g, '&quot;')})">
-      <div class="card-img">${a.img}</div>
-      <div class="card-body">
-        <div class="card-meta">
-          <span class="card-cat-tag tag-${a.tag}">${cat.label}</span>
-          <span class="card-date">2026</span>
-        </div>
-        <h3>${a.title}</h3>
-        <p>${a.desc}</p>
-        <div class="card-footer">
-          <span class="card-read-time">⏱ ${a.time}</span>
-          <div class="card-arrow">→</div>
-        </div>
-      </div>
-    </div>
-  `).join('');
+  articleGrid.innerHTML = cat.grid.map(a => `<div class="article-card" onclick="openModalFromGrid(${JSON.stringify(a.modal).replace(/"/g, '&quot;')})"><div class="card-img">${a.img}</div><div class="card-body"><div class="card-meta"><span class="card-cat-tag tag-${a.tag}">${cat.label}</span><span class="card-date">2026</span></div><h3>${a.title}</h3><p>${a.desc}</p><div class="card-footer"><span class="card-read-time">⏱ ${a.time}</span><div class="card-arrow">→</div></div></div></div>`).join('');
 }
 
-function openCurrentModal() {
-  const slide = DATA[activeCat].slides[current];
-  openModal(slide.modal);
-}
-
-function openModalFromGrid(modalData) {
-  openModal(modalData);
-}
-
+function openCurrentModal() { openModal(DATA[activeCat].slides[current].modal); }
+function openModalFromGrid(modalData) { openModal(modalData); }
 function openModal(m) {
-  const overlay = document.getElementById('modalOverlay');
-  const hero = document.getElementById('modalHero');
-  const body = document.getElementById('modalBody');
+  const overlay = document.getElementById('modalOverlay'), hero = document.getElementById('modalHero'), body = document.getElementById('modalBody');
   if (m.type === 'recipe') {
     hero.style.background = m.bg || 'linear-gradient(145deg,#c8e6d5,#9dd4af)';
     hero.innerHTML = `<span style="font-size:80px;">${m.emoji || '🍳'}</span>`;
-    const ingHtml = (m.ingredients || []).map(i => `<div class="ingredient-item"><div class="ing-dot"></div><span class="ing-name">${i.n}</span><span class="ing-qty">${i.q}</span></div>`).join('');
-    const stepsHtml = (m.steps || []).map((s, i) => `<div class="step-item"><div class="step-num">${i+1}</div><div class="step-text">${s}</div></div>`).join('');
-    const statsHtml = (m.stats || []).map(s => `<div class="recipe-stat"><div class="s-val">${s.val}</div><div class="s-lbl">${s.lbl}</div></div>`).join('');
-    const tagsHtml = (m.tags || []).map(t => `<span class="modal-tag modal-tag-orange">${t}</span>`).join('');
-    body.innerHTML = `<div class="modal-tags">${tagsHtml}</div><h2>${m.title}</h2><p class="modal-desc">${m.desc}</p><div class="recipe-stats">${statsHtml}</div><div class="modal-section-title"><span>🛒</span> Ingredients</div><div class="ingredients-grid">${ingHtml}</div><div class="modal-section-title"><span>👨‍🍳</span> Steps</div><div class="steps-list">${stepsHtml}</div><div class="modal-cta"><button class="modal-cta-btn" onclick="closeModal()">Got it — let's cook! ✓</button></div>`;
+    let ingHtml = (m.ingredients || []).map(i => `<div class="ingredient-item"><div class="ing-dot"></div><span class="ing-name">${i.n}</span><span class="ing-qty">${i.q}</span></div>`).join('');
+    let stepsHtml = (m.steps || []).map((s, i) => `<div class="step-item"><div class="step-num">${i+1}</div><div class="step-text">${s}</div></div>`).join('');
+    let statsHtml = (m.stats || []).map(s => `<div class="recipe-stat"><div class="s-val">${s.val}</div><div class="s-lbl">${s.lbl}</div></div>`).join('');
+    let tagsHtml = (m.tags || []).map(t => `<span class="modal-tag modal-tag-orange">${t}</span>`).join('');
+    body.innerHTML = `<div class="modal-tags">${tagsHtml}</div><h2>${m.title}</h2><p class="modal-desc">${m.desc || ''}</p><div class="recipe-stats">${statsHtml}</div><div class="modal-section-title"><span>🛒</span> Ingredients</div><div class="ingredients-grid">${ingHtml}</div><div class="modal-section-title"><span>👨‍🍳</span> Steps</div><div class="steps-list">${stepsHtml}</div><div class="modal-cta"><button class="modal-cta-btn" onclick="closeModal()">Got it ✓</button></div>`;
   } else {
-    const catData = DATA[activeCat];
-    hero.style.background = activeCat === 'wellness' ? 'linear-gradient(135deg,#4f46e5,#818cf8)' : activeCat === 'articles' ? 'linear-gradient(135deg,#27AE60,#2ECC71)' : 'linear-gradient(135deg,#FF7A00,#FF9A40)';
+    let catData = DATA[activeCat];
+    hero.style.background = activeCat === 'wellness' ? 'linear-gradient(135deg,#4f46e5,#818cf8)' : 'linear-gradient(135deg,#27AE60,#2ECC71)';
     hero.innerHTML = `<span style="font-size:70px;">${catData.badgeIcon}</span>`;
-    body.innerHTML = `<div class="modal-tags"><span class="modal-tag modal-tag-green">${catData.label}</span></div><h2>${m.title}</h2><p class="modal-desc" style="font-size:15px;line-height:1.85;">${m.body}</p><div class="modal-cta"><button class="modal-cta-btn" onclick="closeModal()">Got it — thanks! 👍</button></div>`;
+    body.innerHTML = `<div class="modal-tags"><span class="modal-tag modal-tag-green">${catData.label}</span></div><h2>${m.title}</h2><p class="modal-desc">${m.body}</p><div class="modal-cta"><button class="modal-cta-btn" onclick="closeModal()">Thanks 👍</button></div>`;
   }
-  overlay.classList.add('open');
-  document.body.style.overflow = 'hidden';
+  overlay.classList.add('open'); document.body.style.overflow = 'hidden';
 }
-
-function closeModal(e) {
-  if (e && e.target !== document.getElementById('modalOverlay')) return;
-  document.getElementById('modalOverlay').classList.remove('open');
-  document.body.style.overflow = '';
-}
+function closeModal(e) { if (e && e.target !== document.getElementById('modalOverlay') && e.target !== document.getElementById('modalOverlay')) return; document.getElementById('modalOverlay').classList.remove('open'); document.body.style.overflow = ''; }
 
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
-// Init
-const first = DATA.articles.slides[0];
-imgFront.src = first.img;
-imgBg.src = first.img;
-buildDots();
-updateDots();
-applySlide(first);
-renderGrid();
+// ADD ARTICLE - ONLY FOR ARTICLES CATEGORY
+const toggleBtn = document.getElementById('toggleFormBtn');
+const formPanel = document.getElementById('addFormPanel');
+const cancelBtn = document.getElementById('cancelFormBtn');
+const submitBtn = document.getElementById('submitArticleBtn');
+
+toggleBtn.onclick = () => formPanel.classList.toggle('open');
+cancelBtn.onclick = () => formPanel.classList.remove('open');
+
+submitBtn.onclick = () => {
+  let titleRaw = document.getElementById('newTitle').value;
+  let excerpt = document.getElementById('newExcerpt').value;
+  let imgUrl = document.getElementById('newImg').value;
+  let pointsRaw = document.getElementById('newPoints').value;
+  let bodyText = document.getElementById('newBody').value;
+  let readTime = document.getElementById('newRead').value;
+  let author = document.getElementById('newAuthor').value;
+  
+  if (!titleRaw || !excerpt) { alert("❌ Please fill both title and excerpt"); return; }
+  
+  let title = titleRaw;
+  let points = pointsRaw.split('\n').filter(p => p.trim() !== '').slice(0,3);
+  if(points.length===0) points = ["✨ New insight from our nutrition team"];
+  let defaultImg = imgUrl || "https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=800&q=80";
+  
+  let currentCount = DATA.articles.slides.length;
+  let newSlide = {
+    img: defaultImg, 
+    title: title, 
+    excerpt: excerpt, 
+    points: points, 
+    author: author, 
+    date: new Date().toLocaleDateString('en-US',{month:'short',year:'numeric'}), 
+    read: readTime, 
+    modal: { type: "article", title: title.replace(/<em>|<\/em>/g,''), body: bodyText || "New article about " + titleRaw }
+  };
+  
+  let newGrid = {
+    img: "📘", 
+    title: titleRaw.length > 40 ? titleRaw.slice(0,37)+"..." : titleRaw, 
+    desc: excerpt.slice(0,70) + (excerpt.length > 70 ? "..." : ""), 
+    time: readTime, 
+    tag: "articles", 
+    modal: { type: "article", title: titleRaw, body: bodyText || "New content." }
+  };
+  
+  DATA.articles.slides.push(newSlide);
+  DATA.articles.grid.push(newGrid);
+  
+  // Update numbering for all articles slides
+  for(let i=0;i<DATA.articles.slides.length;i++) {
+    DATA.articles.slides[i].num = `${String(i+1).padStart(2,'0')} — ${String(DATA.articles.slides.length).padStart(2,'0')}`;
+  }
+  
+  updateCounters();
+  
+  // If currently viewing articles, refresh view
+  if (activeCat === 'articles') {
+    buildDots(); 
+    updateDots(); 
+    applySlide(DATA.articles.slides[current]); 
+    renderGrid();
+  }
+  
+  formPanel.classList.remove('open');
+  document.getElementById('newTitle').value = '';
+  document.getElementById('newExcerpt').value = '';
+  document.getElementById('newPoints').value = '';
+  document.getElementById('newBody').value = '';
+  
+  alert(`✅ Article "${titleRaw}" published successfully in Articles!`);
+};
+
+// init
+updateCounters();
+let firstSlide = DATA.articles.slides[0];
+imgFront.src = firstSlide.img; imgBg.src = firstSlide.img;
+buildDots(); updateDots(); applySlide(firstSlide); renderGrid();
+toggleAddButtonVisibility(); // Afficher le bouton initialement car on est dans Articles
 </script>
 </body>
 </html>

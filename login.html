@@ -1,752 +1,581 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login — NutriLife</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login — NutriLife</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-        body {
-            font-family: 'Nunito', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            overflow-x: hidden;
-        }
+:root {
+  --green:        #27AE60;
+  --green-light:  #2ECC71;
+  --green-pale:   #F0F8F3;
+  --orange:       #FF7A00;
+  --orange-light: #FF9A40;
+  --dark:         #0f172a;
+  --text-mid:     #475569;
+  --text-light:   #94a3b8;
+  --border:       rgba(39,174,96,0.15);
+}
 
-        /* Animated Background Elements - same as home */
-        body::before {
-            content: '🍎';
-            position: absolute;
-            font-size: 280px;
-            opacity: 0.03;
-            top: -80px;
-            left: -80px;
-            pointer-events: none;
-            animation: float 20s infinite ease-in-out;
-        }
+html, body {
+  height: 100%;
+  font-family: 'Nunito', sans-serif;
+  overflow-x: hidden;
+}
 
-        body::after {
-            content: '🥗';
-            position: absolute;
-            font-size: 240px;
-            opacity: 0.03;
-            bottom: -60px;
-            right: -60px;
-            pointer-events: none;
-            animation: float 15s infinite ease-in-out reverse;
-        }
+body {
+  display: flex;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+}
 
-        @keyframes float {
-            0%, 100% { transform: translate(0, 0) rotate(0deg); }
-            50% { transform: translate(20px, -20px) rotate(5deg); }
-        }
+/* ══════════════════════════════
+   LEFT — PHOTO SIDE
+══════════════════════════════ */
+.brand-side {
+  width: 52%;
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 44px 52px 44px 52px;
+}
 
-        /* Main Container */
-        .login-container {
-            width: 100%;
-            max-width: 1200px;
-            margin: 2rem;
-            position: relative;
-            z-index: 1;
-        }
+/* Photo de fond */
+.brand-photo {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: center 30%;
+  display: block;
+}
 
-        /* Card Layout - same style as home book */
-        .login-card {
-            display: flex;
-            background: white;
-            border-radius: 28px;
-            overflow: hidden;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
-            transition: transform 0.3s ease;
-        }
+/* Overlay vert transparent */
+.brand-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(
+      135deg,
+      rgba(39, 174, 96, 0.55) 0%,
+      rgba(27, 94, 42, 0.6) 100%
+    ),
+    radial-gradient(ellipse 65% 55% at 90% 10%, rgba(255,122,0,0.12) 0%, transparent 60%);
+  pointer-events: none;
+}
 
-        /* Left Side - Branding (matching home hero) */
-        .brand-side {
-            flex: 1;
-            background: linear-gradient(135deg, #e8f5e9 0%, #ffffff 100%);
-            padding: 3rem;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            position: relative;
-            overflow: hidden;
-        }
+/* ── LOGO ── */
+.brand-logo {
+  position: relative; z-index: 2;
+  font-family: 'Playfair Display', serif;
+  font-size: 22px; font-weight: 700;
+  color: white; text-decoration: none;
+  display: inline-flex; align-items: center; gap: 8px;
+  transition: opacity 0.2s;
+}
+.brand-logo:hover { opacity: 0.82; }
 
-        .brand-side::before {
-            content: '🌱';
-            position: absolute;
-            font-size: 180px;
-            opacity: 0.06;
-            bottom: -40px;
-            right: -40px;
-            pointer-events: none;
-            transform: rotate(-15deg);
-        }
+/* ── CENTER CONTENT ── */
+.brand-content {
+  position: relative; z-index: 2;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 32px 0;
+  max-width: 400px;
+}
 
-        .brand-side::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, #27AE60, #FF7A00);
-        }
+.brand-eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(255,255,255,0.09);
+  border: 1px solid rgba(255,255,255,0.16);
+  color: rgba(255,255,255,0.72);
+  font-size: 10px; font-weight: 800;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  padding: 5px 14px; border-radius: 40px;
+  margin-bottom: 20px;
+  backdrop-filter: blur(6px);
+  width: fit-content;
+}
+.brand-eyebrow::before {
+  content: ''; width: 6px; height: 6px;
+  background: var(--orange-light); border-radius: 50%;
+}
 
-        .logo {
-            color: #27AE60;
-            font-weight: 800;
-            font-size: 1.8rem;
-            font-family: 'Playfair Display', serif;
-            text-decoration: none;
-            transition: transform 0.3s ease;
-           }
+.brand-content h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(28px, 2.8vw, 46px);
+  font-weight: 900; color: #fff;
+  line-height: 1.12; margin-bottom: 16px;
+  letter-spacing: -0.01em;
+}
+.brand-content h1 em {
+  font-style: italic;
+  background: linear-gradient(135deg, var(--orange));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
 
-        .logo:hover {
-              transform: scale(1.02);
-          }
+.brand-content .brand-desc {
+  font-size: 14.5px;
+  color: rgba(255,255,255,0.75);
+  line-height: 1.8;
+  margin-bottom: 36px;
+  max-width: 360px;
+}
 
-        .brand-content {
-            position: relative;
-            z-index: 1;
-        }
+/* ── FEATURE LIST (style de l'autre code) ── */
+.feat-list {
+  display: flex; flex-direction: column; gap: 10px;
+}
 
-        .brand-content h1 {
-            font-family: 'Playfair Display', serif;
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-            line-height: 1.2;
-            color: #1e293b;
-        }
+.feat-item {
+  display: flex; align-items: center; gap: 14px;
+  padding: 12px 16px;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 12px;
+  backdrop-filter: blur(8px);
+  transition: background 0.2s;
+}
+.feat-item:hover { background: rgba(255,255,255,0.2); }
 
-        .brand-content h1 span {
-            background: linear-gradient(135deg, #27AE60, #FF7A00);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            font-style: italic;
-        }
+.feat-icon {
+  width: 36px; height: 36px; flex-shrink: 0;
+  background: rgba(255,255,255,0.15);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+}
 
-        .brand-content p {
-            font-size: 1rem;
-            color: #475569;
-            line-height: 1.6;
-            margin-bottom: 2rem;
-        }
+.feat-text strong {
+  display: block; font-size: 13px;
+  font-weight: 700; color: rgba(255,255,255,0.95);
+  margin-bottom: 1px;
+}
+.feat-text span {
+  font-size: 11px; color: rgba(255,255,255,0.65);
+}
 
-        .features-list {
-            list-style: none;
-            margin-top: 1.5rem;
-        }
+/* ── FLOATING CARD bottom-right (style de l'autre code) ── */
+.brand-float-card {
+  position: absolute;
+  bottom: 44px; right: 28px;
+  z-index: 5;
+  background: rgba(255,255,255,0.12);
+  backdrop-filter: blur(18px);
+  border: 1px solid rgba(255,255,255,0.25);
+  border-radius: 18px;
+  padding: 16px 20px;
+  text-align: center;
+  min-width: 120px;
+  animation: floatY 5s ease-in-out infinite;
+}
+@keyframes floatY {
+  0%,100% { transform: translateY(0); }
+  50%      { transform: translateY(-8px); }
+}
+.float-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 26px; font-weight: 900;
+  background: linear-gradient(135deg, var(--orange), var(--green));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  line-height: 1;
+}
+.float-lbl {
+  font-size: 10px; font-weight: 700;
+  color: rgba(255,255,255,0.7);
+  letter-spacing: 0.10em; text-transform: uppercase;
+  margin-top: 4px;
+}
 
-        .features-list li {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 0.8rem;
-            font-size: 0.9rem;
-            color: #475569;
-        }
+/* ── BRAND FOOTER ── */
+.brand-footer {
+  position: relative; z-index: 2;
+  font-size: 11px; color: rgba(255,255,255,0.4);
+}
 
-        .features-list li::before {
-            content: '✓';
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 22px;
-            height: 22px;
-            background: rgba(39, 174, 96, 0.1);
-            border-radius: 50%;
-            color: #27AE60;
-            font-weight: bold;
-            font-size: 12px;
-        }
+/* ══════════════════════════════
+   RIGHT — FORM SIDE
+══════════════════════════════ */
+.form-side {
+  flex: 1;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 72px 60px;
+  position: relative;
+  overflow: hidden;
+}
 
-        /* Right Side - Form */
-        .form-side {
-            flex: 1;
-            padding: 3rem;
-            background: white;
-        }
+/* top accent */
+.form-side::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--orange), var(--green));
+}
 
-        .form-header {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
+/* soft bg blob */
+.form-side::after {
+  content: '';
+  position: absolute;
+  bottom: -100px; right: -100px;
+  width: 320px; height: 320px;
+  background: radial-gradient(circle, rgba(39,174,96,0.04) 0%, transparent 70%);
+  pointer-events: none;
+}
 
-        .form-header h2 {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.8rem;
-            color: #1e293b;
-            margin-bottom: 0.5rem;
-        }
+/* ── HEADER ── */
+.form-header { margin-bottom: 36px; }
 
-        .form-header p {
-            color: #64748b;
-            font-size: 0.9rem;
-        }
+.form-header h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 32px; font-weight: 900;
+  color: var(--dark); line-height: 1.12;
+  margin-bottom: 8px;
+}
+.form-header h2 em { 
+  font-style: italic; 
+  background: linear-gradient(135deg, var(--orange), var(--green));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
 
-        /* Role Tabs - modern pill style */
-        .role-tabs {
-            display: flex;
-            gap: 0.5rem;
-            background: #f1f5f9;
-            padding: 0.5rem;
-            border-radius: 60px;
-            margin-bottom: 2rem;
-        }
+.form-header p {
+  font-size: 14px; color: var(--text-mid); line-height: 1.6;
+}
 
-        .role-tab {
-            flex: 1;
-            text-align: center;
-            padding: 0.75rem 1rem;
-            border: none;
-            background: transparent;
-            border-radius: 40px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            font-family: 'Nunito', sans-serif;
-            font-size: 0.85rem;
-            color: #64748b;
-        }
+/* ── ROLE TABS (vert comme home) ── */
+.role-tabs {
+  display: flex; gap: 5px;
+  background: #f4f7f5;
+  padding: 5px; border-radius: 50px;
+  margin-bottom: 32px;
+  border: 1px solid var(--border);
+}
 
-        .role-tab.active {
-            background: white;
-            color: #27AE60;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-        }
+.role-tab {
+  flex: 1; text-align: center;
+  padding: 9px 8px; border: none;
+  background: transparent; border-radius: 40px;
+  cursor: pointer; font-weight: 700; font-size: 12px;
+  font-family: 'Nunito', sans-serif;
+  color: var(--text-light); transition: all 0.25s;
+}
+.role-tab.active {
+  background: var(--green);
+  color: white;
+  box-shadow: 0 2px 10px rgba(39,174,96,0.2);
+}
+.role-tab:hover:not(.active) { 
+  color: var(--green);
+  background: rgba(39,174,96,0.1);
+}
 
-        .role-tab:hover:not(.active) {
-            color: #27AE60;
-        }
+/* ── ALERT ── */
+.alert-msg {
+  padding: 10px 14px; border-radius: 12px;
+  font-size: 13px; text-align: center;
+  margin-bottom: 18px; display: none;
+  font-weight: 600;
+}
+.alert-msg.show { display: block; }
+.alert-msg.error  { background: #fee2e2; color: #dc2626; animation: shake 0.4s ease; }
+.alert-msg.success{ background: #d1fae5; color: #065f46; }
+@keyframes shake {
+  0%,100%{ transform: translateX(0); }
+  25%{ transform: translateX(-5px); }
+  75%{ transform: translateX(5px); }
+}
 
-        /* Form Groups */
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
+/* ── FORM FIELDS ── */
+.form-group { margin-bottom: 20px; }
 
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: #334155;
-            font-weight: 600;
-            font-size: 0.85rem;
-        }
+.form-group label {
+  display: block; margin-bottom: 7px;
+  font-size: 12.5px; font-weight: 800;
+  color: var(--dark); letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
 
-        .input-wrapper {
-            position: relative;
-            display: flex;
-            align-items: center;
-        }
+.input-wrapper { position: relative; }
 
-        .input-icon {
-            position: absolute;
-            left: 1rem;
-            font-size: 1.1rem;
-        }
+.input-icon {
+  position: absolute; left: 14px; top: 50%;
+  transform: translateY(-50%);
+  font-size: 16px; pointer-events: none; z-index: 1;
+  line-height: 1;
+}
 
-        .form-group input {
-            width: 100%;
-            padding: 0.875rem 1rem 0.875rem 2.8rem;
-            border: 1.5px solid #e2e8f0;
-            border-radius: 16px;
-            font-size: 0.95rem;
-            transition: all 0.3s ease;
-            font-family: 'Nunito', sans-serif;
-        }
+.form-group input {
+  width: 100%;
+  padding: 13px 16px 13px 44px;
+  border: 1.5px solid #e5eaf0;
+  border-radius: 14px;
+  font-size: 14px; font-family: 'Nunito', sans-serif;
+  color: var(--dark); background: #fafbfc;
+  transition: all 0.22s;
+}
+.form-group input::placeholder { color: #c5cdd8; }
+.form-group input:focus {
+  outline: none; background: white;
+  border-color: var(--green);
+  box-shadow: 0 0 0 3px rgba(39,174,96,0.09);
+}
 
-        .form-group input:focus {
-            outline: none;
-            border-color: #27AE60;
-            box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.1);
-        }
+/* ── OPTIONS ── */
+.form-options {
+  display: flex; justify-content: space-between;
+  align-items: center; margin-bottom: 28px;
+}
+.checkbox {
+  display: flex; align-items: center; gap: 8px;
+  cursor: pointer; font-size: 13px; color: var(--text-mid);
+}
+.checkbox input { accent-color: var(--green); cursor: pointer; }
+.forgot-link {
+  font-size: 13px; color: var(--green);
+  font-weight: 700; text-decoration: none;
+  transition: opacity 0.2s;
+}
+.forgot-link:hover { opacity: 0.72; text-decoration: underline; }
 
-        /* Remember & Forgot */
-        .form-options {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-            font-size: 0.85rem;
-        }
+/* ── SUBMIT BUTTON ── */
+.login-btn {
+  width: 100%; padding: 15px;
+  background: linear-gradient(135deg, var(--orange) 0%, var(--green) 100%);
+  color: white; border: none; border-radius: 50px;
+  font-size: 15px; font-weight: 800;
+  font-family: 'Nunito', sans-serif;
+  cursor: pointer; letter-spacing: 0.03em;
+  box-shadow: 0 4px 15px rgba(39,174,96,0.3);
+  transition: transform 0.18s, box-shadow 0.18s;
+  margin-bottom: 28px;
+}
+.login-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(39,174,96,0.4);
+}
+.login-btn:active { transform: translateY(0); }
 
-        .checkbox {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            cursor: pointer;
-            color: #64748b;
-        }
+/* ── SIGNUP LINK ── */
+.signup-link {
+  text-align: center; font-size: 13px;
+  color: var(--text-mid); position: relative; z-index: 1;
+}
+.signup-link a {
+  color: var(--green); font-weight: 700; text-decoration: none;
+}
+.signup-link a:hover { text-decoration: underline; }
 
-        .checkbox input {
-            width: 16px;
-            height: 16px;
-            cursor: pointer;
-            accent-color: #27AE60;
-        }
-
-        .forgot-link {
-            color: #27AE60;
-            text-decoration: none;
-            font-weight: 500;
-        }
-
-        .forgot-link:hover {
-            text-decoration: underline;
-        }
-
-        /* Login Button - same as home book button */
-        .login-btn {
-            width: 100%;
-            padding: 1rem;
-            background: linear-gradient(135deg, #FF7A00 0%, #27AE60 100%);
-            color: white;
-            border: none;
-            border-radius: 50px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-bottom: 1.5rem;
-            font-family: 'Nunito', sans-serif;
-            box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
-        }
-
-        .login-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px -5px rgba(39, 174, 96, 0.4);
-        }
-
-        .login-btn:active {
-            transform: translateY(0);
-        }
-
-        /* Demo Credentials - card style like home */
-        .demo-credentials {
-            background: #f8fafc;
-            border-radius: 20px;
-            padding: 1rem;
-            margin-top: 1.5rem;
-            border: 1px solid rgba(39, 174, 96, 0.1);
-        }
-
-        .demo-title {
-            font-size: 0.75rem;
-            color: #64748b;
-            margin-bottom: 0.75rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .demo-list {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-            font-size: 0.8rem;
-        }
-
-        .demo-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.5rem 0.75rem;
-            background: white;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            border: 1px solid transparent;
-        }
-
-        .demo-item:hover {
-            border-color: #27AE60;
-            background: #ffffff;
-            transform: translateX(4px);
-        }
-
-        .demo-role {
-            font-weight: 700;
-            color: #27AE60;
-            font-size: 0.8rem;
-        }
-
-        .demo-email {
-            font-family: monospace;
-            color: #475569;
-            font-size: 0.75rem;
-        }
-
-        .demo-pwd {
-            font-family: monospace;
-            color: #94a3b8;
-            font-size: 0.7rem;
-        }
-
-        /* Error Message */
-        .error-message {
-            background: #fee2e2;
-            color: #dc2626;
-            padding: 0.75rem;
-            border-radius: 12px;
-            margin-bottom: 1rem;
-            font-size: 0.8rem;
-            display: none;
-            text-align: center;
-        }
-
-        .error-message.show {
-            display: block;
-            animation: shake 0.5s ease;
-        }
-
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-4px); }
-            75% { transform: translateX(4px); }
-        }
-
-        /* Sign Up Link */
-        .signup-link {
-            text-align: center;
-            margin-top: 1.5rem;
-            font-size: 0.85rem;
-            color: #64748b;
-        }
-
-        .signup-link a {
-            color: #27AE60;
-            text-decoration: none;
-            font-weight: 600;
-        }
-
-        .signup-link a:hover {
-            text-decoration: underline;
-        }
-
-        /* Responsive */
-        @media (max-width: 900px) {
-            .login-card {
-                flex-direction: column;
-            }
-            
-            .brand-side {
-                padding: 2rem;
-            }
-            
-            .form-side {
-                padding: 2rem;
-            }
-            
-            .brand-content h1 {
-                font-size: 2rem;
-            }
-            
-            .features-list li {
-                font-size: 0.85rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .login-container {
-                margin: 1rem;
-            }
-            
-            .brand-side, .form-side {
-                padding: 1.5rem;
-            }
-            
-            .role-tabs {
-                gap: 0.3rem;
-            }
-            
-            .role-tab {
-                padding: 0.6rem 0.8rem;
-                font-size: 0.75rem;
-            }
-            
-            .demo-item {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 4px;
-            }
-        }
-    </style>
+/* ══════════════════════════════
+   RESPONSIVE
+══════════════════════════════ */
+@media (max-width: 960px) {
+  body { flex-direction: column; }
+  .brand-side {
+    width: 100%; min-height: 50vh;
+    padding: 36px 32px 52px;
+  }
+  .brand-float-card { display: none; }
+  .form-side { padding: 48px 36px; }
+}
+@media (max-width: 520px) {
+  .brand-side { padding: 28px 22px 40px; min-height: 44vh; }
+  .form-side { padding: 36px 22px; }
+  .brand-content h1 { font-size: 26px; }
+  .role-tab { font-size: 11px; padding: 8px 5px; }
+}
+</style>
 </head>
 <body>
-    <div class="login-container">
-        <div class="login-card">
-            <!-- Left Side - Branding (matching home style) -->
-            <div class="brand-side">
-                <a href="index.html" class="logo">NutriLife 🍎</a>
-                <div class="brand-content">
-                    <h1>Your Journey to<br><span>Better Health</span> Starts Here</h1>
-                    <p>Personalized nutrition plans, AI-powered calorie tracking, and expert guidance to help you achieve your wellness goals.</p>
-                    <ul class="features-list">
-                        <li>AI-Powered Calorie Tracking</li>
-                        <li>Personalized Diet Plans</li>
-                        <li>Expert Nutritionists</li>
-                        <li>Progress Monitoring</li>
-                        <li>24/7 Support</li>
-                    </ul>
-                </div>
-                <div style="font-size: 0.7rem; color: #94a3b8; margin-top: 2rem;">
-                    © 2024 NutriLife. All rights reserved.
-                </div>
-            </div>
 
-            <!-- Right Side - Login Form -->
-            <div class="form-side">
-                <div class="form-header">
-                    <h2>Welcome Back!</h2>
-                    <p>Login to access your personalized dashboard</p>
-                </div>
+<!-- ════ LEFT: PHOTO + BRANDING ════ -->
+<div class="brand-side">
 
-                <!-- Role Selection Tabs -->
-                <div class="role-tabs">
-                    <button class="role-tab active" data-role="user">👤 User</button>
-                    <button class="role-tab" data-role="nutritionist">👩‍⚕️ Nutritionist</button>
-                    <button class="role-tab" data-role="admin">⚙️ Admin</button>
-                </div>
+  <img class="brand-photo"
+    src="https://images.unsplash.com/photo-1547592180-85f173990554?w=1200&q=85"
+    alt="Healthy lifestyle">
 
-                <!-- Error Message -->
-                <div class="error-message" id="errorMessage">
-                    Invalid credentials. Please try again.
-                </div>
+  <div class="brand-overlay"></div>
 
-                <!-- Login Form -->
-                <form id="loginForm" onsubmit="handleLogin(event)">
-                    <div class="form-group">
-                        <label>Email Address</label>
-                        <div class="input-wrapper">
-                            <span class="input-icon">📧</span>
-                            <input type="email" id="email" placeholder="Enter your email" required>
-                        </div>
-                    </div>
+  <a href="index.html" class="brand-logo">NutriLife 🍎</a>
 
-                    <div class="form-group">
-                        <label>Password</label>
-                        <div class="input-wrapper">
-                            <span class="input-icon">🔒</span>
-                            <input type="password" id="password" placeholder="Enter your password" required>
-                        </div>
-                    </div>
+  <div class="brand-content">
+    <div class="brand-eyebrow">Your wellness journey</div>
+    <h1>Nourish your body.<br><em>Transform</em> your life.</h1>
+    <p class="brand-desc">
+      Expert nutrition consultations and AI-powered tracking — personalized for your unique health story.
+    </p>
 
-                    <div class="form-options">
-                        <label class="checkbox">
-                            <input type="checkbox" id="rememberMe"> Remember me
-                        </label>
-                        <a href="#" class="forgot-link" onclick="alert('📧 Password reset link will be sent to your email.')">Forgot Password?</a>
-                    </div>
-
-                    <button type="submit" class="login-btn">Login →</button>
-                </form>
-
-                <!-- Demo Credentials -->
-                <div class="demo-credentials">
-                    <div class="demo-title">📋 Demo Credentials (click to auto-fill)</div>
-                    <div class="demo-list">
-                        <div class="demo-item" data-demo-role="user">
-                            <span class="demo-role">👤 User:</span>
-                            <span class="demo-email">user@nutrilife.com</span>
-                            <span class="demo-pwd">••••••••</span>
-                        </div>
-                        <div class="demo-item" data-demo-role="nutritionist">
-                            <span class="demo-role">👩‍⚕️ Nutritionist:</span>
-                            <span class="demo-email">nutritionist@nutrilife.com</span>
-                            <span class="demo-pwd">••••••••</span>
-                        </div>
-                        <div class="demo-item" data-demo-role="admin">
-                            <span class="demo-role">⚙️ Admin:</span>
-                            <span class="demo-email">admin@nutrilife.com</span>
-                            <span class="demo-pwd">••••••••</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="signup-link">
-                    Don't have an account? <a href="register.html" onclick="alert('✨ Sign up form would open here. Join our community!')">Sign up now</a>
-                </div>
-            </div>
+    <!-- Feat-list avec le style de l'autre code -->
+    <div class="feat-list">
+      <div class="feat-item">
+        <div class="feat-icon">🤖</div>
+        <div class="feat-text">
+          <strong>AI Calorie Tracking</strong>
+          <span>Snap a photo — instant nutritional breakdown</span>
         </div>
+      </div>
+      <div class="feat-item">
+        <div class="feat-icon">👩‍⚕️</div>
+        <div class="feat-text">
+          <strong>Expert Nutritionists</strong>
+          <span>One-on-one online consultations worldwide</span>
+        </div>
+      </div>
+      <div class="feat-item">
+        <div class="feat-icon">📋</div>
+        <div class="feat-text">
+          <strong>Personalized Plans</strong>
+          <span>Built around your health profile & goals</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating card avec le style de l'autre code -->
+  <div class="brand-float-card">
+    <div class="float-num">98%</div>
+    <div class="float-lbl">Satisfaction</div>
+  </div>
+
+  <div class="brand-footer">© 2026 NutriLife · All rights reserved.</div>
+</div>
+
+
+<!-- ════ RIGHT: FORM ════ -->
+<div class="form-side">
+
+  <div class="form-header">
+    <h2>Welcome <em>back</em> </h2>
+    <p>Sign in to access your personalized dashboard</p>
+  </div>
+
+  <div class="role-tabs">
+    <button class="role-tab active" data-role="user">👤 User</button>
+    <button class="role-tab" data-role="nutritionist">👩‍⚕️ Nutritionist</button>
+    <button class="role-tab" data-role="admin">⚙️ Admin</button>
+  </div>
+
+  <div class="alert-msg" id="alertMsg"></div>
+
+  <form id="loginForm">
+    <div class="form-group">
+      <label>Email Address</label>
+      <div class="input-wrapper">
+        <span class="input-icon">📧</span>
+        <input type="email" id="email" placeholder="your@email.com" required>
+      </div>
     </div>
 
-    <script>
-        let selectedRole = 'user';
+    <div class="form-group">
+      <label>Password</label>
+      <div class="input-wrapper">
+        <span class="input-icon">🔒</span>
+        <input type="password" id="password" placeholder="••••••••" required>
+      </div>
+    </div>
 
-        // Demo credentials mapping
-        const demoCredentials = {
-            user: { email: 'user@nutrilife.com', password: 'password123' },
-            nutritionist: { email: 'nutritionist@nutrilife.com', password: 'password123' },
-            admin: { email: 'admin@nutrilife.com', password: 'password123' }
+    <div class="form-options">
+      <label class="checkbox">
+        <input type="checkbox" id="rememberMe"> Remember me
+      </label>
+      <a href="#" class="forgot-link"
+        onclick="alert('📧 A reset link will be sent to your email.');return false;">
+        Forgot password?
+      </a>
+    </div>
+
+    <button type="submit" class="login-btn">Sign In →</button>
+  </form>
+
+  <div class="signup-link">
+    Don't have an account? <a href="register.html">Sign up now</a>
+  </div>
+
+</div>
+
+<script>
+let selectedRole = 'user';
+
+const CREDS = {
+  user:         { email:'user@nutrilife.com',         password:'password123', name:'Sarah',     dashboard:'dashboard.html' },
+  nutritionist: { email:'nutritionist@nutrilife.com',  password:'password123', name:'Dr. Amina', dashboard:'nutritionist-dashboard.html' },
+  admin:        { email:'admin@nutrilife.com',          password:'password123', name:'Admin',     dashboard:'admin-dashboard.html' }
+};
+
+document.querySelectorAll('.role-tab').forEach(tab => {
+  tab.addEventListener('click', function() {
+    document.querySelectorAll('.role-tab').forEach(t => t.classList.remove('active'));
+    this.classList.add('active');
+    selectedRole = this.dataset.role;
+    fillCreds(selectedRole);
+    hideAlert();
+  });
+});
+
+function fillCreds(role) {
+  document.getElementById('email').value    = CREDS[role].email;
+  document.getElementById('password').value = CREDS[role].password;
+}
+
+function showAlert(msg, type) {
+  const el = document.getElementById('alertMsg');
+  el.textContent = msg; el.className = 'alert-msg show ' + type;
+}
+function hideAlert() {
+  document.getElementById('alertMsg').className = 'alert-msg';
+}
+
+function handleLogin(e) {
+  e.preventDefault();
+  const email    = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value;
+  const remember = document.getElementById('rememberMe').checked;
+  const cred     = CREDS[selectedRole];
+
+  if (email === cred.email && password === cred.password) {
+    const data = { role: selectedRole, email, name: cred.name, loggedIn: true };
+    (remember ? localStorage : sessionStorage).setItem('userData', JSON.stringify(data));
+    showAlert('✓ Login successful! Redirecting…', 'success');
+    setTimeout(() => window.location.href = cred.dashboard, 1200);
+  } else {
+    showAlert('Invalid email or password. Please try again.', 'error');
+  }
+}
+
+fillCreds('user');
+
+function checkExistingSession() {
+  const userData = localStorage.getItem('userData') || sessionStorage.getItem('userData');
+  if (userData) {
+    try {
+      const data = JSON.parse(userData);
+      if (data.loggedIn) {
+        const redirectMap = {
+          user: 'dashboard.html',
+          nutritionist: 'nutritionist-dashboard.html',
+          admin: 'admin-dashboard.html'
         };
+        window.location.href = redirectMap[data.role] || 'index.html';
+      }
+    } catch(e) {}
+  }
+}
+checkExistingSession();
 
-        // Role Tab Switching
-        document.querySelectorAll('.role-tab').forEach(tab => {
-            tab.addEventListener('click', function() {
-                document.querySelectorAll('.role-tab').forEach(t => t.classList.remove('active'));
-                this.classList.add('active');
-                selectedRole = this.getAttribute('data-role');
-                
-                // Auto-fill demo credentials for selected role
-                const cred = demoCredentials[selectedRole];
-                if (cred) {
-                    document.getElementById('email').value = cred.email;
-                    document.getElementById('password').value = cred.password;
-                }
-                
-                // Clear any previous error
-                document.getElementById('errorMessage').classList.remove('show');
-            });
-        });
-
-        // Click on demo item to switch role and fill credentials
-        document.querySelectorAll('.demo-item').forEach(item => {
-            item.addEventListener('click', function() {
-                const role = this.getAttribute('data-demo-role');
-                const tab = document.querySelector(`.role-tab[data-role="${role}"]`);
-                if (tab) {
-                    tab.click();
-                }
-            });
-        });
-
-        // Handle Login
-        function handleLogin(event) {
-            event.preventDefault();
-            
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            const rememberMe = document.getElementById('rememberMe').checked;
-            const errorMessage = document.getElementById('errorMessage');
-            
-            // Demo credentials for each role
-            const credentials = {
-                user: {
-                    email: 'user@nutrilife.com',
-                    password: 'password123',
-                    dashboard: 'dashboard.html',
-                    name: 'Sarah'
-                },
-                nutritionist: {
-                    email: 'nutritionist@nutrilife.com',
-                    password: 'password123',
-                    dashboard: 'nutritionist-dashboard.html',
-                    name: 'Dr. Amina'
-                },
-                admin: {
-                    email: 'admin@nutrilife.com',
-                    password: 'password123',
-                    dashboard: 'admin-dashboard.html',
-                    name: 'Admin'
-                }
-            };
-            
-            const cred = credentials[selectedRole];
-            
-            // Validate credentials
-            if (email === cred.email && password === cred.password) {
-                // Success - Store user data
-                const userData = {
-                    role: selectedRole,
-                    email: email,
-                    name: cred.name,
-                    loggedIn: true
-                };
-                
-                if (rememberMe) {
-                    localStorage.setItem('userData', JSON.stringify(userData));
-                } else {
-                    sessionStorage.setItem('userData', JSON.stringify(userData));
-                }
-                
-                // Show success message and redirect
-                errorMessage.style.background = '#d1fae5';
-                errorMessage.style.color = '#065f46';
-                errorMessage.textContent = '✓ Login successful! Redirecting...';
-                errorMessage.classList.add('show');
-                
-                setTimeout(() => {
-                    window.location.href = cred.dashboard;
-                }, 1000);
-            } else {
-                // Show error
-                errorMessage.style.background = '#fee2e2';
-                errorMessage.style.color = '#dc2626';
-                errorMessage.textContent = `Invalid credentials for ${selectedRole === 'user' ? 'User' : selectedRole === 'nutritionist' ? 'Nutritionist' : 'Admin'} account. Please try again.`;
-                errorMessage.classList.add('show');
-                
-                // Shake animation for form
-                const form = document.getElementById('loginForm');
-                form.style.animation = 'shake 0.5s ease';
-                setTimeout(() => {
-                    form.style.animation = '';
-                }, 500);
-            }
-        }
-        
-        // Check if already logged in
-        function checkExistingSession() {
-            const userData = localStorage.getItem('userData') || sessionStorage.getItem('userData');
-            if (userData) {
-                try {
-                    const data = JSON.parse(userData);
-                    if (data.loggedIn) {
-                        // Redirect to appropriate dashboard
-                        const redirectMap = {
-                            user: 'dashboard.html',
-                            nutritionist: 'nutritionist-dashboard.html',
-                            admin: 'admin-dashboard.html'
-                        };
-                        window.location.href = redirectMap[data.role] || 'index.html';
-                    }
-                } catch(e) {
-                    console.log('No valid session');
-                }
-            }
-        }
-        
-        // Auto-fill initial credentials for user role
-        function initAutoFill() {
-            const cred = demoCredentials['user'];
-            if (cred) {
-                document.getElementById('email').value = cred.email;
-                document.getElementById('password').value = cred.password;
-            }
-        }
-        
-        // Add Enter key support
-        document.getElementById('loginForm').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                handleLogin(e);
-            }
-        });
-        
-        // Add visual feedback for inputs
-        const inputs = document.querySelectorAll('.form-group input');
-        inputs.forEach(input => {
-            input.addEventListener('focus', function() {
-                this.parentElement.style.transform = 'scale(1.01)';
-                this.parentElement.style.transition = 'transform 0.2s';
-            });
-            input.addEventListener('blur', function() {
-                this.parentElement.style.transform = 'scale(1)';
-            });
-        });
-        
-        // Check session and initialize
-        checkExistingSession();
-        initAutoFill();
-    </script>
+document.getElementById('loginForm').addEventListener('submit', handleLogin);
+</script>
 </body>
 </html>

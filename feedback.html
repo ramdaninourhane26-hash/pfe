@@ -97,10 +97,13 @@
             border-radius: 2px;
         }
 
-        nav a:hover::before,
-        nav a.active::before {
-            width: 100%;
-        }
+       .navbar nav a:hover::before {
+    width: 100%;
+}
+
+.navbar nav a.active {
+    color: #27AE60;
+}
 
         .book-btn {
         background: linear-gradient(135deg, #FF7A00 0%, #27AE60 100%);
@@ -835,7 +838,7 @@
 
         .newsletter-form button {
             padding: 10px 20px;
-            background: var(--green);
+            background: linear-gradient(135deg, #FF7A00 0%, #27AE60 100%);
             border: none;
             border-radius: 50px;
             color: white;
@@ -1021,7 +1024,7 @@
     <div class="menu-icon" onclick="toggleMenu()">☰</div>
     <nav id="navMenu">
         <a href="index.html">Home</a>
-        <a href="about.html">About Us</a>
+        <a href="about_us.html">About Us</a>
         <a href="feedback.html" class="active">Feedback</a>
         <a href="blog.html">Blog</a>
     </nav>
