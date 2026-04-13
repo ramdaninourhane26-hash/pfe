@@ -1073,7 +1073,7 @@ nav a:hover::before, nav a.active::before { width: 100%; }
 <footer class="footer"><div class="footer-container"><div class="footer-grid"><div class="footer-col"><a href="index.html" class="footer-logo">NutriLife 🍎</a><p class="footer-description">Your trusted partner for personalized nutrition and a healthy lifestyle.</p><div class="social-icons"><a href="#" class="social-icon">📘</a><a href="#" class="social-icon">📷</a><a href="#" class="social-icon">🐦</a><a href="#" class="social-icon">💼</a></div></div><div class="footer-col"><h4>Navigation</h4><ul class="footer-links"><li><a href="index.html">🏠 Home</a></li><li><a href="about.html">📖 About Us</a></li><li><a href="blog.html">📝 Blog</a></li></ul></div><div class="footer-col"><h4>Blog</h4><ul class="footer-links"><li><a href="#" onclick="switchCat('articles',document.querySelector('[data-cat=articles]')); return false;">📰 Articles</a></li><li><a href="#" onclick="switchCat('recipes',document.querySelector('[data-cat=recipes]')); return false;">🍳 Recipes</a></li><li><a href="#" onclick="switchCat('wellness',document.querySelector('[data-cat=wellness]')); return false;">🧘 Wellness</a></li></ul></div><div class="footer-col"><h4>Contact</h4><ul class="footer-links"><li><a href="#">📧 hello@nutrilife.com</a></li><li><a href="#">📍 Algiers, Algeria</a></li></ul></div></div><div class="footer-bottom"><div class="copyright">© 2026 NutriLife. All rights reserved.</div><div class="footer-bottom-links"><a href="#">Privacy Policy</a><a href="#">Terms</a></div></div></div></footer>
 
 <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)"><div class="modal" id="modalBox"><button class="modal-close" onclick="closeModal()">✕</button><div class="modal-hero" id="modalHero"></div><div class="modal-body" id="modalBody"></div></div></div>
-
+<div id="posts"></div>
 <script>
 // ORIGINAL FULL DATA
 let DATA = {
@@ -1284,6 +1284,19 @@ let firstSlide = DATA.articles.slides[0];
 imgFront.src = firstSlide.img; imgBg.src = firstSlide.img;
 buildDots(); updateDots(); applySlide(firstSlide); renderGrid();
 toggleAddButtonVisibility(); // Afficher le bouton initialement car on est dans Articles
+fetch("http://127.0.0.1:8000/api/blog/")
+.then(res => res.json())
+.then(data => {
+    let box = document.getElementById("posts");
+
+    data.forEach(p => {
+        box.innerHTML += `
+            <h2>${p.title}</h2>
+            <p>${p.content}</p>
+            <hr>
+        `;
+    });
+});
 </script>
 </body>
 </html>
