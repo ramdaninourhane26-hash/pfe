@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 
 from pathlib import Path
 
+import redis
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -31,6 +33,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    "jazzmin",
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -46,6 +49,7 @@ INSTALLED_APPS = [
     'blog',
     'consultations',
     'notifications',
+    'email_notifications',
     'admin_dashboard',
 ]
 
@@ -127,3 +131,89 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 CORS_ALLOW_ALL_ORIGINS = True
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
+EMAIL_HOST_USER = 'ramdaninourhane26@gmail.com'
+EMAIL_HOST_PASSWORD = 'twrr sbxz ctcr gvbp'
+CELERY_BROKER_URL = "redis://default:96MvqT34dcxzcdLYvpXzNswJCNOoYOm7@redis-16568.c341.af-south-1-1.ec2.cloud.redislabs.com:16568/0"
+
+CELERY_RESULT_BACKEND = "redis://default:96MvqT34dcxzcdLYvpXzNswJCNOoYOm7@redis-16568.c341.af-south-1-1.ec2.cloud.redislabs.com:16568/0"
+JAZZMIN_SETTINGS = {
+
+    # 🏷️ Branding (Nutrition Project)
+    "site_title": "NutriLife | Nutrition Dashboard",
+    "site_header": "NutriLife Admin Panel",
+    "site_brand": "NutriLife 🥗",
+
+    # 👋 Welcome message
+    "welcome_sign": "Welcome Nourhane serine💚 | Manage Nutrition System",
+
+    # 🎨 Icons & UI
+    "site_icon": "fas fa-apple-alt",
+    "site_logo_classes": "img-circle",
+
+
+
+    # 🔎 Search models (nutrition context)
+    "search_model": [
+        "auth.User",
+        "nutrition.Food",
+        "nutrition.DietPlan",
+        "nutrition.Meal",
+        "notifications.Notification",
+    ],
+
+    # 📌 Top menu (important pages)
+    "topmenu_links": [
+        {"name": "Dashboard", "url": "admin:index"},
+        {"model": "auth.User"},
+        {"model": "nutrition.Food"},
+        {"app": "nutrition"},
+        {"app": "notifications"},
+    ],
+
+    # 📊 Sidebar settings
+    "show_sidebar": True,
+    "navigation_expanded": True,
+
+    # 🍎 Icons per app (Nutrition themed)
+    "icons": {
+        "auth": "fas fa-users",
+        "auth.user": "fas fa-user",
+
+        "nutrition": "fas fa-utensils",
+        "nutrition.food": "fas fa-apple-alt",
+        "nutrition.dietplan": "fas fa-clipboard-list",
+        "nutrition.meal": "fas fa-bread-slice",
+
+        "notifications": "fas fa-bell",
+    },
+
+    # ⚙️ UI behavior
+    "show_ui_builder": False,
+
+    # 🧾 Footer (PFE important)
+    "copyright": "NutriLife © 2026 | Nutrition Management System by Nourhane serine",
+}
+JAZZMIN_UI_TWEAKS = {
+
+    # 🎨 Sidebar color (GREEN nutrition style 🥗)
+    "sidebar_bg": "bg-success",
+
+    # 🟢 Navbar color
+    "navbar": "navbar-success",
+
+    # 🎯 Accent color (buttons, highlights)
+    "accent": "accent-primary",
+
+    # 📌 Layout clean
+    "navbar_small_text": False,
+    "sidebar_nav_small_text": False,
+
+    # 🌙 Modern feel
+    "theme": "flatly",
+}
