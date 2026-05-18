@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Trial Consultation - NutriLife</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --green: #27AE60;
+            --green-light: #2ECC71;
+            --green-pale: #F0F8F3;
+            --orange: #FF7A00;
+            --orange-light: #FF9A40;
+            --dark: #0f172a;
+            --text-mid: #475569;
+            --text-light: #94a3b8;
+            --border: rgba(39,174,96,0.15);
+        }
+
+        html, body {
+            height: 100%;
+            font-family: 'Nunito', sans-serif;
+            overflow-x: hidden;
+        }
+
+        body {
+            display: flex;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        }
+
+        /* LEFT SIDE */
+        .brand-side {
+            width: 42%;
+            flex-shrink: 0;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 44px 52px;
+        }
+
+        .brand-photo {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .brand-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(39,174,96,0.55) 0%, rgba(27,94,42,0.6) 100%);
+            pointer-events: none;
+        }
+
+        .brand-logo {
+            position: relative;
+            z-index: 2;
+            font-family: 'Playfair Display', serif;
+            font-size: 22px;
+            font-weight: 700;
+            color: white;
+            text-decoration: none;
+        }
+
+        .brand-content {
+            position: relative;
+            z-index: 2;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 32px 0;
+        }
+
+        .brand-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,255,255,0.09);
+            color: rgba(255,255,255,0.72);
+            font-size: 10px;
+            font-weight: 800;
+            padding: 5px 14px;
+            border-radius: 40px;
+            margin-bottom: 20px;
+            width: fit-content;
+        }
+
+        .brand-content h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 38px;
+            font-weight: 900;
+            color: #fff;
+            line-height: 1.2;
+            margin-bottom: 16px;
+        }
+        .brand-content h1 em { color: var(--orange-light); font-style: italic; }
+
+        .brand-content .brand-desc {
+            font-size: 14px;
+            color: rgba(255,255,255,0.75);
+            line-height: 1.6;
+            margin-bottom: 32px;
+        }
+
+        .feat-list { display: flex; flex-direction: column; gap: 10px; }
+        .feat-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 16px;
+            background: rgba(255,255,255,0.12);
+            border-radius: 12px;
+        }
+        .feat-icon {
+            width: 36px;
+            height: 36px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .brand-footer { position: relative; z-index: 2; font-size: 11px; color: rgba(255,255,255,0.4); }
+
+        /* RIGHT SIDE */
+        .form-side {
+            flex: 1;
+            background: #ffffff;
+            display: flex;
+            flex-direction: column;
+            padding: 48px 52px;
+            position: relative;
+            overflow-y: auto;
+            height: 100vh;
+        }
+
+        .form-side::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--orange), var(--green));
+        }
+
+        .form-header { margin-bottom: 28px; text-align: center; }
+        .form-header h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 30px;
+            font-weight: 900;
+            color: var(--dark);
+        }
+        .form-header h2 em {
+            background: linear-gradient(135deg, var(--orange), var(--green));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .form-header p { color: var(--text-mid); margin-top: 8px; }
+
+        .alert-msg {
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 13px;
+            text-align: center;
+            margin-bottom: 20px;
+            display: none;
+            font-weight: 600;
+        }
+        .alert-msg.show { display: block; }
+        .alert-msg.error { background: #fee2e2; color: #dc2626; border-left: 4px solid #dc2626; }
+        .alert-msg.success { background: #d1fae5; color: #065f46; border-left: 4px solid #27AE60; }
+
+        .trial-info {
+            background: linear-gradient(135deg, var(--green-pale), #fff);
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 30px;
+            border: 1px solid var(--border);
+        }
+        .trial-info h3 { color: var(--green); margin-bottom: 8px; }
+        .trial-info p { font-size: 13px; color: var(--text-mid); }
+
+        .nutritionists-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin-bottom: 30px;
+        }
+
+        .nutritionist-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 24px;
+            padding: 24px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+        .nutritionist-card:hover { transform: translateY(-6px); box-shadow: 0 20px 36px -10px rgba(0,0,0,0.12); }
+        .nutritionist-card.selected { border: 2px solid var(--green); background: var(--green-pale); }
+
+        .nutritionist-avatar {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--green), var(--green-light));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 36px;
+            color: white;
+            text-transform: uppercase;
+        }
+        .nutritionist-card h3 { text-align: center; font-size: 1.3rem; margin-bottom: 8px; }
+        .nutritionist-specialty {
+            text-align: center;
+            background: rgba(39,174,96,0.1);
+            color: var(--green);
+            padding: 4px 12px;
+            border-radius: 40px;
+            font-size: 12px;
+            margin-bottom: 16px;
+            display: inline-block;
+            width: 100%;
+        }
+        .nutritionist-details { list-style: none; margin-top: 16px; }
+        .nutritionist-details li { padding: 6px 0; font-size: 13px; color: var(--text-mid); display: flex; align-items: center; gap: 8px; }
+
+        .slot-selection {
+            background: #f8fafc;
+            border-radius: 20px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .slot-buttons { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 12px; }
+        .slot-btn {
+            padding: 10px 20px;
+            border-radius: 40px;
+            border: 1.5px solid #e2e8f0;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .slot-btn.selected { background: var(--green); border-color: var(--green); color: white; }
+
+        .btn-book {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--orange), var(--green));
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 20px;
+        }
+        .btn-book:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(39,174,96,0.3); }
+        .btn-book:disabled { opacity: 0.6; cursor: not-allowed; }
+
+        .skip-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .skip-link a { color: var(--green); text-decoration: none; font-weight: 600; }
+
+        @media (max-width: 960px) {
+            body { flex-direction: column; }
+            .brand-side { width: 100%; height: auto; min-height: 40vh; padding: 30px; }
+            .form-side { padding: 30px 24px; height: auto; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="brand-side">
+    <img class="brand-photo" src="https://images.unsplash.com/photo-1547592180-85f173990554?w=1200&q=85" alt="Healthy lifestyle">
+    <div class="brand-overlay"></div>
+    <a href="/" class="brand-logo">NutriLife 🍎</a>
+    <div class="brand-content">
+        <div class="brand-eyebrow">Free Trial</div>
+        <h1>Meet your <em>nutritionist</em> for free</h1>
+        <p class="brand-desc">Book a 20-minute discovery call with one of our certified experts.</p>
+        <div class="feat-list">
+            <div class="feat-item"><div class="feat-icon">🎁</div><div class="feat-text"><strong>100% Free</strong><span>No commitment required</span></div></div>
+            <div class="feat-item"><div class="feat-icon">💬</div><div class="feat-text"><strong>Personalized advice</strong><span>Get answers to your questions</span></div></div>
+        </div>
+    </div>
+    <div class="brand-footer">© 2026 NutriLife · Free trial consultation</div>
+</div>
+
+<div class="form-side">
+    <div class="form-header">
+        <h2>Book your <em>free trial</em> consultation</h2>
+        <p>Choose a nutritionist and pick a time slot</p>
+    </div>
+
+    <div class="alert-msg" id="alertMsg"></div>
+
+    <div class="trial-info">
+        <h3>✨ 20-minute free consultation</h3>
+        <p>Discuss your health goals, ask questions, and see if NutriLife is right for you.</p>
+    </div>
+
+    <h3 style="margin-bottom: 16px;">👩‍⚕️ Select a nutritionist</h3>
+    <div id="nutritionistsGrid" class="nutritionists-grid">
+        <div class="loading-spinner" style="text-align: center; padding: 60px; color: #94a3b8;">Loading nutritionists...</div>
+    </div>
+
+    <div id="slotSection" style="display: none;">
+        <div class="slot-selection">
+            <h3>📅 Select a time slot</h3>
+            <div id="slotButtons" class="slot-buttons"></div>
+        </div>
+        <button class="btn-book" id="bookTrialBtn">📅 Confirm & Book Trial →</button>
+    </div>
+
+    <!-- ALREADY BOOKED FRAME -->
+<div id="alreadyBookedFrame" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; border-radius: 28px; padding: 32px; max-width: 450px; width: 90%; z-index: 1000; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.3); text-align: center; border-top: 5px solid #27AE60;">
+    <div style="font-size: 60px; margin-bottom: 16px;">🎫</div>
+    <h3 style="color: #1e293b; margin-bottom: 12px;">You've already booked your free trial!</h3>
+    <p style="color: #475569; margin-bottom: 20px; font-size: 14px;">
+        Your trial consultation request has been sent to a nutritionist.<br>
+        You will receive a confirmation once they respond.
+    </p>
+    <div style="background: #f8fafc; border-radius: 16px; padding: 16px; margin: 16px 0; text-align: left;">
+        <p style="font-size: 13px; color: #64748b; margin-bottom: 8px;"><strong>📋 Your trial:</strong></p>
+        <p id="trialInfo" style="font-size: 14px; color: #1e293b;">--</p>
+    </div>
+   
+    <button id="closeAlreadyBookedBtn" style="background: #27AE60; border: none; color: white; padding: 12px 24px; border-radius: 40px; font-weight: 600; cursor: pointer; width: 100%;">Continue to Payment →</button>
+</div>
+
+<div id="alreadyBookedOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 999;"></div>
+
+<div id="alreadyBookedOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 999;"></div>
+
+    <div class="skip-link">
+        <a href="/payment/">Skip trial and go to payment →</a>
+    </div>
+</div>
+
+<script>
+    let selectedNutritionistId = null;
+    let selectedNutritionistName = null;
+    let selectedSlot = null;
+
+    function getCSRFToken() {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, 10) === 'csrftoken=') {
+                    cookieValue = decodeURIComponent(cookie.substring(10));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    function showAlert(msg, type) {
+        const el = document.getElementById('alertMsg');
+        el.textContent = msg;
+        el.className = `alert-msg show ${type}`;
+        setTimeout(() => el.classList.remove('show'), 5000);
+    }
+
+    // Charger les nutritionnistes depuis l'API (UNIQUEMENT DE LA BDD)
+    async function loadNutritionists() {
+        const container = document.getElementById('nutritionistsGrid');
+        
+        try {
+            const response = await fetch('/api/consultations/nutritionists/', {
+                method: 'GET',
+                credentials: 'include',
+                headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCSRFToken() }
+            });
+            
+            if (response.ok) {
+                const nutritionists = await response.json();
+                
+                if (!nutritionists || nutritionists.length === 0) {
+                    container.innerHTML = '<div style="text-align: center; padding: 60px; color: #94a3b8;">No nutritionists available at the moment.</div>';
+                    return;
+                }
+                
+                container.innerHTML = nutritionists.map(nutri => {
+                    const initial = nutri.name ? nutri.name.charAt(0).toUpperCase() : 'N';
+                    const experience = nutri.experience_years || 'N/A';
+                    const specialization = nutri.specialization || 'Nutritionist';
+                    
+                    return `
+                        <div class="nutritionist-card" data-id="${nutri.id}" data-name="${nutri.name || 'Nutritionist'}">
+                            <div class="nutritionist-avatar">${initial}</div>
+                            <h3>${nutri.name || 'Nutritionist'}</h3>
+                            <div class="nutritionist-specialty">${specialization}</div>
+                            <ul class="nutritionist-details">
+                                <li>⭐ ${experience}+ years experience</li>
+                                <li>📧 ${nutri.email || ''}</li>
+                            </ul>
+                        </div>
+                    `;
+                }).join('');
+                
+                // Add click events
+                document.querySelectorAll('.nutritionist-card').forEach(card => {
+                    card.addEventListener('click', () => {
+                        document.querySelectorAll('.nutritionist-card').forEach(c => c.classList.remove('selected'));
+                        card.classList.add('selected');
+                        selectedNutritionistId = parseInt(card.dataset.id);
+                        selectedNutritionistName = card.dataset.name;
+                        
+                        // Afficher la section des créneaux
+                        document.getElementById('slotSection').style.display = 'block';
+                    });
+                });
+            } else {
+                const errorText = await response.text();
+                console.error('API Error:', response.status, errorText);
+                container.innerHTML = `<div style="text-align: center; padding: 60px; color: #ef4444;">⚠️ Error loading nutritionists (${response.status}). Please refresh the page.</div>`;
+            }
+        } catch (error) {
+            console.error('Error loading nutritionists:', error);
+            container.innerHTML = '<div style="text-align: center; padding: 60px; color: #ef4444;">⚠️ Cannot connect to server. Please check your connection.</div>';
+        }
+    }
+
+    // Fonction pour générer des créneaux disponibles (à remplacer par ton API)
+    function generateTimeSlots() {
+        const slots = [];
+        const today = new Date();
+        
+        for (let i = 1; i <= 5; i++) {
+            const date = new Date(today);
+            date.setDate(today.getDate() + i);
+            const dateStr = date.toISOString().split('T')[0];
+            
+            // Créneaux horaires
+            const times = ['10:00', '11:30', '14:00', '15:30'];
+            times.forEach((time, idx) => {
+                slots.push({
+                    id: slots.length + 1,
+                    date: dateStr,
+                    time: time
+                });
+            });
+        }
+        
+        return slots;
+    }
+
+    // Afficher les créneaux horaires
+    function displayTimeSlots() {
+        const slotButtons = document.getElementById('slotButtons');
+        const slots = generateTimeSlots();
+        
+        slotButtons.innerHTML = slots.map(slot => `
+            <button class="slot-btn" data-slot-date="${slot.date}" data-slot-time="${slot.time}">
+                📅 ${slot.date}<br>🕐 ${slot.time}
+            </button>
+        `).join('');
+        
+        document.querySelectorAll('.slot-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.slot-btn').forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+                selectedSlot = {
+                    date: btn.dataset.slotDate,
+                    time: btn.dataset.slotTime
+                };
+            });
+        });
+    }
+
+    // Réserver la consultation d'essai
+    async function bookTrialConsultation() {
+        if (!selectedNutritionistId) {
+            showAlert('Please select a nutritionist first', 'error');
+            return;
+        }
+        
+        if (!selectedSlot) {
+            showAlert('Please select a time slot', 'error');
+            return;
+        }
+        
+        const bookBtn = document.getElementById('bookTrialBtn');
+        const originalText = bookBtn.textContent;
+        bookBtn.textContent = '⏳ Booking...';
+        bookBtn.disabled = true;
+        
+        try {
+            const response = await fetch('/api/consultations/trial-book/', {
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCSRFToken()
+                },
+                body: JSON.stringify({
+                    nutritionist_id: selectedNutritionistId,
+                    nutritionist_name: selectedNutritionistName,
+                    slot_date: selectedSlot.date,
+                    slot_time: selectedSlot.time,
+                    is_trial: true
+                })
+            });
+            
+            const data = await response.json();
+            
+            if (response.ok && data.success) {
+                showAlert(`✅ Trial booked with ${selectedNutritionistName} on ${selectedSlot.date} at ${selectedSlot.time}!`, 'success');
+                
+                localStorage.setItem('trialBooked', JSON.stringify({
+                    nutritionist: selectedNutritionistName,
+                    date: selectedSlot.date,
+                    time: selectedSlot.time,
+                    booked_at: new Date().toISOString()
+                }));
+                
+                setTimeout(() => {
+                    window.location.href = '/payment/';
+                }, 3000);
+            } else {
+                // 🔥 GÉRER L'ERREUR "DÉJÀ BOOKÉ" 🔥
+                if (data.already_booked || data.error?.includes('already')) {
+                    showAlert('❌ You have already booked a free trial consultation. Only one trial per user is allowed.', 'error');
+                    // Désactiver le bouton pour toujours
+                    bookBtn.disabled = true;
+                    bookBtn.textContent = 'Already Booked';
+                } else {
+                    showAlert(`❌ ${data.error || 'Booking failed. Please try again.'}`, 'error');
+                }
+                bookBtn.textContent = originalText;
+                bookBtn.disabled = false;
+            }
+        } catch (error) {
+            console.error('Booking error:', error);
+            showAlert('❌ Network error. Please try again.', 'error');
+            bookBtn.textContent = originalText;
+            bookBtn.disabled = false;
+        }
+    }
+
+    // Vérifier si l'utilisateur a déjà booké une consultation d'essai
+
+    async function checkAlreadyBookedTrial() {
+        try {
+            const response = await fetch('/api/consultations/trial-status/', {
+                credentials: 'include'
+            });
+            
+            if (response.ok) {
+                const data = await response.json();
+                
+                if (data.has_booked_trial) {
+                    const frame = document.getElementById('alreadyBookedFrame');
+                    const overlay = document.getElementById('alreadyBookedOverlay');
+                    
+                    if (data.trial_info) {
+                        document.getElementById('trialInfo').innerHTML = `
+                            👩‍⚕️ <strong>${data.trial_info.nutritionist_name || 'Nutritionist'}</strong><br>
+                            📅 ${data.trial_info.date || 'Date not available'}<br>
+                            ⏰ ${data.trial_info.time || 'Time not available'}<br>
+                            <span style="color: #27AE60;">Status: ${data.trial_info.status || 'Pending'}</span>
+                        `;
+                    } else {
+                        document.getElementById('trialInfo').innerHTML = 'Your trial request is being processed.';
+                    }
+                    
+                    frame.style.display = 'block';
+                    overlay.style.display = 'block';
+                    
+                    // Désactiver le formulaire
+                    const formElements = document.querySelectorAll('.nutritionists-grid, .slot-selection, .btn-book, .skip-link');
+                    formElements.forEach(el => {
+                        if (el) {
+                            el.style.opacity = '0.5';
+                            el.style.pointerEvents = 'none';
+                        }
+                    });
+                }
+            }
+        } catch (error) {
+            console.error('Error checking trial status:', error);
+        }
+    }
+
+
+function showAlreadyBookedFrame(trialData) {
+    const frame = document.getElementById('alreadyBookedFrame');
+    const overlay = document.getElementById('alreadyBookedOverlay');
+    
+    document.getElementById('trialInfo').innerHTML = `
+        👩‍⚕️ <strong>${trialData.nutritionist || 'Nutritionist'}</strong><br>
+        📅 ${trialData.date || 'Date not available'}<br>
+        ⏰ ${trialData.time || 'Time not available'}<br>
+        <span style="color: #27AE60;">Status: Pending</span>
+    `;
+    
+    frame.style.display = 'block';
+    overlay.style.display = 'block';
+    
+    // Désactiver le formulaire
+    const formElements = document.querySelectorAll('.nutritionists-grid, .slot-selection, .btn-book, .skip-link');
+    formElements.forEach(el => {
+        if (el) {
+            el.style.opacity = '0.5';
+            el.style.pointerEvents = 'none';
+        }
+    });
+}
+
+// Fermer la frame et rediriger vers payment
+function closeAlreadyBookedFrame() {
+    document.getElementById('alreadyBookedFrame').style.display = 'none';
+    document.getElementById('alreadyBookedOverlay').style.display = 'none';
+    
+    window.location.href = '/payment/';
+}
+
+// Attacher l'événement au bouton
+document.getElementById('closeAlreadyBookedBtn')?.addEventListener('click', closeAlreadyBookedFrame);
+
+// Fermer aussi si on clique sur l'overlay
+document.getElementById('alreadyBookedOverlay')?.addEventListener('click', closeAlreadyBookedFrame);
+
+// Appeler la vérification au chargement de la page
+document.addEventListener('DOMContentLoaded', () => {
+    loadNutritionists();
+    displayTimeSlots();
+    checkAlreadyBookedTrial();  // ← AJOUTE CETTE LIGNE
+});
+
+// Bouton pour fermer
+document.getElementById('closeAlreadyBookedBtn')?.addEventListener('click', closeAlreadyBookedFrame);
+document.getElementById('alreadyBookedOverlay')?.addEventListener('click', closeAlreadyBookedFrame);
+
+
+    document.getElementById('bookTrialBtn').addEventListener('click', bookTrialConsultation);
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        loadNutritionists();
+        displayTimeSlots();
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,2229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>NutriLife - Nutritionist Dashboard | Professional Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #F8F9FA; color: #2C3E50; overflow-x: hidden; }
+        .dashboard-container { display: flex; min-height: 100vh; }
+        .sidebar {
+            width: 280px;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            border-right: 1px solid rgba(39, 174, 96, 0.15);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            z-index: 100;
+            overflow-y: auto;
+        }
+        .plan-type-selector {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            justify-content: center;
+        }
+        
+        .plan-type-selector button {
+            padding: 12px 30px;
+            font-size: 14px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .info-banner {
+            background: #fff3e6;
+            padding: 12px 16px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            color: #c2410c;
+            border-left: 4px solid #FF7A00;
+        }
+        .sidebar-header { padding: 28px 24px; border-bottom: 1px solid rgba(39, 174, 96, 0.15); margin-bottom: 24px; }
+        .logo { font-size: 1.9rem; font-weight: 800; background: linear-gradient(135deg, #27AE60 0%, #27AE60 100%); -webkit-background-clip: text; background-clip: text; color: transparent; letter-spacing: -0.3px; }
+        .logo span { font-size: 1.7rem; }
+        .nutritionist-badge { background: linear-gradient(135deg, #FF7A00, #27AE60); color: white; padding: 6px 14px; border-radius: 40px; font-size: 0.7rem; font-weight: 600; display: inline-block; margin-top: 12px; }
+        .user-welcome { margin-top: 20px; display: flex; align-items: center; gap: 12px; }
+        .avatar { width: 48px; height: 48px; background: linear-gradient(135deg, #27AE60, #27AE60); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 1.2rem; box-shadow: 0 4px 12px rgba(39,174,96,0.2); }
+        .user-info h4 { font-size: 1rem; font-weight: 700; margin-bottom: 4px; color: #2C3E50; }
+        .user-info p { font-size: 0.75rem; color: #5a6e7c; }
+        .nav-menu { padding: 0 16px 24px; }
+        .nav-item { display: flex; align-items: center; gap: 14px; padding: 12px 16px; margin-bottom: 6px; border-radius: 18px; color: #5a6e7c; font-weight: 500; transition: all 0.3s ease; cursor: pointer; }
+        .nav-item i { width: 24px; font-size: 1.2rem; color: #27AE60; transition: all 0.3s ease; }
+        .nav-item span { font-size: 0.95rem; }
+        .nav-item.active { background: linear-gradient(135deg, rgba(39,174,96,0.12), rgba(255,122,0,0.08)); color: #27AE60; font-weight: 600; }
+        .nav-item.active i { color: #FF7A00; }
+        .nav-item:hover:not(.active) { background: rgba(39, 174, 96, 0.08); transform: translateX(4px); }
+        .main-content { flex: 1; margin-left: 280px; padding: 28px 36px; transition: all 0.3s; }
+        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; flex-wrap: wrap; gap: 16px; }
+        .page-title h1 { font-size: 1.8rem; font-weight: 800; background: linear-gradient(135deg, #FF7A00 0%, #27AE60 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        .page-title p { color: #5a6e7c; font-size: 0.85rem; margin-top: 4px; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px; margin-bottom: 32px; }
+        .stat-card { background: white; border-radius: 28px; padding: 1.5rem; box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.08); border: 1px solid rgba(39, 174, 96, 0.1); transition: all 0.3s ease; }
+        .stat-card:hover { transform: translateY(-5px); box-shadow: 0 25px 40px -15px rgba(39, 174, 96, 0.15); }
+        .stat-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .stat-header i { font-size: 2rem; color: #27AE60; }
+        .stat-value { font-size: 2rem; font-weight: 800; color: #2C3E50; }
+        .stat-label { color: #5a6e7c; font-size: 0.85rem; }
+        .professional-card { background: white; border-radius: 28px; padding: 1.6rem; margin-bottom: 30px; border: 1px solid rgba(39, 174, 96, 0.1); box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.05); transition: all 0.3s ease; }
+        .professional-card:hover { box-shadow: 0 25px 40px -15px rgba(39, 174, 96, 0.12); }
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; }
+        .card-header h3 { font-size: 1.3rem; font-weight: 700; color: #2C3E50; }
+        .btn-primary { background: linear-gradient(135deg, #27AE60 0%, #27AE60 100%); border: none; color: white; padding: 10px 20px; border-radius: 40px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3); }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(39, 174, 96, 0.4); }
+        .btn-outline { background: transparent; border: 1.5px solid #27AE60; color: #27AE60; padding: 8px 16px; border-radius: 40px; font-weight: 600; font-size: 0.8rem; cursor: pointer; transition: all 0.3s ease; }
+        .btn-outline:hover { background: linear-gradient(135deg, #27AE60, #27AE60); border-color: transparent; color: white; }
+        .data-table { width: 100%; border-collapse: collapse; }
+        .data-table th, .data-table td { padding: 12px 8px; text-align: left; border-bottom: 1px solid rgba(39, 174, 96, 0.1); }
+        .data-table th { font-weight: 600; color: #27AE60; }
+        .badge-active { background: rgba(39, 174, 96, 0.15); color: #27AE60; padding: 4px 12px; border-radius: 40px; font-size: 0.7rem; font-weight: 600; }
+        .badge-pending { background: rgba(255, 122, 0, 0.15); color: #FF7A00; padding: 4px 12px; border-radius: 40px; font-size: 0.7rem; }
+        .progress-small { width: 100px; height: 6px; background: #e9ecef; border-radius: 3px; overflow: hidden; }
+        .progress-fill-small { height: 100%; background: linear-gradient(90deg, #27AE60, #27AE60); border-radius: 3px; }
+        .message-item { display: flex; gap: 12px; padding: 12px 0; border-bottom: 1px solid rgba(39, 174, 96, 0.1); }
+        .message-avatar { width: 40px; height: 40px; background: linear-gradient(135deg, rgba(39, 174, 96, 0.12), rgba(255, 122, 0, 0.08)); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #27AE60; }
+        .meal-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid rgba(39, 174, 96, 0.1); flex-wrap: wrap; gap: 8px; }
+        .meal-item input, .meal-item select { padding: 8px 12px; border-radius: 10px; border: 1px solid #e2e8f0; font-size: 13px; }
+        .meal-actions { display: flex; gap: 8px; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 1000; justify-content: center; align-items: center; }
+        .patient-detail-row { display: flex; padding: 12px 0; border-bottom: 1px solid #f1f5f9; }
+        .patient-detail-label { width: 130px; font-weight: 600; color: #27AE60; }
+        .patient-detail-value { flex: 1; color: #2C3E50; }
+        .health-condition-tag { display: inline-block; background: #f1f5f9; padding: 4px 10px; border-radius: 20px; font-size: 12px; margin: 2px 4px 2px 0; color: #475569; }
+        .calendar-day { flex: 1; min-width: 100px; background: #f8fafc; border-radius: 20px; padding: 12px; text-align: center; border: 1px solid rgba(39, 174, 96, 0.15); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .tab-content { display: none; }
+        .active-tab { display: block; animation: fadeIn 0.3s ease; }
+        .menu-toggle { background: none; border: none; font-size: 26px; color: #27AE60; margin-right: 12px; cursor: pointer; display: none; }
+        .overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.4); z-index: 150; display: none; }
+        .overlay.active { display: block; }
+        textarea, input, select { font-family: 'Inter', sans-serif; border: 1px solid #e2e8f0; border-radius: 16px; padding: 10px 14px; outline: none; transition: all 0.2s; }
+        textarea:focus, input:focus, select:focus { border-color: #27AE60; box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.1); }
+        /* ==================== NOTIFICATION BELL ==================== */
+.notification-bell {
+    position: relative;
+    cursor: pointer;
+    background: none;
+    border: none;
+    font-size: 1.3rem;
+    color: #5a6e7c;
+    transition: all 0.3s ease;
+    padding: 8px;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.notification-bell:hover {
+    background: rgba(39, 174, 96, 0.1);
+    color: #27AE60;
+    transform: scale(1.05);
+}
+
+.notification-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: #ef4444;
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 50%;
+    min-width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Notification Panel */
+.notification-panel {
+    position: absolute;
+    top: 60px;
+    right: 20px;
+    width: 380px;
+    max-width: calc(100vw - 40px);
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    border: 1px solid #e2e8f0;
+    z-index: 1000;
+    display: none;
+    overflow: hidden;
+    animation: slideDown 0.2s ease;
+}
+
+.notification-panel.show {
+    display: block;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.notification-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+}
+
+.notification-header h4 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 0;
+}
+
+.notification-header button {
+    background: none;
+    border: none;
+    color: #27AE60;
+    font-size: 12px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.notification-header button:hover {
+    text-decoration: underline;
+}
+
+.notification-list {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.notification-item {
+    display: flex;
+    gap: 12px;
+    padding: 14px 20px;
+    border-bottom: 1px solid #f1f5f9;
+    transition: all 0.2s;
+    cursor: pointer;
+}
+
+.notification-item:hover {
+    background: #f8fafc;
+}
+
+.notification-item.unread {
+    background: #f0fdf4;
+    border-left: 3px solid #27AE60;
+}
+
+.notification-icon {
+    width: 36px;
+    height: 36px;
+    background: #e8f5e9;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.notification-icon i {
+    font-size: 16px;
+    color: #27AE60;
+}
+
+.notification-content {
+    flex: 1;
+}
+
+.notification-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 4px;
+}
+
+.notification-message {
+    font-size: 12px;
+    color: #64748b;
+    margin-bottom: 4px;
+    line-height: 1.4;
+}
+
+.notification-time {
+    font-size: 10px;
+    color: #94a3b8;
+}
+
+.empty-notifications {
+    text-align: center;
+    padding: 40px 20px;
+    color: #94a3b8;
+}
+
+.empty-notifications i {
+    font-size: 48px;
+    opacity: 0.3;
+    margin-bottom: 12px;
+}
+
+.empty-notifications p {
+    font-size: 13px;
+}
+        @media (max-width: 1024px) {
+            .sidebar { transform: translateX(-100%); position: fixed; z-index: 200; transition: transform 0.3s; }
+            .sidebar.open { transform: translateX(0); }
+            .main-content { margin-left: 0; padding: 20px; }
+            .menu-toggle { display: block; }
+        }
+        @media (min-width: 1025px) { .menu-toggle { display: none; } }
+    </style>
+</head>
+<body>
+
+<div class="dashboard-container">
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">NutriLife <span>🍎</span></div>
+            <div class="nutritionist-badge"><i class="fas fa-leaf"></i> Certified Nutritionist</div>
+            <div class="user-welcome">
+                <div class="avatar" id="nutritionistAvatar">DL</div>
+                <div class="user-info">
+                    <h4 id="nutritionistName">Loading...</h4>
+                    <p id="nutritionistSpecialty">Loading...</p>
+                    <p id="nutritionistEmail" style="font-size: 0.7rem; margin-top: 4px; color: #94a3b8;">Loading...</p>
+                </div>
+            </div>
+        </div>
+        <div class="nav-menu">
+            <div class="nav-item active" data-tab="dashboard-overview"><i class="fas fa-tachometer-alt"></i><span>Dashboard Overview</span></div>
+            <div class="nav-item" data-tab="manage-patients"><i class="fas fa-users"></i><span>Manage Patients</span></div>
+            <div class="nav-item" data-tab="manage-consultations"><i class="fas fa-calendar-check"></i><span>Manage Consultations</span></div>
+            <div class="nav-item" data-tab="messages"><i class="fas fa-envelope"></i><span>Messages</span></div>
+            <div class="nav-item" data-tab="create-diet-plans"><i class="fas fa-apple-alt"></i><span>Create/Update Diet Plans</span></div>
+            <div class="nav-item" data-tab="progress-monitoring"><i class="fas fa-chart-line"></i><span>Progress Monitoring</span></div>
+            <div class="nav-item" data-tab="payments"><i class="fas fa-credit-card"></i><span>Payments</span></div>
+            <div class="nav-item" id="writeArticleBtn"><i class="fas fa-newspaper"></i><span>Write Article</span></div>
+            <div class="nav-item" data-tab="profile"><i class="fas fa-user-circle"></i><span>My Profile</span></div>
+        </div>
+        <div style="padding: 20px 24px; border-top: 1px solid rgba(39,174,96,0.1); margin-top: 20px;">
+            <div class="nav-item" id="logoutBtn"><i class="fas fa-sign-out-alt"></i><span>Log out</span></div>
+        </div>
+    </aside>
+
+    <div class="overlay" id="overlay"></div>
+
+    <main class="main-content">
+        <div class="top-bar">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <button class="menu-toggle" id="menuToggleBtn"><i class="fas fa-bars"></i></button>
+                <div class="page-title">
+                    <h1 id="dynamicTitle">Nutritionist Dashboard</h1>
+                    <p id="dynamicSubtitle">Manage patients, consultations & diet plans</p>
+                </div>
+            </div>
+                <button class="btn-primary" id="availabilityBtn"><i class="fas fa-clock"></i> Set Availability</button>
+                <!-- Notification Bell -->
+    <div style="position: relative;">
+        <button class="notification-bell" id="notificationBell">
+            <i class="fas fa-bell"></i>
+            <span class="notification-badge" id="notificationBadge" style="display: none;">0</span>
+        </button>
+        
+        <!-- Notification Panel -->
+        <div class="notification-panel" id="notificationPanel">
+            <div class="notification-header">
+                <h4><i class="fas fa-bell"></i> Notifications</h4>
+                <button id="markAllNotificationsBtn">Tout marquer comme lu</button>
+            </div>
+                <div class="notification-list" id="notificationList">
+                    <div class="empty-notifications">
+                        <i class="fas fa-bell-slash"></i>
+                        <p>Aucune notification</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+
+        <!-- Dashboard Overview Tab -->
+        <div id="dashboard-overview" class="tab-content active-tab">
+            <div class="stats-grid">
+                <div class="stat-card"><div class="stat-header"><span class="stat-label">Active Patients</span><i class="fas fa-user-friends"></i></div><div class="stat-value" id="activePatients">--</div><div class="stat-change" id="patientsChange">--</div></div>
+                <div class="stat-card"><div class="stat-header"><span class="stat-label">Today's Consultations</span><i class="fas fa-calendar-day"></i></div><div class="stat-value" id="todayConsultations">--</div><div class="stat-detail" id="consultationsDetail">--</div></div>
+                <div class="stat-card"><div class="stat-header"><span class="stat-label">Pending Messages</span><i class="fas fa-envelope"></i></div><div class="stat-value" id="pendingMessages">--</div><div class="stat-label">Awaiting your response</div></div>
+                <div class="stat-card"><div class="stat-header"><span class="stat-label">Earnings (MTD)</span><i class="fas fa-dollar-sign"></i></div><div class="stat-value" id="earningsMtd">--</div><div class="stat-change" id="earningsChange">--</div></div>
+            </div>
+            <div class="professional-card"><div class="card-header"><h3><i class="fas fa-chart-line"></i> Patient Adherence Overview</h3><button class="btn-outline" id="refreshStats">Refresh</button></div><canvas id="adherenceChart" style="max-height: 250px; width:100%"></canvas></div>
+            <div class="professional-card"><div class="card-header"><h3><i class="fas fa-bell"></i> Notifications</h3><button class="btn-outline" id="markAllReadBtn" style="font-size: 11px;">Mark all as read</button></div><div id="notificationsList"><div class="message-item">Loading...</div></div></div>
+        </div>
+
+        <!-- Manage Patients Tab -->
+        <div id="manage-patients" class="tab-content">
+            <div class="professional-card">
+                <div class="card-header"><h3><i class="fas fa-users"></i> My Patients</h3><input type="text" id="patientSearch" placeholder="Search patient..." style="padding: 8px 16px; width: 200px;"></div>
+                <div style="overflow-x: auto;"><table class="data-table" id="patientsTable"><thead><tr><th>Name</th><th>Age</th><th>Plan</th><th>Progress</th><th>Last Visit</th><th>Actions</th></tr></thead><tbody id="patientsTableBody"><tr><td colspan="6" style="text-align: center;">Loading patients...</td></tr></tbody></table></div>
+                <div id="patientModal" class="modal"><div style="background: white; border-radius: 28px; max-width: 500px; width: 90%; max-height: 90vh; overflow-y: auto;"><div style="padding: 24px;"><div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #e2e8f0; padding-bottom: 16px;"><h3><i class="fas fa-user-circle"></i> Patient Details</h3><button id="closeModalBtn" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #94a3b8;">&times;</button></div><div id="patientModalContent"><div style="text-align: center; padding: 40px;">Loading...</div></div></div></div></div>
+                <button class="btn-outline start-chat-btn" data-patient-id="${patient.id}" data-patient-name="${patient.name}" style="padding: 4px 12px;">
+                    <i class="fas fa-comment"></i> Message
+                </button>
+            </div>
+        </div>
+
+        <!-- Manage Consultations Tab -->
+        <div id="manage-consultations" class="tab-content">
+            <div class="stats-grid"><div class="stat-card"><div class="stat-header"><span class="stat-label">Upcoming Consultations</span><i class="fas fa-calendar-check"></i></div><div class="stat-value" id="upcomingCount">--</div><div class="stat-label">Confirmed appointments</div></div><div class="stat-card"><div class="stat-header"><span class="stat-label">Completed Sessions</span><i class="fas fa-check-circle"></i></div><div class="stat-value" id="completedCount">--</div><div class="stat-label">This month</div></div></div>
+            <div class="professional-card"><div class="card-header"><h3><i class="fas fa-clock"></i> Consultation Requests</h3><span id="requestsCount" class="badge-active" style="background: #ef4444; color: white;">0</span></div><div id="consultationRequestsList"><div class="message-item">Loading requests...</div></div></div>
+            <div class="professional-card"><div class="card-header"><h3><i class="fas fa-calendar-week"></i> Weekly Schedule</h3><button class="btn-outline" id="refreshCalendarBtn" style="font-size: 11px;">Refresh</button></div><div id="nutritionistCalendar" style="display: flex; gap: 8px; overflow-x: auto; padding: 16px 0;"><div class="message-item">Loading calendar...</div></div></div>
+            <div class="professional-card"><div class="card-header"><h3><i class="fas fa-video"></i> Upcoming Consultations</h3><button class="btn-primary" id="newConsultationBtn">+ Schedule New</button></div><div style="overflow-x: auto;"><table class="data-table" id="upcomingTable"><thead><tr><th>Patient</th><th>Date & Time</th><th>Type</th><th>Status</th><th>Action</th></tr></thead><tbody id="upcomingTableBody"><tr><td colspan="5" style="text-align: center;">Loading...</td></tr></tbody></table></div></div>
+            <div class="professional-card"><div class="card-header"><h3><i class="fas fa-history"></i> Past Consultations</h3></div><div id="pastConsultationsList"><div class="message-item">Loading...</div></div></div>
+        </div>
+
+    <!-- Messages Tab -->
+<div id="messages" class="tab-content">
+    <div class="professional-card" style="padding: 0; overflow: hidden;">
+        <div style="display: flex; height: 70vh; min-height: 500px;">
+            
+            <!-- LEFT SIDE: Liste des patients -->
+            <div style="width: 320px; border-right: 1px solid #e2e8f0; display: flex; flex-direction: column; background: #f8fafc;">
+                <!-- Header -->
+                <div style="padding: 20px; border-bottom: 1px solid #e2e8f0; background: white;">
+                    <h3 style="font-size: 1.1rem; margin: 0;">
+                        <i class="fas fa-users" style="color: #27AE60;"></i> Chats
+                    </h3>
+                    <p style="font-size: 12px; color: #64748b; margin-top: 4px;">Your patients</p>
+                </div>
+                
+                <!-- Liste des patients -->
+                <div id="patientsListContainer" style="flex: 1; overflow-y: auto;">
+                    <div style="text-align: center; padding: 40px 20px; color: #94a3b8;">Loading patients...</div>
+                </div>
+            </div>
+            
+            <!-- RIGHT SIDE: Zone de chat -->
+            <div style="flex: 1; display: flex; flex-direction: column; background: white;">
+                
+                <!-- Header du chat -->
+                <div id="chatHeader" style="display: none; padding: 16px 20px; border-bottom: 1px solid #e2e8f0; background: white; align-items: center; gap: 12px;">
+                    <div id="chatAvatar" style="width: 40px; height: 40px; background: linear-gradient(135deg, #27AE60, #2ecc71); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 16px;">
+                        P
+                    </div>
+                    <div style="flex: 1;">
+                        <h4 id="chatWithName" style="margin: 0; font-size: 16px; color: #1e293b;">Select a patient</h4>
+                        <p id="chatStatus" style="margin: 2px 0 0; font-size: 11px; color: #94a3b8;">Click on a patient to start messaging</p>
+                    </div>
+                </div>
+                
+                <!-- Messages area -->
+                <div id="messagesArea" style="flex: 1; overflow-y: auto; padding: 20px; background: #f9fafb;">
+                    <div style="text-align: center; color: #94a3b8; padding: 60px 20px;">
+                        <i class="fas fa-comments" style="font-size: 48px; margin-bottom: 16px; opacity: 0.3;"></i>
+                        <p>Select a patient to start messaging</p>
+                    </div>
+                </div>
+                
+                <!-- Zone de saisie -->
+                <div id="messageInputArea" style="display: none; padding: 16px 20px; border-top: 1px solid #e2e8f0; background: white;">
+                    <div style="display: flex; gap: 12px;">
+                        <textarea id="messageInput" 
+                                  placeholder="Type a message..." 
+                                  rows="2" 
+                                  style="flex: 1; border-radius: 20px; padding: 12px 16px; resize: none; border: 1px solid #e2e8f0; font-family: inherit; font-size: 14px;"></textarea>
+                        <button id="sendMsgBtn" class="btn-primary" style="padding: 12px 24px; border-radius: 40px;">
+                            <i class="fas fa-paper-plane"></i> Send
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+        <!-- Create/Update Diet Plans Tab -->
+<div id="create-diet-plans" class="tab-content">
+    
+    <!-- Boutons pour choisir le type de plan -->
+    <div class="plan-type-buttons" style="display: flex; gap: 15px; margin-bottom: 25px;">
+        <button id="personalizedPlanTypeBtn" class="btn-primary">👤 Personalized Plan (for patient)</button>
+        <button id="standardPlanTypeBtn" class="btn-outline">📋 Standard Plan (Public - needs admin approval)</button>
+    </div>
+
+    <!-- FORMULAIRE PERSONALIZED PLAN (existant) -->
+    <div id="personalizedPlanSection" class="professional-card">
+        <div class="card-header">
+            <h3><i class="fas fa-user-md"></i> Create Personalized Plan for a Patient</h3>
+            <button class="btn-primary" id="savePlanBtn">Save Plan →</button>
+        </div>
+        <div style="display: grid; gap: 16px;">
+            <div><label>Select Patient</label><select id="patientSelect" style="width: 100%; padding: 12px; border-radius: 12px;"><option value="">Loading patients...</option></select></div>
+            <div><label>Plan Name</label><input type="text" id="planName" placeholder="e.g., Metabolic Reset, Weight Loss Journey" style="width: 100%; padding: 12px;"></div>
+            <div><label>Description / Guidelines</label><textarea id="planDetails" rows="3" placeholder="Meal plan details, guidelines, restrictions..." style="width: 100%; padding: 12px;"></textarea></div>
+            <div style="display: flex; gap: 16px;"><div style="flex: 1;"><label>Start Date</label><input type="date" id="startDate" style="width: 100%; padding: 12px;"></div><div style="flex: 1;"><label>End Date (optional)</label><input type="date" id="endDate" style="width: 100%; padding: 12px;"></div></div>
+        </div>
+        <div style="margin-top: 24px;">
+            <div class="card-header" style="padding: 0 0 12px 0;">
+                <h4><i class="fas fa-utensils"></i> Daily Meals</h4>
+                <button type="button" class="btn-outline" id="addMealBtn" style="font-size: 12px;"><i class="fas fa-plus"></i> Add Meal</button>
+            </div>
+            <div id="mealsList"><div class="meal-item" style="color: #94a3b8; justify-content: center;">Click "Add Meal" to add meals to this plan</div></div>
+        </div>
+    </div>
+
+   <!-- FORMULAIRE STANDARD PLAN (avec planning hebdomadaire) -->
+<div id="standardPlanSection" class="professional-card" style="display: none;">
+    <div class="card-header">
+        <h3><i class="fas fa-globe"></i> Create Standard Plan (Public)</h3>
+        <button class="btn-primary" id="saveStandardPlanBtn" style="background: #FF7A00;">Submit for Approval →</button>
+    </div>
+    <div class="info-banner">
+        <i class="fas fa-info-circle"></i> Standard plans will be visible on the home page after admin approval.
+    </div>
+    
+    <div style="display: grid; gap: 20px;">
+        <!-- 1. Informations de base -->
+        <div class="form-row-2">
+            <div>
+                <label>Plan Name *</label>
+                <input type="text" id="standardPlanName" placeholder="e.g., 30-Day Weight Loss Transformation" style="width: 100%; padding: 12px;">
+            </div>
+            <div>
+                <label>Duration *</label>
+                <select id="planDuration" style="width: 100%; padding: 12px;">
+                    <option value="30 days">30 days (4 weeks)</option>
+                    <option value="60 days">60 days (8 weeks)</option>
+                    <option value="90 days">90 days (12 weeks)</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="form-row-2">
+            <div>
+                <label>Short Description (for card) *</label>
+                <input type="text" id="standardShortDesc" placeholder="Short description for the plan card" style="width: 100%; padding: 12px;">
+            </div>
+            <div>
+                <label>💰 Price ($) *</label>
+                <input type="number" id="standardPrice" step="0.01" placeholder="49.99" style="width: 100%; padding: 12px;">
+            </div>
+        </div>
+        
+        <div>
+            <label>Full Description</label>
+            <textarea id="standardPlanDescription" rows="3" placeholder="Detailed description of the plan..." style="width: 100%; padding: 12px;"></textarea>
+        </div>
+        
+        <!-- 2. What's included -->
+        <div>
+            <label>📋 What's Included (one per line) *</label>
+            <textarea id="standardFeatures" rows="4" placeholder="✅ Complete 30-day meal plan&#10;✅ Grocery shopping lists&#10;✅ Recipe cards&#10;✅ Progress tracker&#10;✅ Email support" style="width: 100%; padding: 12px;"></textarea>
+        </div>
+        
+        <!-- 3. WEEKLY MEAL PLAN (4 semaines) -->
+        <div style="background: #f8fafc; padding: 20px; border-radius: 16px;">
+            <label style="font-weight: 700; margin-bottom: 16px; display: block;">📅 Weekly Meal Plan (Example Week)</label>
+            
+            <!-- Week 1 -->
+            <details open style="margin-bottom: 16px;">
+                <summary style="cursor: pointer; font-weight: 600; color: #27AE60; padding: 8px 0;">📆 Week 1 - Kickstart</summary>
+                <div style="margin-top: 12px;">
+                    <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+                        <thead>
+                            <tr style="background: #e8f5e9;">
+                                <th style="padding: 8px; text-align: left;">Day</th>
+                                <th style="padding: 8px; text-align: left;">Breakfast</th>
+                                <th style="padding: 8px; text-align: left;">Lunch</th>
+                                <th style="padding: 8px; text-align: left;">Dinner</th>
+                                <th style="padding: 8px; text-align: left;">Snack</th>
+                            </tr>
+                        </thead>
+                        <tbody id="week1Meals">
+                            <tr><td colspan="5" style="padding: 12px; text-align: center;">Loading...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </details>
+            
+            <!-- Week 2 -->
+            <details style="margin-bottom: 16px;">
+                <summary style="cursor: pointer; font-weight: 600; color: #27AE60; padding: 8px 0;">📆 Week 2 - Building Momentum</summary>
+                <div style="margin-top: 12px;">
+                    <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+                        <thead>
+                            <tr style="background: #e8f5e9;">
+                                <th style="padding: 8px; text-align: left;">Day</th>
+                                <th style="padding: 8px; text-align: left;">Breakfast</th>
+                                <th style="padding: 8px; text-align: left;">Lunch</th>
+                                <th style="padding: 8px; text-align: left;">Dinner</th>
+                                <th style="padding: 8px; text-align: left;">Snack</th>
+                            </tr>
+                        </thead>
+                        <tbody id="week2Meals">
+                            <tr><td colspan="5" style="padding: 12px; text-align: center; color: #94a3b8;">Click "Generate Meal Plan" button below</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </details>
+            
+            <!-- Week 3 -->
+            <details style="margin-bottom: 16px;">
+                <summary style="cursor: pointer; font-weight: 600; color: #27AE60; padding: 8px 0;">📆 Week 3 - Progress & Variation</summary>
+                <div style="margin-top: 12px;">
+                    <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+                        <thead>
+                            <tr style="background: #e8f5e9;">
+                                <th style="padding: 8px; text-align: left;">Day</th>
+                                <th style="padding: 8px; text-align: left;">Breakfast</th>
+                                <th style="padding: 8px; text-align: left;">Lunch</th>
+                                <th style="padding: 8px; text-align: left;">Dinner</th>
+                                <th style="padding: 8px; text-align: left;">Snack</th>
+                            </tr>
+                        </thead>
+                        <tbody id="week3Meals">
+                            <tr><td colspan="5" style="padding: 12px; text-align: center; color: #94a3b8;">Click "Generate Meal Plan" button below</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </details>
+            
+            <!-- Week 4 -->
+            <details style="margin-bottom: 16px;">
+                <summary style="cursor: pointer; font-weight: 600; color: #27AE60; padding: 8px 0;">📆 Week 4 - Final Stretch</summary>
+                <div style="margin-top: 12px;">
+                    <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+                        <thead>
+                            <tr style="background: #e8f5e9;">
+                                <th style="padding: 8px; text-align: left;">Day</th>
+                                <th style="padding: 8px; text-align: left;">Breakfast</th>
+                                <th style="padding: 8px; text-align: left;">Lunch</th>
+                                <th style="padding: 8px; text-align: left;">Dinner</th>
+                                <th style="padding: 8px; text-align: left;">Snack</th>
+                            </tr>
+                        </thead>
+                        <tbody id="week4Meals">
+                            <tr><td colspan="5" style="padding: 12px; text-align: center; color: #94a3b8;">Click "Generate Meal Plan" button below</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </details>
+            
+            <button type="button" id="generateMealPlanBtn" class="btn-outline" style="margin-top: 12px;">
+                <i class="fas fa-magic"></i> Generate Sample Meal Plan
+            </button>
+            <p style="font-size: 11px; color: #64748b; margin-top: 8px;">Click to generate a complete 4-week meal plan template</p>
+        </div>
+        
+        <!-- 4. Weekly Workout / Activity (optionnel) -->
+        <div>
+            <label>🏃‍♀️ Weekly Activity Recommendations</label>
+            <textarea id="planActivity" rows="3" placeholder="Week 1: 20min walk daily&#10;Week 2: Add 2x strength training&#10;Week 3: 10k steps goal&#10;Week 4: HIIT 2x week" style="width: 100%; padding: 12px;"></textarea>
+        </div>
+        
+        <!-- 5. Shopping List -->
+        <div>
+            <label>🛒 Shopping List Template</label>
+            <textarea id="shoppingList" rows="4" placeholder="🍎 Fruits: Apples, Bananas, Berries&#10;🥬 Vegetables: Spinach, Broccoli, Avocado&#10;🍗 Protein: Chicken breast, Eggs, Fish&#10;🌾 Grains: Quinoa, Oats, Brown rice" style="width: 100%; padding: 12px;"></textarea>
+        </div>
+        
+        <!-- 6. Category -->
+        <div>
+            <label>🏷️ Category</label>
+            <select id="standardCategory" style="width: 100%; padding: 12px;">
+                <option value="weight_loss">Weight Loss</option>
+                <option value="muscle_gain">Muscle Gain</option>
+                <option value="healthy_eating">Healthy Eating</option>
+                <option value="sports_nutrition">Sports Nutrition</option>
+                <option value="detox">Detox & Cleanse</option>
+                <option value="gut_health">Gut Health</option>
+            </select>
+        </div>
+    </div>
+</div>
+    <!-- Liste des plans existants -->
+    <div class="professional-card">
+        <div class="card-header"><h3><i class="fas fa-edit"></i> Existing Plans</h3></div>
+        <div id="existingPlansList"><div class="message-item">Loading existing plans...</div></div>
+    </div>
+</div>
+
+                <!-- Progress Monitoring Tab  -->
+        <div id="progress-monitoring" class="tab-content">
+            <div class="professional-card">
+                <div class="card-header">
+                    <h3><i class="fas fa-chart-line"></i> Patient Progress Tracker</h3>
+                    <select id="progressPatientSelect" style="padding: 8px 16px; border-radius: 40px; min-width: 200px; max-width: 250px;">
+                        <option value="">Select a patient...</option>
+                    </select>
+                </div>
+                
+                <!-- Conteneur du graphique avec hauteur fixe -->
+                <div style="position: relative; height: 350px; width: 100%; margin: 15px 0;">
+                    <canvas id="progressChart" style="max-height: 350px; width: 100%;"></canvas>
+                </div>
+                
+                <!-- Filtres de période -->
+                <div style="display: flex; gap: 8px; justify-content: center; margin: 20px 0; flex-wrap: wrap;">
+                    <button class="period-btn" data-period="1m" style="padding: 6px 14px; border-radius: 40px; border: none; cursor: pointer; background: #27AE60; color: white; font-size: 12px;">1 Month</button>
+                    <button class="period-btn" data-period="3m" style="padding: 6px 14px; border-radius: 40px; border: none; cursor: pointer; background: #e2e8f0; font-size: 12px;">3 Months</button>
+                    <button class="period-btn" data-period="6m" style="padding: 6px 14px; border-radius: 40px; border: none; cursor: pointer; background: #e2e8f0; font-size: 12px;">6 Months</button>
+                    <button class="period-btn" data-period="1y" style="padding: 6px 14px; border-radius: 40px; border: none; cursor: pointer; background: #e2e8f0; font-size: 12px;">1 Year</button>
+                    <button class="period-btn" data-period="all" style="padding: 6px 14px; border-radius: 40px; border: none; cursor: pointer; background: #e2e8f0; font-size: 12px;">All Time</button>
+                </div>
+                
+                <!-- Métriques actuelles -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-top: 20px;">
+                    <div style="background: #f8fafc; border-radius: 16px; padding: 16px; text-align: center;">
+                        <span style="font-size: 12px; color: #64748b;">Current Weight</span>
+                        <div style="font-size: 28px; font-weight: 800; color: #FF7A00;" id="currentWeightDisplay">-- kg</div>
+                        <span id="weightChangeDisplay" style="font-size: 12px;">--</span>
+                    </div>
+                    <div style="background: #f8fafc; border-radius: 16px; padding: 16px; text-align: center;">
+                        <span style="font-size: 12px; color: #64748b;">Body Fat</span>
+                        <div style="font-size: 28px; font-weight: 800; color: #27AE60;" id="bodyFatDisplay">-- %</div>
+                        <span id="fatChangeDisplay" style="font-size: 12px;">--</span>
+                    </div>
+                    <div style="background: #f8fafc; border-radius: 16px; padding: 16px; text-align: center;">
+                        <span style="font-size: 12px; color: #64748b;">Goal Weight</span>
+                        <div style="font-size: 28px; font-weight: 800; color: #3b82f6;" id="goalWeightDisplay">-- kg</div>
+                        <span id="toGoalDisplay" style="font-size: 12px;">--</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+      
+        <!-- Profile Tab -->
+        <div id="profile" class="tab-content">
+            <div class="professional-card">
+                <div class="card-header"><h3><i class="fas fa-user-md"></i> My Professional Profile</h3><button class="btn-primary" id="updateProfileBtn">Update Profile</button></div>
+                <div style="display: grid; gap: 16px; max-width: 500px;">
+                    <div><label>First Name</label><input type="text" id="profileFirstName" style="width:100%"></div>
+                    <div><label>Last Name</label><input type="text" id="profileLastName" style="width:100%"></div>
+                    <div><label>Email</label><input type="email" id="profileEmail" style="width:100%" readonly></div>
+                    <div><label>Phone</label><input type="text" id="profilePhone" style="width:100%"></div>
+                    <div><label>Country</label><input type="text" id="profileCountry" style="width:100%"></div>
+                    <div><label>Specialization</label><input type="text" id="profileSpecialization" placeholder="e.g., Clinical Dietitian, Sports Nutrition" style="width:100%"></div>
+                    <div><label>Experience (years)</label><input type="number" id="profileExperience" style="width:100%"></div>
+                    <div><label>Bio</label><textarea id="profileBio" rows="3" placeholder="Tell patients about yourself..." style="width:100%"></textarea></div>
+                    <div><label>Availability</label><select id="profileAvailability" style="width:100%"><option value="true">Available for consultations</option><option value="false">Not available</option></select></div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+// ==================== DONNÉES DE DÉMONSTRATION ====================
+const DEMO_CHART_DATA = {
+    labels: ['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4', 'Sem 5', 'Sem 6'],
+    weight: [78.5, 77.2, 76.0, 75.1, 74.3, 73.5],
+    body_fat: [32.5, 31.8, 30.9, 30.0, 29.2, 28.5]
+};
+
+const DEMO_METRICS = {
+    current_weight: 73.5,
+    body_fat: 28.5,
+    goal_weight: 70,
+    weight_change: -5.0,
+    body_fat_change: -4.0
+};
+
+// ==================== VARIABLES GLOBALES ====================
+let progressChartInstance = null;
+let isChartDestroying = false;
+let currentPatientId = null;
+let adherenceChartInstance = null;
+
+// ==================== FONCTIONS UTILITAIRES ====================
+function getCSRFToken() {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, 10) === ('csrftoken' + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(10));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+// ==================== AUTH ====================
+async function checkAuth() {
+    try {
+        const response = await fetch('/api/users/stats/', { credentials: 'include' });
+        if (response.status === 401 || response.status === 403) { window.location.href = '/login/'; return false; }
+        return true;
+    } catch (error) { window.location.href = '/login/'; return false; }
+}
+
+// ==================== FONCTION ESCAPE HTML (sécurité) ====================
+function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/[&<>]/g, function(m) {
+        if (m === '&') return '&amp;';
+        if (m === '<') return '&lt;';
+        if (m === '>') return '&gt;';
+        return m;
+    });
+}
+
+// ==================== TAB SWITCHING ====================
+const tabs = document.querySelectorAll('.tab-content');
+const navItems = document.querySelectorAll('.nav-item');
+const titles = {
+    'dashboard-overview': { title: 'Nutritionist Dashboard', subtitle: 'Manage patients, consultations & diet plans' },
+    'manage-patients': { title: 'Manage Patients', subtitle: 'View and manage your patient list' },
+    'manage-consultations': { title: 'Manage Consultations', subtitle: 'Schedule and manage video consultations' },
+    'messages': { title: 'Messages', subtitle: 'Communicate with your patients' },
+    'create-diet-plans': { title: 'Create / Update Diet Plans', subtitle: 'Design personalized nutrition plans' },
+    'progress-monitoring': { title: 'Progress Monitoring', subtitle: 'Track patient health metrics' },
+    'payments': { title: 'Payments', subtitle: 'View earnings and transactions' },
+    'profile': { title: 'My Profile', subtitle: 'Manage your professional information' }
+};
+
+function switchTab(tabId) {
+    tabs.forEach(tab => tab.classList.remove('active-tab'));
+    const activeTab = document.getElementById(tabId);
+    if(activeTab) activeTab.classList.add('active-tab');
+    navItems.forEach(item => item.classList.remove('active'));
+    const activeNav = Array.from(navItems).find(item => item.getAttribute('data-tab') === tabId);
+    if(activeNav) activeNav.classList.add('active');
+    if(titles[tabId]) {
+        document.getElementById('dynamicTitle').innerText = titles[tabId].title;
+        document.getElementById('dynamicSubtitle').innerText = titles[tabId].subtitle;
+    }
+}
+
+navItems.forEach(item => {
+    const tabId = item.getAttribute('data-tab');
+    if(tabId) item.addEventListener('click', () => switchTab(tabId));
+});
+
+// ==================== LOGOUT ====================
+async function handleLogout() {
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    try {
+        const response = await fetch("/api/accounts/logout/", {
+            method: "POST", headers: { "Content-Type": "application/json", "X-CSRFToken": getCookie('csrftoken') }, credentials: 'include'
+        });
+        if (response.ok) { localStorage.removeItem('userData'); sessionStorage.removeItem('userData'); window.location.href = "/login/"; }
+    } catch (error) { console.error("Logout error:", error); }
+}
+document.getElementById('logoutBtn').addEventListener('click', handleLogout);
+
+// ==================== SIDEBAR MOBILE ====================
+const sidebar = document.getElementById('sidebar');
+const overlay = document.getElementById('overlay');
+const menuToggle = document.getElementById('menuToggleBtn');
+function closeSidebar() { if (sidebar) sidebar.classList.remove('open'); if (overlay) overlay.classList.remove('active'); }
+function openSidebar() { if (sidebar) sidebar.classList.add('open'); if (overlay) overlay.classList.add('active'); }
+if (menuToggle) menuToggle.addEventListener('click', () => { sidebar.classList.contains('open') ? closeSidebar() : openSidebar(); });
+if (overlay) overlay.addEventListener('click', closeSidebar);
+
+// ==================== BOUTONS DEMO ====================
+document.getElementById('availabilityBtn')?.addEventListener('click', () => alert('📅 Set your availability for consultations (demo)'));
+document.getElementById('newConsultationBtn')?.addEventListener('click', () => alert('📹 Schedule new consultation with patient (demo)'));
+document.getElementById('writeArticleBtn')?.addEventListener('click', () => { window.location.href = '/blog/'; });
+document.querySelectorAll('.reply-msg').forEach(btn => { btn.addEventListener('click', () => { const patient = btn.getAttribute('data-patient'); document.getElementById('messageInput').value = `To ${patient}: `; document.getElementById('messageInput').focus(); }); });
+document.querySelector('.send-patient-msg')?.addEventListener('click', () => { const msg = document.getElementById('messageInput').value; if(msg.trim()) alert(`💬 Message sent to patient!\n\n"${msg}"`); else alert('Please write a message first.'); });
+
+// ==================== NUTRITIONIST PROFILE ====================
+async function loadNutritionistProfile() {
+    try {
+        const response = await fetch('/api/consultations/nutritionist-profile/', { credentials: 'include' });
+        if (response.ok) {
+            const data = await response.json();
+            document.getElementById('profileFirstName').value = data.first_name || '';
+            document.getElementById('profileLastName').value = data.last_name || '';
+            document.getElementById('profileEmail').value = data.email || '';
+            document.getElementById('profilePhone').value = data.phone || '';
+            document.getElementById('profileCountry').value = data.country || '';
+            document.getElementById('profileSpecialization').value = data.specialization || '';
+            document.getElementById('profileExperience').value = data.experience_years || 0;
+            document.getElementById('profileBio').value = data.bio || '';
+            document.getElementById('profileAvailability').value = data.is_available ? 'true' : 'false';
+            const fullName = `${data.first_name || ''} ${data.last_name || ''}`.trim();
+            document.getElementById('nutritionistName').innerText = fullName || 'Nutritionist';
+            if (data.specialization) document.getElementById('nutritionistSpecialty').innerHTML = `<i class="fas fa-stethoscope"></i> ${data.specialization}`;
+            if (data.email) document.getElementById('nutritionistEmail').innerHTML = `<i class="fas fa-envelope"></i> ${data.email}`;
+            const initials = fullName.split(' ').map(n => n[0]).join('').toUpperCase();
+            document.getElementById('nutritionistAvatar').innerText = initials || 'NU';
+        }
+    } catch (error) { console.error('Error loading profile:', error); }
+}
+
+async function updateNutritionistProfile() {
+    const profileData = {
+        first_name: document.getElementById('profileFirstName').value,
+        last_name: document.getElementById('profileLastName').value,
+        phone: document.getElementById('profilePhone').value,
+        country: document.getElementById('profileCountry').value,
+        specialization: document.getElementById('profileSpecialization').value,
+        experience_years: parseInt(document.getElementById('profileExperience').value) || 0,
+        bio: document.getElementById('profileBio').value,
+        is_available: document.getElementById('profileAvailability').value === 'true',
+    };
+    const saveBtn = document.getElementById('updateProfileBtn');
+    const originalText = saveBtn.innerText;
+    saveBtn.innerText = '⏳ Saving...';
+    saveBtn.disabled = true;
+    try {
+        const response = await fetch('/api/consultations/nutritionist-profile/', {
+            method: 'PUT', credentials: 'include', headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCSRFToken() }, body: JSON.stringify(profileData)
+        });
+        if (response.ok) { alert('✅ Profile updated successfully!'); loadNutritionistProfile(); }
+        else { const error = await response.json(); alert('❌ Error: ' + (error.error || 'Unknown error')); }
+    } catch (error) { console.error('Error updating profile:', error); alert('❌ Network error'); }
+    finally { saveBtn.innerText = originalText; saveBtn.disabled = false; }
+}
+document.getElementById('updateProfileBtn')?.addEventListener('click', updateNutritionistProfile);
+
+// ==================== WEEKLY CALENDAR ====================
+async function loadNutritionistCalendar() {
+    try {
+        const response = await fetch('/api/nutritionists/calendar/', { credentials: 'include' });
+        const container = document.getElementById('nutritionistCalendar');
+        if (!container) return;
+        if (response.ok) {
+            const data = await response.json();
+            const eventsByDate = data.events_by_date || {};
+            const today = new Date();
+            const startOfWeek = new Date(today);
+            startOfWeek.setDate(today.getDate() - today.getDay());
+            const daysFR = ['DIM', 'LUN', 'MAR', 'MER', 'JEU', 'VEN', 'SAM'];
+            container.innerHTML = '';
+            for (let i = 0; i < 7; i++) {
+                const currentDate = new Date(startOfWeek);
+                currentDate.setDate(startOfWeek.getDate() + i);
+                const dateKey = currentDate.toISOString().split('T')[0];
+                const dayEvents = eventsByDate[dateKey] || [];
+                const dayDiv = document.createElement('div');
+                dayDiv.className = 'calendar-day';
+                let eventsHtml = '';
+                if (dayEvents.length === 0) eventsHtml = '<div style="font-size: 11px; color: #94a3b8; padding: 16px 0;">—</div>';
+                else eventsHtml = dayEvents.map(event => `<div style="background: white; border-radius: 12px; padding: 8px; margin-top: 8px; text-align: left; border-left: 3px solid #27AE60;"><div style="font-size: 10px; color: #64748b;">🕐 ${event.time}</div><div style="font-size: 12px; font-weight: 600; color: #2C3E50;">${event.patient_name}</div><div style="font-size: 10px; color: #27AE60;">👩‍⚕️ Consultation</div></div>`).join('');
+                dayDiv.innerHTML = `<div style="font-weight: 700; padding-bottom: 8px; margin-bottom: 8px; border-bottom: 1px solid #e2e8f0;"><div style="font-size: 14px; color: #27AE60;">${daysFR[i]}</div><div style="font-size: 18px; font-weight: 800; color: #2C3E50;">${currentDate.getDate()}</div></div><div>${eventsHtml}</div>`;
+                container.appendChild(dayDiv);
+            }
+        }
+    } catch (error) { console.error('Error loading calendar:', error); }
+}
+document.getElementById('refreshCalendarBtn')?.addEventListener('click', loadNutritionistCalendar);
+
+// ==================== DASHBOARD STATS ====================
+async function loadNutritionistStats() {
+    try {
+        const response = await fetch('/api/nutritionists/stats/', { credentials: 'include' });
+        if (response.ok) {
+            const data = await response.json();
+            document.getElementById('activePatients').innerText = data.active_patients;
+            document.getElementById('patientsChange').innerHTML = data.active_patients_change;
+            document.getElementById('todayConsultations').innerText = data.today_consultations;
+            document.getElementById('consultationsDetail').innerHTML = data.today_consultations_detail;
+            document.getElementById('pendingMessages').innerText = data.pending_messages;
+            document.getElementById('earningsMtd').innerHTML = `$${data.earnings_mtd?.toLocaleString() || 0}`;
+            document.getElementById('earningsChange').innerHTML = data.earnings_change;
+            if (data.adherence_chart) updateAdherenceChart(data.adherence_chart);
+        }
+    } catch (error) { console.error('Error loading stats:', error); }
+}
+
+function updateAdherenceChart(data) {
+    const canvas = document.getElementById('adherenceChart');
+    if (!canvas || !data) return;
+    if (adherenceChartInstance) { adherenceChartInstance.destroy(); adherenceChartInstance = null; }
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    adherenceChartInstance = new Chart(ctx, {
+        type: 'bar', data: { labels: data.labels, datasets: [{ label: 'Progress Rate (%)', data: data.rates, backgroundColor: 'rgba(39, 174, 96, 0.7)', borderColor: '#27AE60', borderRadius: 8 }] },
+        options: { responsive: true, maintainAspectRatio: true, plugins: { tooltip: { callbacks: { label: (ctx) => `Adherence: ${ctx.raw}%` } } }, scales: { y: { title: { display: true, text: 'Adherence Rate (%)' }, min: 0, max: 100 } } }
+    });
+}
+document.getElementById('refreshStats')?.addEventListener('click', loadNutritionistStats);
+
+// ==================== MANAGE CONSULTATIONS ====================
+async function loadConsultationStats() {
+    try {
+        const response = await fetch('/api/nutritionists/consultations/', { credentials: 'include' });
+        if (response.ok) { const data = await response.json(); document.getElementById('upcomingCount').innerText = data.upcoming?.length || 0; document.getElementById('completedCount').innerText = data.past?.length || 0; }
+    } catch (error) { console.error('Error loading consultation stats:', error); }
+}
+
+async function loadConsultationRequests() {
+    const container = document.getElementById('consultationRequestsList');
+    const countSpan = document.getElementById('requestsCount');
+    if (!container) return;
+    try {
+        const response = await fetch('/api/nutritionists/consultation-requests/', { 
+            credentials: 'include' 
+        });
+        if (response.ok) {
+            const requests = await response.json();  // ← ICI, définir la variable
+            
+            if (countSpan) countSpan.innerText = requests.length;
+            if (requests.length === 0) { 
+                container.innerHTML = '<div class="message-item">No pending requests</div>'; 
+                return; 
+            }
+            container.innerHTML = '';
+            requests.forEach(req => { 
+                container.innerHTML += `
+                    <div class="message-item" data-id="${req.id}">
+                        <div class="message-avatar"><i class="fas fa-calendar-plus"></i></div>
+                        <div style="flex: 1;">
+                            <strong>${req.patient_name}</strong>
+                            <div style="font-size: 12px; color: #64748b;">📅 ${req.date_display}</div>
+                            ${req.notes ? `<div style="font-size: 11px; color: #94a3b8;">📝 "${req.notes}"</div>` : ''}
+                        </div>
+                        <div style="display: flex; gap: 8px;">
+                            <button class="btn-outline confirm-req" data-id="${req.id}" style="background: #27AE60; color: white;">✓ Confirm</button>
+                            <button class="btn-outline reject-req" data-id="${req.id}" style="background: #ef4444; color: white;">✗ Reject</button>
+                        </div>
+                    </div>
+                `; 
+            });
+            
+            // Attacher les événements
+            document.querySelectorAll('.confirm-req').forEach(btn => {
+                btn.addEventListener('click', () => handleConsultationRequest(btn.dataset.id, 'confirm'));
+            });
+            document.querySelectorAll('.reject-req').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const explanation = prompt('Reason for rejection:');
+                    if (explanation) handleConsultationRequest(btn.dataset.id, 'reject', explanation);
+                });
+            });
+        } else {
+            container.innerHTML = '<div class="message-item">Error loading requests</div>';
+        }
+    } catch (error) {
+        console.error('Error loading consultation requests:', error);
+        container.innerHTML = '<div class="message-item">Error loading requests</div>';
+    }
+}
+
+async function handleConsultationRequest(requestId, action, explanation = '') {
+    try {
+        const response = await fetch(`/api/nutritionists/consultations/${requestId}/confirm/`, {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCSRFToken()
+            },
+            body: JSON.stringify({ action, explanation })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            alert(`✅ Consultation ${action}ed!`);
+            loadConsultationRequests();  // Rafraîchir la liste
+            loadUpcomingConsultations(); // Rafraîchir les consultations
+        } else {
+            alert(`❌ Error: ${data.error || 'Unknown error'}`);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('❌ Network error. Please try again.');
+    }
+}
+
+async function loadUpcomingConsultations() {
+    const tbody = document.getElementById('upcomingTableBody');
+    if (!tbody) return;
+    try {
+        const response = await fetch('/api/nutritionists/consultations/', { credentials: 'include' });
+        if (response.ok) {
+            const data = await response.json();
+            if (!data.upcoming || data.upcoming.length === 0) { tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">No upcoming consultations</td></tr>'; return; }
+            tbody.innerHTML = '';
+            data.upcoming.forEach(c => { tbody.innerHTML += `<tr><td><strong>${c.patient_name}</strong></td><td>${c.date_display}</td><td>${c.type}</td><td><span class="badge-active">Confirmed</span></td><td>${c.zoom_link ? `<a href="${c.zoom_link}" target="_blank" class="btn-outline" style="padding: 4px 12px;">Join</a>` : '<span>Ready</span>'}<button class="btn-outline complete-consultation-btn" data-id="${c.id}" style="padding: 4px 12px;">✓ Complete</button></td></tr>`; });
+            document.querySelectorAll('.complete-consultation-btn').forEach(btn => btn.addEventListener('click', () => completeConsultation(btn.dataset.id)));
+        }
+    } catch (error) { console.error('Error loading upcoming:', error); }
+}
+
+async function completeConsultation(consultationId) {
+    const notes = prompt('Add notes about this consultation (optional):');
+    try {
+        const response = await fetch(`/api/nutritionists/consultations/${consultationId}/complete/`, { method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCSRFToken() }, body: JSON.stringify({ notes: notes || '' }) });
+        if (response.ok) { alert('✅ Consultation marked as completed!'); loadUpcomingConsultations(); loadPastConsultations(); loadConsultationStats(); }
+        else alert('❌ Error completing consultation');
+    } catch (error) { console.error('Error:', error); }
+}
+
+async function loadPastConsultations() {
+    const container = document.getElementById('pastConsultationsList');
+    if (!container) return;
+    try {
+        const response = await fetch('/api/nutritionists/consultations/', { credentials: 'include' });
+        if (response.ok) {
+            const data = await response.json();
+            if (!data.past || data.past.length === 0) { container.innerHTML = '<div class="message-item">No past consultations</div>'; return; }
+            container.innerHTML = '';
+            data.past.forEach(c => { container.innerHTML += `<div class="message-item"><div class="message-avatar"><i class="fas fa-check-circle" style="color: #27AE60;"></i></div><div style="flex: 1;"><strong>${c.patient_name}</strong><div style="font-size: 12px; color: #64748b;">📅 ${c.date_display}</div></div><button class="btn-outline view-notes-btn" data-id="${c.id}" style="padding: 4px 12px;">View Notes</button></div>`; });
+        }
+    } catch (error) { console.error('Error loading past consultations:', error); }
+}
+
+// ==================== NOTIFICATIONS ====================
+async function loadNotifications() {
+    try {
+        const response = await fetch('/api/nutritionists/notifications/', { credentials: 'include' });
+        const container = document.getElementById('notificationsList');
+        if (response.ok) {
+            const data = await response.json();
+            if (!data.notifications || data.notifications.length === 0) { container.innerHTML = '<div class="message-item" style="justify-content: center; color: #94a3b8;"><i class="fas fa-check-circle"></i> No new updates</div>'; return; }
+            container.innerHTML = '';
+            data.notifications.forEach(notif => { let icon = '🔔'; if (notif.type === 'patient_assigned') icon = '👩‍⚕️'; else if (notif.type === 'consultation_reminder') icon = '⏰'; else if (notif.type === 'new_message') icon = '💬'; container.innerHTML += `<div class="message-item" data-id="${notif.id}"><div class="message-avatar">${icon}</div><div style="flex: 1;"><strong>${notif.title}</strong><div style="font-size: 12px; color: #64748b;">${notif.message}</div><div style="font-size: 10px; color: #94a3b8; margin-top: 4px;">${notif.time_ago}</div></div><button class="btn-outline mark-read-btn" data-id="${notif.id}" style="padding: 4px 12px;">✓ Read</button></div>`; });
+            document.querySelectorAll('.mark-read-btn').forEach(btn => btn.addEventListener('click', () => markAsRead(btn.dataset.id)));
+        }
+    } catch (error) { console.error('Error loading notifications:', error); }
+}
+async function markAsRead(notificationId) {
+    try { await fetch(`/api/nutritionists/notifications/${notificationId}/read/`, { method: 'POST', credentials: 'include', headers: { 'X-CSRFToken': getCSRFToken() } }); loadNotifications(); } catch (error) { console.error('Error:', error); }
+}
+document.getElementById('markAllReadBtn')?.addEventListener('click', async () => { try { await fetch('/api/nutritionists/notifications/read-all/', { method: 'POST', credentials: 'include', headers: { 'X-CSRFToken': getCSRFToken() } }); loadNotifications(); } catch(e) { console.error(e); } });
+
+// ==================== MANAGE PATIENTS ====================
+async function loadMyPatients() {
+    try {
+        const response = await fetch('/api/nutritionists/my-patients/', { credentials: 'include' });
+        const tbody = document.getElementById('patientsTableBody');
+        if (response.ok) {
+            const patients = await response.json();
+            if (patients.length === 0) { tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">No patients assigned yet.</td></tr>'; return; }
+            tbody.innerHTML = '';
+            patients.forEach(patient => { let progressColor = '#27AE60'; if (patient.progress < 50) progressColor = '#ef4444'; else if (patient.progress < 75) progressColor = '#f97316'; tbody.innerHTML += `<tr><td><div style="display: flex; align-items: center; gap: 10px;"><div class="avatar" style="width: 32px; height: 32px; font-size: 0.8rem;">${patient.avatar}</div><div><strong>${patient.name}</strong><div style="font-size: 11px; color: #64748b;">${patient.email}</div></div></div></td><td>${patient.age}</td><td>${patient.plan}</td><td><div style="display: flex; align-items: center; gap: 8px;"><div class="progress-small"><div class="progress-fill-small" style="width: ${patient.progress}%; background: ${progressColor};"></div></div><span style="font-size: 12px;">${patient.progress}%</span></div></td><td>${patient.last_visit}</td><td><button class="btn-outline view-patient-btn" data-patient-id="${patient.id}" style="padding: 4px 12px;"><i class="fas fa-eye"></i> View</button></td></tr>`; });
+            document.querySelectorAll('.view-patient-btn').forEach(btn => btn.addEventListener('click', () => viewPatientDetails(btn.dataset.patientId)));
+        } else { tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">Error loading patients.</td></tr>'; }
+    } catch (error) { console.error('Error loading patients:', error); document.getElementById('patientsTableBody').innerHTML = '<tr><td colspan="6" style="text-align: center;">Error loading patients.</td></tr>'; }
+}
+
+const patientModal = document.getElementById('patientModal');
+const patientModalContent = document.getElementById('patientModalContent');
+function openPatientModal() { if (patientModal) patientModal.style.display = 'flex'; }
+function closePatientModal() { if (patientModal) patientModal.style.display = 'none'; }
+if (document.getElementById('closeModalBtn')) document.getElementById('closeModalBtn').addEventListener('click', closePatientModal);
+if (patientModal) patientModal.addEventListener('click', (e) => { if (e.target === patientModal) closePatientModal(); });
+
+async function viewPatientDetails(patientId) {
+    if (!patientModalContent) return;
+    patientModalContent.innerHTML = '<div style="text-align: center; padding: 40px;">Loading patient data...</div>';
+    openPatientModal();
+    try {
+        const response = await fetch(`/api/nutritionists/patient-details/${patientId}/`, { credentials: 'include' });
+        if (response.ok) {
+            const patient = await response.json();
+            let healthConditionsHtml = '';
+            if (patient.health_conditions && patient.health_conditions.length > 0) patient.health_conditions.forEach(condition => { healthConditionsHtml += `<span class="health-condition-tag">${condition}</span>`; });
+            else healthConditionsHtml = '<span class="health-condition-tag">None</span>';
+            patientModalContent.innerHTML = `<div class="patient-detail-row"><div class="patient-detail-label">Full Name</div><div class="patient-detail-value"><strong>${patient.full_name || 'N/A'}</strong></div></div><div class="patient-detail-row"><div class="patient-detail-label">Email</div><div class="patient-detail-value">${patient.email}</div></div><div class="patient-detail-row"><div class="patient-detail-label">Phone</div><div class="patient-detail-value">${patient.phone || 'Not provided'}</div></div><div class="patient-detail-row"><div class="patient-detail-label">Country</div><div class="patient-detail-value">${patient.country || 'Not provided'}</div></div><div class="patient-detail-row"><div class="patient-detail-label">Age</div><div class="patient-detail-value">${patient.age}</div></div><div class="patient-detail-row"><div class="patient-detail-label">Weight</div><div class="patient-detail-value">${patient.weight} kg</div></div><div class="patient-detail-row"><div class="patient-detail-label">Height</div><div class="patient-detail-value">${patient.height} cm</div></div><div class="patient-detail-row"><div class="patient-detail-label">Goal Weight</div><div class="patient-detail-value">${patient.goal_weight} kg</div></div><div class="patient-detail-row"><div class="patient-detail-label">BMI</div><div class="patient-detail-value">${patient.bmi} <span style="font-size: 11px; color: #64748b;">(${patient.bmi_category})</span></div></div><div class="patient-detail-row"><div class="patient-detail-label">Health Conditions</div><div class="patient-detail-value">${healthConditionsHtml}</div></div><div class="patient-detail-row"><div class="patient-detail-label">Member Since</div><div class="patient-detail-value">${patient.created_at}</div></div>`;
+        } else { patientModalContent.innerHTML = '<div style="text-align: center; padding: 40px; color: #ef4444;">❌ Error loading patient details</div>'; }
+    } catch (error) { console.error('Error loading patient details:', error); patientModalContent.innerHTML = '<div style="text-align: center; padding: 40px; color: #ef4444;">❌ Network error</div>'; }
+}
+// Fonction pour démarrer une conversation avec un patient
+document.querySelectorAll('.start-chat-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const patientId = btn.dataset.patientId;
+        const patientName = btn.dataset.patientName;
+        
+        // Aller à l'onglet Messages
+        switchTab('messages');
+        
+        // Ouvrir la conversation avec ce patient
+        setTimeout(() => {
+            // Simuler un clic sur la conversation si elle existe
+            const conversationItem = document.querySelector(`#conversationsList .message-item[data-user-id="${patientId}"]`);
+            if (conversationItem) {
+                conversationItem.click();
+            } else {
+                // Si la conversation n'existe pas encore, la créer virtuellement
+                currentChatUserId = parseInt(patientId);
+                document.getElementById('chatWithName').innerHTML = `<i class="fas fa-user-circle"></i> ${escapeHtml(patientName)}`;
+                document.getElementById('chatHeader').style.display = 'block';
+                document.getElementById('messagesList').innerHTML = '<p style="text-align: center; color: #94a3b8; padding: 40px;">No messages yet. Send a message to start the conversation!</p>';
+                
+                // Démarrer le polling
+                if (messagePollingInterval) clearInterval(messagePollingInterval);
+                messagePollingInterval = setInterval(() => {
+                    if (currentChatUserId) loadMessages(currentChatUserId);
+                }, 5000);
+            }
+        }, 300);
+    });
+});
+
+// ==================== PLAN TYPE SWITCHER ====================
+document.getElementById('personalizedPlanTypeBtn')?.addEventListener('click', () => {
+    document.getElementById('personalizedPlanSection').style.display = 'block';
+    document.getElementById('standardPlanSection').style.display = 'none';
+    document.getElementById('personalizedPlanTypeBtn').className = 'btn-primary';
+    document.getElementById('standardPlanTypeBtn').className = 'btn-outline';
+});
+
+document.getElementById('standardPlanTypeBtn')?.addEventListener('click', () => {
+    document.getElementById('personalizedPlanSection').style.display = 'none';
+    document.getElementById('standardPlanSection').style.display = 'block';
+    document.getElementById('standardPlanTypeBtn').className = 'btn-primary';
+    document.getElementById('standardPlanTypeBtn').style.background = '#FF7A00';
+    document.getElementById('personalizedPlanTypeBtn').className = 'btn-outline';
+});
+
+// Générer un plan de repas complet sur 4 semaines
+document.getElementById('generateMealPlanBtn')?.addEventListener('click', () => {
+    const mealTemplates = {
+        breakfast: [
+            '🍳 Omelette with spinach & mushrooms',
+            '🥣 Oatmeal with berries & almonds',
+            '🍞 Avocado toast on whole grain',
+            '🥛 Greek yogurt with honey & walnuts',
+            '🍌 Banana & almond butter smoothie',
+            '🥚 Scrambled eggs with tomatoes',
+            '🍎 Apple cinnamon oatmeal'
+        ],
+        lunch: [
+            '🥗 Grilled chicken salad with vinaigrette',
+            '🥑 Quinoa bowl with roasted vegetables',
+            '🍲 Lentil soup with whole grain bread',
+            '🥪 Turkey & avocado wrap',
+            '🍣 Salmon with brown rice & broccoli',
+            '🥙 Chickpea & feta salad',
+            '🍜 Chicken & vegetable stir-fry'
+        ],
+        dinner: [
+            '🍗 Baked salmon with sweet potato',
+            '🥩 Lean beef with roasted vegetables',
+            '🍛 Chicken curry with quinoa',
+            '🐟 White fish with wild rice',
+            '🥘 Turkey meatballs with zucchini noodles',
+            '🍆 Eggplant parmesan',
+            '🌯 Chicken fajita bowl'
+        ],
+        snack: [
+            '🍎 Apple with peanut butter',
+            '🥕 Carrot sticks with hummus',
+            '🥜 Handful of almonds',
+            '🍌 Banana',
+            '🥛 Greek yogurt',
+            '🍊 Orange',
+            '🥚 Hard-boiled egg'
+        ]
+    };
+    
+    const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+    
+    function getRandomItem(arr, day, mealType) {
+        // Pour varier, utiliser le jour comme seed
+        const index = (day + mealType.length) % arr.length;
+        return arr[index];
+    }
+    
+    for (let week = 1; week <= 4; week++) {
+        const weekBody = document.getElementById(`week${week}Meals`);
+        if (weekBody) {
+            let html = '';
+            for (let i = 0; i < days.length; i++) {
+                const day = days[i];
+                const breakfast = getRandomItem(mealTemplates.breakfast, i, 'breakfast');
+                const lunch = getRandomItem(mealTemplates.lunch, i, 'lunch');
+                const dinner = getRandomItem(mealTemplates.dinner, i, 'dinner');
+                const snack = getRandomItem(mealTemplates.snack, i, 'snack');
+                
+                html += `
+                    <tr style="border-bottom: 1px solid #e2e8f0;">
+                        <td style="padding: 10px 8px; font-weight: 600;">${day}</td>
+                        <td style="padding: 10px 8px;">${breakfast}</td>
+                        <td style="padding: 10px 8px;">${lunch}</td>
+                        <td style="padding: 10px 8px;">${dinner}</td>
+                        <td style="padding: 10px 8px;">${snack}</td>
+                    </tr>
+                `;
+            }
+            weekBody.innerHTML = html;
+        }
+    }
+    
+    alert('✅ Sample 4-week meal plan generated! You can edit individual meals in the table above.');
+});
+
+// Ouvrir les détails par défaut pour la semaine 1
+document.querySelector('#standardPlanSection details')?.setAttribute('open', '');
+// ==================== SAVE STANDARD PLAN (PUBLIC) ====================
+
+document.getElementById('saveStandardPlanBtn')?.addEventListener('click', async () => {
+    // Vérifier que tous les éléments existent
+    const planName = document.getElementById('standardPlanName')?.value.trim();
+    const shortDesc = document.getElementById('standardShortDesc')?.value.trim();
+    const description = document.getElementById('standardPlanDescription')?.value.trim();
+    const price = document.getElementById('standardPrice')?.value;
+    const category = document.getElementById('standardCategory')?.value;
+    const featuresText = document.getElementById('standardFeatures')?.value;
+    const duration = document.getElementById('planDuration')?.value;
+    const activity = document.getElementById('planActivity')?.value;
+    const shopping = document.getElementById('shoppingList')?.value;
+    
+    // Validation
+    if (!planName || !shortDesc || !price) {
+        alert('❌ Please fill required fields (Plan Name, Short Description, Price)');
+        console.log('Missing:', { planName, shortDesc, price });
+        return;
+    }
+    
+    // Features array
+    const features = featuresText ? featuresText.split('\n').filter(f => f.trim().length > 0) : [];
+    
+    // Récupérer les 4 semaines de repas
+    const weeksMeals = [];
+    for (let week = 1; week <= 4; week++) {
+        const weekBody = document.getElementById(`week${week}Meals`);
+        const weekMeals = [];
+        if (weekBody) {
+            const rows = weekBody.querySelectorAll('tr');
+            rows.forEach(row => {
+                const cells = row.querySelectorAll('td');
+                if (cells.length >= 5) {
+                    weekMeals.push({
+                        day: cells[0]?.innerText?.trim() || '',
+                        breakfast: cells[1]?.innerText?.trim() || '',
+                        lunch: cells[2]?.innerText?.trim() || '',
+                        dinner: cells[3]?.innerText?.trim() || '',
+                        snack: cells[4]?.innerText?.trim() || ''
+                    });
+                }
+            });
+        }
+        weeksMeals.push({ week: week, meals: weekMeals });
+    }
+    
+    // Construire la description complète
+    const fullDescription = `
+${description || ''}
+
+📅 DURATION: ${duration || '30 days'}
+
+📋 WHAT'S INCLUDED:
+${features.map(f => `• ${f.replace('✅', '').trim()}`).join('\n')}
+
+🥗 WEEKLY MEAL PLAN:
+${weeksMeals.map(week => `Week ${week.week}:
+${week.meals.map(meal => `  ${meal.day}: Breakfast: ${meal.breakfast} | Lunch: ${meal.lunch} | Dinner: ${meal.dinner} | Snack: ${meal.snack}`).join('\n')}`).join('\n')}
+
+🏃‍♀️ ACTIVITY PLAN:
+${activity || 'Not specified'}
+
+🛒 SHOPPING LIST:
+${shopping || 'Not specified'}
+    `;
+    
+    const saveBtn = document.getElementById('saveStandardPlanBtn');
+    const originalText = saveBtn?.innerText || 'Submit';
+    if (saveBtn) {
+        saveBtn.innerText = '⏳ Submitting...';
+        saveBtn.disabled = true;
+    }
+    
+    try {
+        const response = await fetch('/api/nutritionists/diet-plans/', {
+            method: 'POST',
+            credentials: 'include',
+            headers: { 
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCSRFToken()
+            },
+            body: JSON.stringify({
+                plan_type: 'standard',
+                name: planName,
+                short_description: shortDesc,
+                description: fullDescription,
+                price: parseFloat(price),
+                features: features,
+                category: category || 'weight_loss',
+                duration: duration,
+                activity_plan: activity,
+                shopping_list: shopping,
+                weekly_meal_plan: weeksMeals
+            })
+        });
+        
+        const data = await response.json();
+        console.log('Response:', data);
+        
+        if (response.ok) {
+            alert('✅ Standard plan submitted for admin approval!');
+            // Reset form
+            document.getElementById('standardPlanName').value = '';
+            document.getElementById('standardShortDesc').value = '';
+            document.getElementById('standardPlanDescription').value = '';
+            document.getElementById('standardPrice').value = '';
+            document.getElementById('standardFeatures').value = '';
+            document.getElementById('planActivity').value = '';
+            document.getElementById('shoppingList').value = '';
+        } else {
+            alert('❌ Error: ' + (data.error || JSON.stringify(data)));
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('❌ Network error: ' + error.message);
+    } finally {
+        if (saveBtn) {
+            saveBtn.innerText = originalText;
+            saveBtn.disabled = false;
+        }
+    }
+});
+// ==================== CREATE DIET PLAN ====================
+let mealCounter = 0;
+async function loadPatientsForSelect() {
+    try {
+        const response = await fetch('/api/nutritionists/patients-select/', { credentials: 'include' });
+        const select = document.getElementById('patientSelect');
+        if (!select) return;
+        if (response.ok) {
+            const patients = await response.json();
+            if (patients.length === 0) { select.innerHTML = '<option value="">No patients assigned yet</option>'; return; }
+            select.innerHTML = '<option value="">-- Select Patient --</option>';
+            patients.forEach(patient => { select.innerHTML += `<option value="${patient.id}">${patient.name} (${patient.email})</option>`; });
+        }
+    } catch (error) { console.error('Error loading patients:', error); }
+}
+async function loadExistingPlans() {
+    try {
+        const response = await fetch('/api/nutritionists/diet-plans/', { credentials: 'include' });
+        const container = document.getElementById('existingPlansList');
+        if (!container) return;
+        if (response.ok) {
+            const plans = await response.json();
+            if (plans.length === 0) { container.innerHTML = '<div class="message-item">No diet plans created yet</div>'; return; }
+            container.innerHTML = '';
+            plans.forEach(plan => { container.innerHTML += `<div class="message-item"><div style="flex: 1;"><strong>🌿 ${plan.name}</strong><div style="font-size: 12px; color: #64748b;">Patient: ${plan.patient_name} | ${plan.start_date} → ${plan.end_date || 'Ongoing'}</div></div><span class="badge-active">${plan.is_active ? 'Active' : 'Inactive'}</span><button class="btn-outline edit-plan-btn" data-id="${plan.id}" style="padding: 4px 12px;">Edit</button></div>`; });
+        }
+    } catch (error) { console.error('Error loading existing plans:', error); }
+}
+document.getElementById('addMealBtn')?.addEventListener('click', () => {
+    const mealsContainer = document.getElementById('mealsList');
+    if (!mealsContainer) return;
+    if (mealsContainer.children.length === 1 && mealsContainer.children[0].innerText.includes('Click "Add Meal"')) mealsContainer.innerHTML = '';
+    mealCounter++;
+    const mealDiv = document.createElement('div'); mealDiv.className = 'meal-item'; mealDiv.id = `meal-${mealCounter}`;
+    mealDiv.innerHTML = `<select class="meal-type" style="width: 120px;"><option value="breakfast">🥣 Breakfast</option><option value="lunch">🥗 Lunch</option><option value="dinner">🍲 Dinner</option><option value="snack">🍎 Snack</option></select><input type="text" class="meal-name" placeholder="Food name" style="width: 160px;"><input type="text" class="meal-quantity" placeholder="Quantity" style="width: 100px;"><input type="number" class="meal-calories" placeholder="Calories" style="width: 80px;"><div class="meal-actions"><button class="btn-outline move-up" style="padding: 4px 8px;">↑</button><button class="btn-outline move-down" style="padding: 4px 8px;">↓</button><button class="btn-outline remove-meal" style="color: #ef4444;">✗</button></div>`;
+    mealsContainer.appendChild(mealDiv);
+    mealDiv.querySelector('.remove-meal').addEventListener('click', () => { mealDiv.remove(); if (mealsContainer.children.length === 0) mealsContainer.innerHTML = '<div class="meal-item" style="color: #94a3b8; justify-content: center;">Click "Add Meal" to add meals to this plan</div>'; });
+    mealDiv.querySelector('.move-up').addEventListener('click', () => { const prev = mealDiv.previousElementSibling; if (prev && prev.classList.contains('meal-item')) mealsContainer.insertBefore(mealDiv, prev); });
+    mealDiv.querySelector('.move-down').addEventListener('click', () => { const next = mealDiv.nextElementSibling; if (next && next.classList.contains('meal-item')) mealsContainer.insertBefore(next, mealDiv); });
+});
+document.getElementById('savePlanBtn')?.addEventListener('click', async () => {
+    const patientId = document.getElementById('patientSelect')?.value;
+    const planName = document.getElementById('planName')?.value.trim();
+    const planDetails = document.getElementById('planDetails')?.value.trim();
+    const startDate = document.getElementById('startDate')?.value;
+    const endDate = document.getElementById('endDate')?.value;
+    if (!patientId || !planName || !startDate) { alert('❌ Please fill required fields'); return; }
+    const meals = [];
+    document.querySelectorAll('#mealsList .meal-item').forEach((mealDiv, index) => { const foodName = mealDiv.querySelector('.meal-name')?.value.trim(); if (foodName) meals.push({ meal_type: mealDiv.querySelector('.meal-type')?.value, food_name: foodName, quantity: mealDiv.querySelector('.meal-quantity')?.value || '', calories: parseInt(mealDiv.querySelector('.meal-calories')?.value) || 0, order: index }); });
+    if (meals.length === 0) { alert('❌ Please add at least one meal'); return; }
+    const saveBtn = document.getElementById('savePlanBtn');
+    const originalText = saveBtn.innerText; saveBtn.innerText = '⏳ Saving...'; saveBtn.disabled = true;
+    try {
+        const response = await fetch('/api/nutritionists/diet-plans/', { method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCSRFToken() }, body: JSON.stringify({ plan_type: 'personalized',  patient_id: parseInt(patientId), name: planName, description: planDetails, start_date: startDate, end_date: endDate || null, meals: meals }) });
+        if (response.ok) { alert('✅ Diet plan created successfully!'); document.getElementById('planName').value = ''; document.getElementById('planDetails').value = ''; document.getElementById('startDate').value = ''; document.getElementById('endDate').value = ''; document.getElementById('mealsList').innerHTML = '<div class="meal-item" style="color: #94a3b8; justify-content: center;">Click "Add Meal" to add meals to this plan</div>'; mealCounter = 0; loadExistingPlans(); }
+        else { const data = await response.json(); alert('❌ Error: ' + (data.error || 'Unknown error')); }
+    } catch (error) { console.error('Error saving plan:', error); alert('❌ Network error'); }
+    finally { saveBtn.innerText = originalText; saveBtn.disabled = false; }
+});
+
+// ==================== PROGRESS MONITORING ====================
+
+let currentPeriod = '3m';
+
+
+// Charger la liste des patients pour le select - URL CORRIGÉE
+async function loadPatientsForProgress() {
+    try {
+        // Utiliser l'URL qui existe: patients-progress/ (sans -list)
+        const response = await fetch('/api/nutritionists/patients-progress/', {
+            credentials: 'include'
+        });
+        
+        const select = document.getElementById('progressPatientSelect');
+        
+        if (response.ok) {
+            const patients = await response.json();
+            console.log('Patients loaded:', patients);
+            
+            if (patients.length === 0) {
+                select.innerHTML = '<option value="">No patients assigned</option>';
+                return;
+            }
+            
+            select.innerHTML = '<option value="">-- Select Patient --</option>';
+            patients.forEach(patient => {
+                const option = document.createElement('option');
+                option.value = patient.id;
+                option.textContent = patient.name;
+                select.appendChild(option);
+            });
+            
+            // Sélectionner le premier patient automatiquement
+            if (patients.length > 0) {
+                currentPatientId = patients[0].id;
+                select.value = currentPatientId;
+                loadPatientProgressData(currentPatientId, currentPeriod);
+            }
+        } else {
+            console.error('Failed to load patients, status:', response.status);
+            select.innerHTML = '<option value="">Error loading patients</option>';
+        }
+    } catch (error) {
+        console.error('Error loading patients:', error);
+        const select = document.getElementById('progressPatientSelect');
+        if (select) select.innerHTML = '<option value="">Error loading patients</option>';
+    }
+}
+
+// Événement changement de patient
+document.getElementById('progressPatientSelect')?.addEventListener('change', (e) => {
+    currentPatientId = e.target.value;
+    if (currentPatientId) {
+        loadPatientProgressData(currentPatientId, currentPeriod);
+    }
+});
+
+// Configurer les boutons de période
+function setupPeriodFilters() {
+    const buttons = document.querySelectorAll('.period-btn');
+    
+    buttons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            // Mettre à jour le style
+            buttons.forEach(b => {
+                b.style.background = '#e2e8f0';
+                b.style.color = '#475569';
+            });
+            btn.style.background = '#27AE60';
+            btn.style.color = 'white';
+            
+            currentPeriod = btn.dataset.period;
+            if (currentPatientId) {
+                loadPatientProgressData(currentPatientId, currentPeriod);
+            }
+        });
+    });
+}
+
+// Charger les données de progression - URL CORRIGÉE
+async function loadPatientProgressData(patientId, period) {
+    if (!patientId) return;
+    
+    console.log(`Loading progress for patient ${patientId}, period: ${period}`);
+    
+    // Afficher un état de chargement
+    document.getElementById('currentWeightDisplay').innerHTML = 'Loading...';
+    document.getElementById('bodyFatDisplay').innerHTML = 'Loading...';
+    document.getElementById('goalWeightDisplay').innerHTML = 'Loading...';
+    
+    try {
+        // Utiliser l'URL qui existe: patient-progress/{id}/
+        const url = `/api/nutritionists/patient-progress/${patientId}/?period=${period}`;
+        console.log('Fetching:', url);
+        
+        const response = await fetch(url, {
+            credentials: 'include'
+        });
+        
+        if (response.ok) {
+            const data = await response.json();
+            console.log('Progress data received:', data);
+            
+            // Mettre à jour l'interface avec les données reçues
+            updateProgressDisplay(data);
+            updateProgressChart(data);
+        } else {
+            console.error('API returned error:', response.status);
+            showNoDataMessage();
+        }
+    } catch (error) {
+        console.error('Error loading progress data:', error);
+        showNoDataMessage();
+    }
+}
+
+// Mettre à jour l'affichage des métriques
+function updateProgressDisplay(data) {
+    console.log('Updating display with:', data); // Debug
+    
+    // Current Weight
+    const weightElement = document.getElementById('currentWeightDisplay');
+    if (data.current_weight) {
+        weightElement.innerHTML = `${data.current_weight} kg`;
+    } else {
+        weightElement.innerHTML = '-- kg';
+    }
+    
+    // Body Fat - CORRIGÉ
+    const fatElement = document.getElementById('bodyFatDisplay');
+    if (data.current_body_fat !== null && data.current_body_fat !== undefined) {
+        fatElement.innerHTML = `${data.current_body_fat} %`;
+    } else {
+        fatElement.innerHTML = '-- %';
+    }
+    
+    // Goal Weight
+    const goalElement = document.getElementById('goalWeightDisplay');
+    if (data.goal_weight) {
+        goalElement.innerHTML = `${data.goal_weight} kg`;
+    } else {
+        goalElement.innerHTML = '-- kg';
+    }
+    
+    // Weight Change
+    const weightChangeElement = document.getElementById('weightChangeDisplay');
+    if (data.weight_change && data.weight_change !== 0) {
+        const isPositive = data.weight_change > 0;
+        weightChangeElement.innerHTML = `${isPositive ? '▲' : '▼'} ${Math.abs(data.weight_change)} kg`;
+        if (data.weight_change_percent) {
+            weightChangeElement.innerHTML += ` (${Math.abs(data.weight_change_percent)}%)`;
+        }
+        weightChangeElement.style.color = isPositive ? '#ef4444' : '#27AE60';
+    } else {
+        weightChangeElement.innerHTML = 'No change';
+        weightChangeElement.style.color = '#64748b';
+    }
+    
+    // Body Fat Change - CORRIGÉ
+    const fatChangeElement = document.getElementById('fatChangeDisplay');
+    if (data.fat_change !== null && data.fat_change !== undefined && data.fat_change !== 0) {
+        const isPositive = data.fat_change > 0;
+        fatChangeElement.innerHTML = `${isPositive ? '▲' : '▼'} ${Math.abs(data.fat_change)}%`;
+        fatChangeElement.style.color = isPositive ? '#ef4444' : '#27AE60';
+    } else {
+        fatChangeElement.innerHTML = 'No change';
+        fatChangeElement.style.color = '#64748b';
+    }
+    
+    // To Goal
+    const toGoalElement = document.getElementById('toGoalDisplay');
+    if (data.to_goal_text) {
+        toGoalElement.innerHTML = data.to_goal_text;
+    } else if (data.goal_weight && data.current_weight) {
+        const toGoal = (data.goal_weight - data.current_weight).toFixed(1);
+        toGoalElement.innerHTML = `${Math.abs(toGoal)} kg to goal`;
+    } else {
+        toGoalElement.innerHTML = '--';
+    }
+}
+
+// Mettre à jour le graphique
+function updateProgressChart(data) {
+    const canvas = document.getElementById('progressChart');
+    if (!canvas) return;
+    
+    const ctx = canvas.getContext('2d');
+    
+    // Détruire l'ancien graphique s'il existe
+    if (progressChartInstance) {
+        progressChartInstance.destroy();
+        progressChartInstance = null;
+    }
+    
+    // Vérifier si on a des données
+    if (!data.weight_data || data.weight_data.length === 0) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.font = '14px Inter';
+        ctx.fillStyle = '#94a3b8';
+        ctx.textAlign = 'center';
+        ctx.fillText('No data available. Add weight entries to see progress.', canvas.width / 2, canvas.height / 2);
+        return;
+    }
+    
+    // Vérifier si on a des données body fat valides
+    const hasBodyFat = data.body_fat_data && data.body_fat_data.length > 0 && 
+                       data.body_fat_data.some(v => v !== null && v !== undefined && v !== 0);
+    
+    // Configuration des datasets
+    const datasets = [
+        {
+            label: 'Weight (kg)',
+            data: data.weight_data,
+            borderColor: '#FF7A00',
+            backgroundColor: 'rgba(255, 122, 0, 0.1)',
+            borderWidth: 3,
+            pointRadius: 5,
+            pointBackgroundColor: '#FF7A00',
+            pointBorderColor: '#fff',
+            pointBorderWidth: 2,
+            tension: 0.3,
+            fill: true,
+            yAxisID: 'y'
+        }
+    ];
+    
+    // Ajouter body fat SI disponible
+    if (hasBodyFat) {
+        datasets.push({
+            label: 'Body Fat (%)',
+            data: data.body_fat_data,
+            borderColor: '#27AE60',
+            backgroundColor: 'rgba(39, 174, 96, 0.1)',
+            borderWidth: 3,
+            pointRadius: 5,
+            pointBackgroundColor: '#27AE60',
+            pointBorderColor: '#fff',
+            pointBorderWidth: 2,
+            tension: 0.3,
+            fill: true,
+            yAxisID: 'y1'
+        });
+    }
+    
+    // Configuration des scales
+    const scales = {
+        y: {
+            title: { display: true, text: 'Weight (kg)', font: { size: 11 } },
+            grid: { color: 'rgba(0,0,0,0.05)' },
+            position: 'left'
+        },
+        x: {
+            title: { display: true, text: 'Date', font: { size: 11 } },
+            grid: { display: false }
+        }
+    };
+    
+    // Ajouter l'axe y1 seulement si on a body fat
+    if (hasBodyFat) {
+        scales.y1 = {
+            title: { display: true, text: 'Body Fat (%)', font: { size: 11 } },
+            grid: { drawOnChartArea: false },
+            position: 'right'
+        };
+    }
+    
+    // Créer le graphique
+    progressChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: { labels: data.labels, datasets: datasets },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const label = context.dataset.label || '';
+                            const value = context.raw;
+                            if (label.includes('Weight')) {
+                                return `${label}: ${value} kg`;
+                            }
+                            return `${label}: ${value}%`;
+                        }
+                    }
+                },
+                legend: {
+                    position: 'top',
+                    labels: { font: { size: 11, family: 'Inter' } }
+                }
+            },
+            scales: scales
+        }
+    });
+    
+    console.log('Chart created with hasBodyFat:', hasBodyFat);
+}
+
+// Afficher un message quand pas de données
+function showNoDataMessage() {
+    const canvas = document.getElementById('progressChart');
+    if (canvas) {
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.font = '14px Inter';
+        ctx.fillStyle = '#94a3b8';
+        ctx.textAlign = 'center';
+        ctx.fillText('No data available. Add weight entries to see progress.', canvas.width / 2, canvas.height / 2);
+    }
+    
+    document.getElementById('currentWeightDisplay').innerHTML = '-- kg';
+    document.getElementById('bodyFatDisplay').innerHTML = '-- %';
+    document.getElementById('goalWeightDisplay').innerHTML = '-- kg';
+    document.getElementById('weightChangeDisplay').innerHTML = 'No change';
+    document.getElementById('fatChangeDisplay').innerHTML = 'No change';
+    document.getElementById('toGoalDisplay').innerHTML = '--';
+}
+
+// ==================== MESSAGERIE ====================
+let currentChatPatientId = null;
+
+async function loadPatientsList() {
+    const container = document.getElementById('patientsListContainer');
+    if (!container) return;
+    
+    try {
+        const response = await fetch('/api/nutritionists/my-patients/', {
+            credentials: 'include'
+        });
+        
+        if (response.ok) {
+            const patients = await response.json();
+            
+            if (patients.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 40px 20px; color: #94a3b8;">
+                        <i class="fas fa-users" style="font-size: 32px; margin-bottom: 12px; opacity: 0.5;"></i>
+                        <p>No patients assigned yet</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = '';
+            
+            patients.forEach(patient => {
+                const isActive = currentChatPatientId == patient.id;
+                const activeClass = isActive ? 'background: #e8f5e9; border-left: 3px solid #27AE60;' : '';
+                const avatar = patient.avatar || patient.name.charAt(0).toUpperCase();
+                
+                container.innerHTML += `
+                    <div class="patient-chat-item" data-patient-id="${patient.id}" 
+                         style="display: flex; align-items: center; gap: 12px; padding: 14px 16px; cursor: pointer; transition: all 0.2s; border-bottom: 1px solid #e2e8f0; ${activeClass}"
+                         onclick="openChatWithPatient(${patient.id}, '${escapeHtml(patient.name)}', '${avatar}')">
+                        <div style="width: 48px; height: 48px; background: linear-gradient(135deg, #27AE60, #2ecc71); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 18px; flex-shrink: 0;">
+                            ${avatar}
+                        </div>
+                        <div style="flex: 1;">
+                           <strong style="font-size: 14px; color: #1e293b;">${patient.name}</strong>
+                            <div style="font-size: 11px; color: #64748b; margin-top: 4px;">
+                                <i class="fas fa-user"></i> Patient
+                            </div>
+                        </div>
+                        <div style="font-size: 10px; color: #94a3b8;">
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+    } catch (error) {
+        console.error('Error loading patients:', error);
+        container.innerHTML = '<div style="text-align: center; padding: 40px; color: #ef4444;">Error loading patients</div>';
+    }
+}
+
+// Fonction globale pour ouvrir le chat avec un patient
+window.openChatWithPatient = function(patientId, patientName, avatar) {
+    currentChatPatientId = patientId;
+    
+    // Mettre à jour le header
+    document.getElementById('chatWithName').innerHTML = patientName;
+    document.getElementById('chatAvatar').innerText = avatar;
+    document.getElementById('chatStatus').innerHTML = '<i class="fas fa-circle" style="color: #27AE60; font-size: 8px;"></i> Active';
+    
+    document.getElementById('chatHeader').style.display = 'flex';
+    document.getElementById('messageInputArea').style.display = 'block';
+    
+    // Mettre à jour le style de la liste
+    document.querySelectorAll('.patient-chat-item').forEach(item => {
+        item.style.background = '';
+        item.style.borderLeft = '';
+    });
+    const selectedItem = document.querySelector(`.patient-chat-item[data-patient-id="${patientId}"]`);
+    if (selectedItem) {
+        selectedItem.style.background = '#e8f5e9';
+        selectedItem.style.borderLeft = '3px solid #27AE60';
+    }
+    
+    // Afficher un message d'accueil
+    const messagesArea = document.getElementById('messagesArea');
+    messagesArea.innerHTML = `
+        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; text-align: center; color: #94a3b8;">
+            <i class="fas fa-comment-dots" style="font-size: 48px; margin-bottom: 16px; opacity: 0.3;"></i>
+            <p style="font-size: 14px;">Chat with ${escapeHtml(patientName)}</p>
+            <p style="font-size: 12px; margin-top: 8px;">Start your conversation by sending a message</p>
+        </div>
+    `;
+    
+    // Ici tu pourras charger les messages existants plus tard
+    loadMessages(patientId);
+};
+
+async function loadMessages(patientId) {
+    // À implémenter plus tard avec l'API messages
+    console.log('Loading messages for patient:', patientId);
+}
+
+// Envoyer un message
+async function sendMessageToPatient() {
+    if (!currentChatPatientId) {
+        alert('Please select a patient first');
+        return;
+    }
+    
+    const input = document.getElementById('messageInput');
+    const content = input.value.trim();
+    
+    if (!content) return;
+    
+    // Afficher le message dans la conversation
+    const messagesArea = document.getElementById('messagesArea');
+    const time = new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+    
+    // Ajouter le message à la zone de chat
+    const messageHtml = `
+        <div style="display: flex; justify-content: flex-end; margin-bottom: 12px;">
+            <div style="max-width: 70%; background: #27AE60; color: white; padding: 10px 14px; border-radius: 18px; border-bottom-right-radius: 4px;">
+                <div style="font-size: 14px; word-wrap: break-word;">${escapeHtml(content)}</div>
+                <div style="font-size: 10px; margin-top: 4px; opacity: 0.7; text-align: right;">${time} ✓</div>
+            </div>
+        </div>
+    `;
+    
+    // Supprimer le message d'accueil s'il existe
+    if (messagesArea.innerHTML.includes('Start your conversation')) {
+        messagesArea.innerHTML = '';
+    }
+    
+    messagesArea.innerHTML += messageHtml;
+    messagesArea.scrollTop = messagesArea.scrollHeight;
+    
+    // Vider l'input
+    input.value = '';
+    
+    // Ici tu feras l'appel API pour sauvegarder le message
+    console.log('Message sent to patient', currentChatPatientId, content);
+}
+
+// ==================== WEBSOCKET CHAT EN TEMPS RÉEL ====================
+let chatSocket = null;
+let currentChatReceiverId = null;
+let typingTimeout = null;
+
+// Fonction pour connecter le WebSocket
+function connectWebSocket(receiverId) {
+    if (chatSocket && chatSocket.readyState === WebSocket.OPEN) {
+        chatSocket.close();
+    }
+    
+    currentChatReceiverId = receiverId;
+    const wsUrl = `ws://${window.location.host}/ws/chat/${receiverId}/`;
+    
+    chatSocket = new WebSocket(wsUrl);
+    
+    chatSocket.onopen = function(e) {
+        console.log('WebSocket connected');
+    };
+    
+    chatSocket.onmessage = function(e) {
+        const data = JSON.parse(e.data);
+        
+        if (data.type === 'message') {
+            // Ajouter le message reçu
+            addMessageToChat(data.message, false);
+        } else if (data.type === 'typing') {
+            // Afficher "l'utilisateur écrit..."
+            showTypingIndicator(data.is_typing, data.user_name);
+        }
+    };
+    
+    chatSocket.onclose = function(e) {
+        console.log('WebSocket disconnected');
+        // Tenter de reconnecter après 3 secondes
+        setTimeout(() => {
+            if (currentChatReceiverId) {
+                connectWebSocket(currentChatReceiverId);
+            }
+        }, 3000);
+    };
+    
+    chatSocket.onerror = function(e) {
+        console.error('WebSocket error:', e);
+    };
+}
+
+// Envoyer un message via WebSocket
+function sendMessageViaWebSocket(receiverId, content) {
+    if (chatSocket && chatSocket.readyState === WebSocket.OPEN) {
+        chatSocket.send(JSON.stringify({
+            type: 'message',
+            receiver_id: receiverId,
+            content: content
+        }));
+    } else {
+        console.error('WebSocket not connected');
+        // Fallback à l'API REST
+        sendMessageViaAPI(receiverId, content);
+    }
+}
+
+// Indicateur de saisie
+function sendTypingIndicator(isTyping) {
+    if (chatSocket && chatSocket.readyState === WebSocket.OPEN && currentChatReceiverId) {
+        chatSocket.send(JSON.stringify({
+            type: 'typing',
+            is_typing: isTyping
+        }));
+    }
+}
+
+// Afficher l'indicateur "écrit..."
+function showTypingIndicator(isTyping, userName) {
+    const statusElement = document.getElementById('chatStatus');
+    if (statusElement) {
+        if (isTyping) {
+            statusElement.innerHTML = `<i class="fas fa-pen"></i> ${userName} is typing...`;
+        } else {
+            statusElement.innerHTML = '<i class="fas fa-circle" style="color: #27AE60; font-size: 8px;"></i> Online';
+        }
+    }
+}
+
+// Ajouter un message au chat
+function addMessageToChat(message, isMine) {
+    const messagesArea = document.getElementById('messagesArea');
+    const messageHtml = `
+        <div style="display: flex; justify-content: ${isMine ? 'flex-end' : 'flex-start'}; margin-bottom: 16px;">
+            <div style="max-width: 75%; background: ${isMine ? '#27AE60' : 'white'}; color: ${isMine ? 'white' : '#1e293b'}; padding: 12px 16px; border-radius: 18px; ${isMine ? 'border-bottom-right-radius: 4px;' : 'border-bottom-left-radius: 4px;'} box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
+                <div style="font-size: 14px; word-wrap: break-word;">${escapeHtml(message.content)}</div>
+                <div style="font-size: 10px; margin-top: 6px; opacity: 0.7; text-align: ${isMine ? 'right' : 'left'};">${message.time_display || formatTime(message.created_at)}</div>
+                ${isMine ? '<span style="font-size: 10px; margin-left: 6px;">✓</span>' : ''}
+            </div>
+        </div>
+    `;
+    
+    if (messagesArea.innerHTML.includes('Start your conversation')) {
+        messagesArea.innerHTML = '';
+    }
+    
+    messagesArea.innerHTML += messageHtml;
+    messagesArea.scrollTop = messagesArea.scrollHeight;
+}
+
+// Envoyer un message via API (fallback)
+async function sendMessageViaAPI(receiverId, content) {
+    try {
+        const response = await fetch('/api/users/send-message/', {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCSRFToken()
+            },
+            body: JSON.stringify({
+                receiver_id: receiverId,
+                content: content
+            })
+        });
+        
+        if (response.ok) {
+            const data = await response.json();
+            addMessageToChat(data.message, true);
+        }
+    } catch (error) {
+        console.error('Error sending message:', error);
+    }
+}
+
+// Formatage du temps
+function formatTime(isoString) {
+    if (!isoString) return '';
+    const date = new Date(isoString);
+    return date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+}
+
+// Modifier la fonction d'envoi de message
+async function sendMessageToPatient() {
+    if (!currentChatPatientId) {
+        alert('Please select a patient first');
+        return;
+    }
+    
+    const input = document.getElementById('messageInput');
+    const content = input.value.trim();
+    
+    if (!content) return;
+    
+    // Afficher immédiatement
+    addMessageToChat({
+        content: content,
+        time_display: new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }),
+        created_at: new Date().toISOString()
+    }, true);
+    
+    // Vider l'input
+    input.value = '';
+    input.style.height = 'auto';
+    
+    // Envoyer via WebSocket
+    sendMessageViaWebSocket(currentChatPatientId, content);
+}
+
+// Modifier openChatWithPatient pour utiliser WebSocket
+window.openChatWithPatient = function(patientId, patientName, avatar) {
+    currentChatPatientId = patientId;
+    
+    // Connecter WebSocket
+    connectWebSocket(patientId);
+    
+    // Mettre à jour le header
+    document.getElementById('chatWithName').innerHTML = patientName;
+    document.getElementById('chatAvatar').innerText = avatar;
+    document.getElementById('chatStatus').innerHTML = '<i class="fas fa-circle" style="color: #27AE60; font-size: 8px;"></i> Online';
+    
+    document.getElementById('chatHeader').style.display = 'flex';
+    document.getElementById('messageInputArea').style.display = 'block';
+    
+    // Mettre à jour le style de la liste
+    document.querySelectorAll('.patient-chat-item').forEach(item => {
+        item.style.background = '';
+        item.style.borderLeft = '';
+    });
+    const selectedItem = document.querySelector(`.patient-chat-item[data-patient-id="${patientId}"]`);
+    if (selectedItem) {
+        selectedItem.style.background = '#e8f5e9';
+        selectedItem.style.borderLeft = '3px solid #27AE60';
+    }
+    
+    // Charger les messages existants via API
+    loadMessagesHistory(patientId);
+};
+
+// Charger l'historique des messages
+async function loadMessagesHistory(userId) {
+    try {
+        const response = await fetch(`/api/users/messages/${userId}/`, {
+            credentials: 'include'
+        });
+        
+        if (response.ok) {
+            const messages = await response.json();
+            const messagesArea = document.getElementById('messagesArea');
+            
+            if (messages.length === 0) {
+                messagesArea.innerHTML = `
+                    <div style="text-align: center; color: #94a3b8; padding: 60px 20px;">
+                        <i class="fas fa-comment-dots" style="font-size: 48px; margin-bottom: 16px; opacity: 0.3;"></i>
+                        <p>No messages yet</p>
+                        <p style="font-size: 12px; margin-top: 8px;">Send a message to start the conversation!</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            messagesArea.innerHTML = messages.map(msg => `
+                <div style="display: flex; justify-content: ${msg.is_mine ? 'flex-end' : 'flex-start'}; margin-bottom: 16px;">
+                    <div style="max-width: 75%; background: ${msg.is_mine ? '#27AE60' : 'white'}; color: ${msg.is_mine ? 'white' : '#1e293b'}; padding: 12px 16px; border-radius: 18px; ${msg.is_mine ? 'border-bottom-right-radius: 4px;' : 'border-bottom-left-radius: 4px;'} box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
+                        <div style="font-size: 14px; word-wrap: break-word;">${escapeHtml(msg.content)}</div>
+                        <div style="font-size: 10px; margin-top: 6px; opacity: 0.7; text-align: ${msg.is_mine ? 'right' : 'left'};">${msg.time_display || formatTime(msg.created_at)}</div>
+                    </div>
+                </div>
+            `).join('');
+            
+            messagesArea.scrollTop = messagesArea.scrollHeight;
+        }
+    } catch (error) {
+        console.error('Error loading messages:', error);
+    }
+}
+
+// Détecter quand l'utilisateur écrit
+document.getElementById('messageInput')?.addEventListener('input', function() {
+    this.style.height = 'auto';
+    this.style.height = Math.min(this.scrollHeight, 100) + 'px';
+    
+    if (typingTimeout) clearTimeout(typingTimeout);
+    sendTypingIndicator(true);
+    
+    typingTimeout = setTimeout(() => {
+        sendTypingIndicator(false);
+    }, 1000);
+});
+// Événements
+document.getElementById('sendMsgBtn')?.addEventListener('click', sendMessageToPatient);
+document.getElementById('messageInput')?.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendMessageToPatient();
+    }
+});
+
+// Auto-resize du textarea
+document.getElementById('messageInput')?.addEventListener('input', function() {
+    this.style.height = 'auto';
+    this.style.height = Math.min(this.scrollHeight, 100) + 'px';
+});
+
+// Charger la liste des patients au chargement de l'onglet
+document.querySelector('[data-tab="messages"]')?.addEventListener('click', () => {
+    loadPatientsList();
+});
+// Initialisation
+function initProgressMonitoring() {
+    console.log('Initializing Progress Monitoring...');
+    loadPatientsForProgress();
+    setupPeriodFilters();
+}
+
+// Lancer l'initialisation
+initProgressMonitoring();
+
+// ==================== PATIENT SEARCH ====================
+document.getElementById('patientSearch')?.addEventListener('input', function(e) {
+    const searchTerm = e.target.value.toLowerCase();
+    const rows = document.querySelectorAll('#patientsTableBody tr');
+    rows.forEach(row => { const name = row.querySelector('td:first-child')?.innerText.toLowerCase() || ''; row.style.display = name.includes(searchTerm) ? '' : 'none'; });
+});
+
+// ==================== INITIALISATION ====================
+document.addEventListener('DOMContentLoaded', async () => {
+    const isAuthenticated = await checkAuth();
+    if (!isAuthenticated) return;
+    loadNotifications(); setInterval(loadNotifications, 30000);
+    loadNutritionistProfile();
+    loadNutritionistStats();
+    loadMyPatients();
+    loadConsultationStats();
+    loadConsultationRequests();
+    loadUpcomingConsultations();
+    loadPastConsultations();
+    loadNutritionistCalendar();
+    loadPatientsForSelect();
+    loadExistingPlans();
+    loadPatientsForProgress();
+    setupPeriodFilters();
+});
+</script>
+</body>
+</html>

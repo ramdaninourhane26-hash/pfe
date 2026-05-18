@@ -1,0 +1,3253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>NutriLife - Admin Dashboard | Platform Management</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #F8F9FA;
+            color: #2C3E50;
+            overflow-x: hidden;
+        }
+
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 280px;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            border-right: 1px solid rgba(39, 174, 96, 0.15);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            z-index: 100;
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            padding: 28px 24px;
+            border-bottom: 1px solid rgba(39, 174, 96, 0.15);
+            margin-bottom: 24px;
+        }
+
+        .logo {
+            font-size: 1.9rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #27AE60 0%, #27AE60 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.3px;
+        }
+
+        .logo span {
+            font-size: 1.7rem;
+        }
+
+        .admin-badge {
+            background: linear-gradient(135deg, #FF7A00, #27AE60);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-top: 12px;
+        }
+
+        .user-welcome {
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .avatar {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #27AE60, #27AE60);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 12px rgba(39,174,96,0.2);
+        }
+
+        .user-info h4 {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+            color: #2C3E50;
+        }
+
+        .user-info p {
+            font-size: 0.75rem;
+            color: #5a6e7c;
+        }
+
+        .nav-menu {
+            padding: 0 16px 24px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 16px;
+            margin-bottom: 6px;
+            border-radius: 18px;
+            color: #5a6e7c;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .nav-item i {
+            width: 24px;
+            font-size: 1.2rem;
+            color: #27AE60;
+            transition: all 0.3s ease;
+        }
+
+        .nav-item span {
+            font-size: 0.95rem;
+        }
+
+        .nav-item.active {
+            background: linear-gradient(135deg, rgba(39,174,96,0.12), rgba(255,122,0,0.08));
+            color: #27AE60;
+            font-weight: 600;
+        }
+
+        .nav-item.active i {
+            color: #FF7A00;
+        }
+
+        .nav-item:hover:not(.active) {
+            background: rgba(39, 174, 96, 0.08);
+            transform: translateX(4px);
+        }
+
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 28px 36px;
+            transition: all 0.3s;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .page-title h1 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #FF7A00 0%, #27AE60 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .page-title p {
+            color: #5a6e7c;
+            font-size: 0.85rem;
+            margin-top: 4px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 28px;
+            padding: 1.5rem;
+            box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(39, 174, 96, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 40px -15px rgba(39, 174, 96, 0.15);
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .stat-header i {
+            font-size: 2rem;
+            color: #27AE60;
+        }
+
+        .stat-value {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: #2C3E50;
+        }
+
+        .stat-label {
+            color: #5a6e7c;
+            font-size: 0.85rem;
+        }
+
+        .admin-card {
+            background: white;
+            border-radius: 28px;
+            padding: 1.6rem;
+            margin-bottom: 30px;
+            border: 1px solid rgba(39, 174, 96, 0.1);
+            box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .admin-card:hover {
+            box-shadow: 0 25px 40px -15px rgba(39, 174, 96, 0.12);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .card-header h3 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #2C3E50;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #27AE60 0%, #27AE60 100%);
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(39, 174, 96, 0.4);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1.5px solid #27AE60;
+            color: #27AE60;
+            padding: 8px 16px;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline:hover {
+            background: linear-gradient(135deg, #27AE60, #27AE60);
+            border-color: transparent;
+            color: white;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 12px 8px;
+            text-align: left;
+            border-bottom: 1px solid rgba(39, 174, 96, 0.1);
+        }
+
+        .data-table th {
+            font-weight: 600;
+            color: #27AE60;
+            background: #f8fafc;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .data-table td {
+            vertical-align: middle;
+        }
+
+        .data-table tr:hover {
+            background: #f8fafc;
+        }
+
+        .badge-active {
+            background: rgba(39, 174, 96, 0.15);
+            color: #27AE60;
+            padding: 4px 12px;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        .badge-pending {
+            background: rgba(255, 122, 0, 0.15);
+            color: #FF7A00;
+            padding: 4px 12px;
+            border-radius: 40px;
+            font-size: 0.7rem;
+        }
+
+        .meal-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(39, 174, 96, 0.1);
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .message-item {
+            display: flex;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(39, 174, 96, 0.1);
+        }
+
+        .message-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, rgba(39, 174, 96, 0.12), rgba(255, 122, 0, 0.08));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #27AE60;
+        }
+                /* Plan card styles */
+        .plan-item-card {
+            background: #f8fafc;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+            border: 1px solid #e2e8f0;
+            transition: all 0.2s;
+        }
+        .plan-item-card:hover {
+            border-color: #27AE60;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        .plan-icon-large {
+            font-size: 32px;
+        }
+        .features-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        .feature-tag {
+            background: #e2e8f0;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            color: #475569;
+        }
+                /* Modal overlay */
+        #postModalOverlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+
+        #createPostModal {
+            z-index: 1000;
+        }
+
+        #createPostModal input, #createPostModal textarea, #createPostModal select {
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        #createPostModal input:focus, #createPostModal textarea:focus, #createPostModal select:focus {
+            outline: none;
+            border-color: #27AE60;
+            box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.1);
+        }
+        /* ==================== NOTIFICATION BELL ==================== */
+.notification-bell {
+    position: relative;
+    cursor: pointer;
+    background: none;
+    border: none;
+    font-size: 1.3rem;
+    color: #5a6e7c;
+    transition: all 0.3s ease;
+    padding: 8px;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.notification-bell:hover {
+    background: rgba(39, 174, 96, 0.1);
+    color: #27AE60;
+    transform: scale(1.05);
+}
+
+.notification-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: #ef4444;
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 50%;
+    min-width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Notification Panel */
+.notification-panel {
+    position: absolute;
+    top: 60px;
+    right: 20px;
+    width: 380px;
+    max-width: calc(100vw - 40px);
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    border: 1px solid #e2e8f0;
+    z-index: 1000;
+    display: none;
+    overflow: hidden;
+    animation: slideDown 0.2s ease;
+}
+
+.notification-panel.show {
+    display: block;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.notification-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+}
+
+.notification-header h4 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 0;
+}
+
+.notification-header button {
+    background: none;
+    border: none;
+    color: #27AE60;
+    font-size: 12px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.notification-header button:hover {
+    text-decoration: underline;
+}
+
+.notification-list {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.notification-item {
+    display: flex;
+    gap: 12px;
+    padding: 14px 20px;
+    border-bottom: 1px solid #f1f5f9;
+    transition: all 0.2s;
+    cursor: pointer;
+}
+
+.notification-item:hover {
+    background: #f8fafc;
+}
+
+.notification-item.unread {
+    background: #f0fdf4;
+    border-left: 3px solid #27AE60;
+}
+
+.notification-icon {
+    width: 36px;
+    height: 36px;
+    background: #e8f5e9;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.notification-icon i {
+    font-size: 16px;
+    color: #27AE60;
+}
+
+.notification-content {
+    flex: 1;
+}
+
+.notification-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 4px;
+}
+
+.notification-message {
+    font-size: 12px;
+    color: #64748b;
+    margin-bottom: 4px;
+    line-height: 1.4;
+}
+
+.notification-time {
+    font-size: 10px;
+    color: #94a3b8;
+}
+
+.empty-notifications {
+    text-align: center;
+    padding: 40px 20px;
+    color: #94a3b8;
+}
+
+.empty-notifications i {
+    font-size: 48px;
+    opacity: 0.3;
+    margin-bottom: 12px;
+}
+
+.empty-notifications p {
+    font-size: 13px;
+}
+        @media (max-width: 1024px) {
+            .sidebar {
+                transform: translateX(-100%);
+                position: fixed;
+                z-index: 200;
+                transition: transform 0.3s;
+            }
+            .sidebar.open {
+                transform: translateX(0);
+            }
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+            }
+            .menu-toggle {
+                display: block;
+            }
+        }
+
+        @media (min-width: 1025px) {
+            .menu-toggle {
+                display: none;
+            }
+        }
+
+        .menu-toggle {
+            background: none;
+            border: none;
+            font-size: 26px;
+            color: #27AE60;
+            margin-right: 12px;
+            cursor: pointer;
+        }
+
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 150;
+            display: none;
+        }
+        .overlay.active {
+            display: block;
+        }
+
+        .tab-content {
+            display: none;
+        }
+        .active-tab {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="dashboard-container">
+    <!-- Sidebar Admin -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">NutriLife <span>🍎</span></div>
+            <div class="admin-badge"><i class="fas fa-shield-alt"></i> Administrator</div>
+            <div class="user-welcome">
+                <div class="avatar">AD</div>
+                <div class="user-info">
+                    <h4>Admin D.</h4>
+                    <p>Super Admin • Full Access</p>
+                </div>
+            </div>
+        </div>
+        <div class="nav-menu">
+            <div class="nav-item active" data-tab="dashboard-overview">
+                <i class="fas fa-tachometer-alt"></i><span>Dashboard Overview</span>
+            </div>
+            <div class="nav-item" data-tab="manage-users">
+                <i class="fas fa-users"></i><span>Manage Users</span>
+            </div>
+            <div class="nav-item" data-tab="manage-nutritionists">
+                <i class="fas fa-user-md"></i><span>Manage Nutritionists</span>
+            </div>
+            <div class="nav-item" data-tab="manage-subscriptions">
+                <i class="fas fa-calendar-check"></i><span>Manage Subscriptions</span>
+            </div>
+                   
+            <div class="nav-item" data-tab="manage-assignments" style="position: relative;">
+                <i class="fas fa-user-check"></i><span>Assign Requests</span>
+                <span id="adminNotificationBadge" style="position: absolute; right: 20px; background: #ef4444; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; display: none;">0</span>
+            </div>
+            <div class="nav-item" data-tab="manage-blog">
+                <i class="fas fa-newspaper"></i><span>Manage Blog & Testimonials</span>
+            </div>
+            <div class="nav-item" data-tab="manage-trials">
+                <i class="fas fa-calendar-check"></i><span>Manage Trials</span>
+            </div>
+            <div class="nav-item" data-tab="plans-payments">
+                <i class="fas fa-credit-card"></i><span>Plans & Payments</span>
+            </div>
+            <div class="nav-item" data-tab="reports">
+                <i class="fas fa-chart-bar"></i><span>Reports</span>
+            </div>
+        </div>
+        <div style="padding: 20px 24px; border-top: 1px solid rgba(39,174,96,0.1); margin-top: 20px;">
+            <div class="nav-item" id="logoutBtn">
+                <i class="fas fa-sign-out-alt"></i><span>Log out</span>
+            </div>
+        </div>
+    </aside>
+
+    <div class="overlay" id="overlay"></div>
+
+    <main class="main-content">
+        <div class="top-bar">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <button class="menu-toggle" id="menuToggleBtn"><i class="fas fa-bars"></i></button>
+                <div class="page-title">
+                    <h1 id="dynamicTitle">Admin Dashboard</h1>
+                    <p id="dynamicSubtitle">Platform Management & Analytics</p>
+                </div>
+            </div>
+            <button class="btn-primary" id="exportDataBtn"><i class="fas fa-download"></i> Export Report</button>
+            <button class="btn-primary" id="availabilityBtn"><i class="fas fa-clock"></i> Set Availability</button>
+                <!-- Notification Bell -->
+    <div style="position: relative;">
+        <button class="notification-bell" id="notificationBell">
+            <i class="fas fa-bell"></i>
+            <span class="notification-badge" id="notificationBadge" style="display: none;">0</span>
+        </button>
+        
+        <!-- Notification Panel -->
+        <div class="notification-panel" id="notificationPanel">
+            <div class="notification-header">
+                <h4><i class="fas fa-bell"></i> Notifications</h4>
+                <button id="markAllNotificationsBtn">Tout marquer comme lu</button>
+            </div>
+                <div class="notification-list" id="notificationList">
+                    <div class="empty-notifications">
+                        <i class="fas fa-bell-slash"></i>
+                        <p>Aucune notification</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+
+        <!-- Dashboard Overview Tab -->
+        <div id="dashboard-overview" class="tab-content active-tab">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-header"><span class="stat-label">Total Users</span><i class="fas fa-users"></i></div>
+                    <div class="stat-value" id="totalUsers">--</div>
+                    <div class="stat-label">↑ +12% this month</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-header"><span class="stat-label">Nutritionists</span><i class="fas fa-user-md"></i></div>
+                    <div class="stat-value" id="totalNutritionists">--</div>
+                    <div class="stat-label">Active professionals</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-header"><span class="stat-label">Active Subscriptions</span><i class="fas fa-calendar-check"></i></div>
+                    <div class="stat-value" id="activeSubscriptions">--</div>
+                    <div class="stat-label">Premium plans</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-header"><span class="stat-label">Revenue (MTD)</span><i class="fas fa-dollar-sign"></i></div>
+                    <div class="stat-value" id="mtdRevenue">--</div>
+                    <div class="stat-label">+18% vs last month</div>
+                </div>
+            </div>
+
+            <div class="admin-card">
+                <div class="card-header">
+                    <h3><i class="fas fa-chart-line"></i> Platform Activity</h3>
+                    <button class="btn-outline" id="refreshStats">Refresh</button>
+                </div>
+                <canvas id="activityChart" style="max-height: 280px; width:100%"></canvas>
+            </div>
+
+            <div class="admin-card">
+                <div class="card-header"><h3><i class="fas fa-clock"></i> Recent Activities</h3></div>
+                <div id="recentActivitiesList">
+                    <div class="meal-item">Loading...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Manage Users Tab -->
+        <div id="manage-users" class="tab-content">
+            <button class="btn-primary" id="openAddPatientModal" style="margin-bottom: 16px;">
+                <i class="fas fa-plus"></i> Add Patient
+            </button>
+
+            <!-- Modal pour ajouter un patient -->
+            <div id="addPatientModal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; border-radius: 28px; padding: 24px; z-index: 1000; width: 90%; max-width: 500px; box-shadow: 0 20px 40px rgba(0,0,0,0.2);">
+                <h3 style="margin-bottom: 16px;">➕ Add New Patient</h3>
+                <div style="display: grid; gap: 12px;">
+                    <input type="text" id="newFirstName" placeholder="First Name" style="padding: 10px; border-radius: 12px;">
+                    <input type="text" id="newLastName" placeholder="Last Name" style="padding: 10px; border-radius: 12px;">
+                    <input type="email" id="newEmail" placeholder="Email" style="padding: 10px; border-radius: 12px;">
+                    <input type="password" id="newPassword" placeholder="Password" style="padding: 10px; border-radius: 12px;">
+                    <input type="number" id="newWeight" placeholder="Weight (kg)" step="0.1" style="padding: 10px; border-radius: 12px;">
+                    <input type="number" id="newHeight" placeholder="Height (cm)" step="0.1" style="padding: 10px; border-radius: 12px;">
+                    <input type="number" id="newGoalWeight" placeholder="Goal Weight (kg)" step="0.1" style="padding: 10px; border-radius: 12px;">
+                    <div>
+                        <label>Health Conditions</label>
+                        <div id="healthConditionsCheckboxes" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px;">
+                            <label style="display: flex; align-items: center; gap: 8px; font-size: 13px;">
+                                <input type="checkbox" value="Weight Loss Resistance"> Weight Loss Resistance
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-size: 13px;">
+                                <input type="checkbox" value="PCOS / Hormonal Imbalance"> PCOS / Hormonal Imbalance
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-size: 13px;">
+                                <input type="checkbox" value="Diabetes / Metabolic Disorders"> Diabetes / Metabolic Disorders
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-size: 13px;">
+                                <input type="checkbox" value="Thyroid Disorders"> Thyroid Disorders
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-size: 13px;">
+                                <input type="checkbox" value="Chronic Diseases"> Chronic Diseases
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-size: 13px;">
+                                <input type="checkbox" value="Digestive Issues"> Digestive Issues
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-size: 13px;">
+                                <input type="checkbox" value="Postpartum Recovery"> Postpartum Recovery
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-size: 13px;">
+                                <input type="checkbox" value="Other"> Other
+                            </label>
+                        </div>
+                        <input type="text" id="otherHealthCondition" placeholder="If Other, please specify..." style="width: 100%; margin-top: 8px; padding: 8px; border-radius: 12px; display: none;">
+                    </div>
+                </div>
+                <div style="display: flex; gap: 12px; margin-top: 20px;">
+                    <button id="saveNewPatientBtn" class="btn-primary" style="flex: 1;">Save Patient</button>
+                    <button id="closeModalBtn" class="btn-outline" style="flex: 1;">Cancel</button>
+                </div>
+            </div>
+            <div id="modalOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 999;"></div>
+
+            <div class="admin-card">
+                <div class="card-header">
+                    <h3><i class="fas fa-users"></i> All Registered Users</h3>
+                    <input type="text" id="userSearch" placeholder="Search users..." style="padding: 8px 16px; width: 250px; border-radius: 40px;">
+                </div>
+                <div style="overflow-x: auto;">
+                    <table class="data-table" id="usersTable">
+                        <thead>
+                            <td><th>Name</th><th>Email</th><th>Role</th><th>Weight (kg)</th><th>Height (cm)</th><th>Goal (kg)</th><th>Health Conditions</th><th>Assign to</th><th>Status</th><th>Actions</th></tr>
+                        </thead>
+                        <tbody id="usersTableBody">
+                            <tr><td colspan="10" style="text-align: center;">Loading users...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Manage Nutritionists Tab -->
+        <div id="manage-nutritionists" class="tab-content">
+            <div class="admin-card">
+                <div class="card-header">
+                    <h3><i class="fas fa-user-md"></i> Nutritionists</h3>
+                    <button class="btn-primary" id="addNutritionistBtn"><i class="fas fa-plus"></i> Add Nutritionist</button>
+                </div>
+                <div style="overflow-x: auto;">
+                    <table class="data-table" id="nutritionistsTable">
+                        <thead>
+                            <tr><th>Name</th><th>Email</th><th>Specialization</th><th>Patients</th><th>Status</th><th>Actions</th></tr>
+                        </thead>
+                        <tbody id="nutritionistsTableBody">
+                            <tr><td colspan="6" style="text-align: center;">Loading nutritionists...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Ajouter Nutritionniste -->
+        <div id="addNutritionistModal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; border-radius: 28px; padding: 24px; z-index: 1000; width: 90%; max-width: 500px;">
+            <h3 style="margin-bottom: 16px;">➕ Add Nutritionist</h3>
+            <div style="display: grid; gap: 12px;">
+                <input type="text" id="nutriFirstName" placeholder="First Name" style="padding: 10px; border-radius: 12px;">
+                <input type="text" id="nutriLastName" placeholder="Last Name" style="padding: 10px; border-radius: 12px;">
+                <input type="email" id="nutriEmail" placeholder="Email" style="padding: 10px; border-radius: 12px;">
+                <input type="password" id="nutriPassword" placeholder="Password" style="padding: 10px; border-radius: 12px;">
+                <input type="text" id="nutriSpecialization" placeholder="Specialization" style="padding: 10px; border-radius: 12px;">
+                <textarea id="nutriBio" placeholder="Bio" rows="3" style="padding: 10px; border-radius: 12px;"></textarea>
+                <input type="number" id="nutriExperience" placeholder="Experience (years)" style="padding: 10px; border-radius: 12px;">
+            </div>
+            <div style="display: flex; gap: 12px; margin-top: 20px;">
+                <button id="saveNutritionistBtn" class="btn-primary" style="flex: 1;">Save</button>
+                <button id="closeNutriModalBtn" class="btn-outline" style="flex: 1;">Cancel</button>
+            </div>
+        </div>
+        <div id="nutriModalOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 999;"></div>
+
+         <!-- Manage Subscriptions Tab -->
+<div id="manage-subscriptions" class="tab-content">
+    <div class="admin-card">
+        <div class="card-header">
+            <h3><i class="fas fa-credit-card"></i> All Paid Subscriptions</h3>
+            <button class="btn-outline" id="refreshSubscriptionsBtn" style="font-size: 11px;">
+                <i class="fas fa-sync-alt"></i> Refresh
+            </button>
+        </div>
+        <div style="overflow-x: auto;">
+            <table class="data-table" id="subscriptionsTable" style="min-width: 800px;">
+                <thead>
+                    <tr>
+                        <th>Customer</th>
+                        <th>Email</th>
+                        <th>Plan</th>
+                        <th>Amount</th>
+                        <th>Duration</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="subscriptionsTableBody">
+                    <tr><td colspan="8" style="text-align: center;">Loading subscriptions...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+     <!-- Manage Assignments Tab -->
+<div id="manage-assignments" class="tab-content">
+    <div class="admin-card">
+        <div class="card-header">
+            <h3><i class="fas fa-user-plus"></i> Nutritionist Assignment Requests</h3>
+            <span id="assignmentRequestsCount" class="badge-active" style="background: #ef4444; color: white;">0</span>
+        </div>
+        <div id="assignmentRequestsList">
+            <div class="message-item">Loading requests...</div>
+        </div>
+    </div>
+</div>
+
+
+ <!-- Manage Blog & Testimonials Tab -->
+ <div id="manage-blog" class="tab-content">
+    <div class="admin-card">
+        <div class="card-header">
+            <h3><i class="fas fa-clock"></i> Pending Approval</h3>
+            <span id="pendingCount" class="badge-active" style="background: #ef4444; color: white;">0</span>
+        </div>
+        <div id="pendingPostsList">
+            <div class="message-item">Loading pending articles...</div>
+        </div>
+    </div>
+            <div class="admin-card">
+                <div class="card-header">
+                    <h3><i class="fas fa-newspaper"></i> Blog Posts</h3>
+                    <button class="btn-primary" id="newBlogBtn" style="display: flex; align-items: center; gap: 8px;">
+                        <i class="fas fa-plus"></i> New Post
+                    </button>
+                </div>
+                
+                <!-- Category Filter Buttons -->
+                <div style="margin-bottom: 24px; display: flex; flex-wrap: wrap; gap: 10px; border-bottom: 1px solid #e2e8f0; padding-bottom: 16px;">
+                    <button class="category-filter-btn active" data-category="all" style="background: #27AE60; color: white; border: none; padding: 8px 20px; border-radius: 40px; font-weight: 600; cursor: pointer; transition: all 0.2s;">
+                        📚 All (<span id="countAll">0</span>)
+                    </button>
+                    <button class="category-filter-btn" data-category="Articles" style="background: #f1f5f9; color: #475569; border: none; padding: 8px 20px; border-radius: 40px; font-weight: 500; cursor: pointer; transition: all 0.2s;">
+                        📰 Articles (<span id="countArticles">0</span>)
+                    </button>
+                    <button class="category-filter-btn" data-category="Healthy Recipes" style="background: #f1f5f9; color: #475569; border: none; padding: 8px 20px; border-radius: 40px; font-weight: 500; cursor: pointer; transition: all 0.2s;">
+                        🥗 Healthy Recipes (<span id="countRecipes">0</span>)
+                    </button>
+                    <button class="category-filter-btn" data-category="Wellness Tips" style="background: #f1f5f9; color: #475569; border: none; padding: 8px 20px; border-radius: 40px; font-weight: 500; cursor: pointer; transition: all 0.2s;">
+                        💆 Wellness Tips (<span id="countWellness">0</span>)
+                    </button>
+                    <button class="category-filter-btn" data-category="Nutrition" style="background: #f1f5f9; color: #475569; border: none; padding: 8px 20px; border-radius: 40px; font-weight: 500; cursor: pointer; transition: all 0.2s;">
+                        🍎 Nutrition (<span id="countNutrition">0</span>)
+                    </button>
+                    <button class="category-filter-btn" data-category="Success Stories" style="background: #f1f5f9; color: #475569; border: none; padding: 8px 20px; border-radius: 40px; font-weight: 500; cursor: pointer; transition: all 0.2s;">
+                        ⭐ Success Stories (<span id="countSuccess">0</span>)
+                    </button>
+                </div>
+                
+                <!-- Posts List Container -->
+                <div id="allPostsList" style="max-height: 500px; overflow-y: auto;">
+                    <div class="message-item">Loading posts...</div>
+                </div>
+            </div>
+        
+            <!-- Testimonials Section -->
+            <div class="admin-card">
+                <div class="card-header">
+                    <h3><i class="fas fa-star"></i> Testimonials</h3>
+                    <button class="btn-primary" id="approveTestimonialBtn">Approve Pending</button>
+                </div>
+                <div id="testimonialsList">
+                    <div class="meal-item">⭐ "Amazing transformation! Lost 8kg in 2 months" - Sarah</div>
+                    <div class="meal-item">⭐ "Finally found a nutritionist who understands PCOS" - Leila</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- CREATE POST MODAL (amélioré avec scroll) -->
+        <div id="createPostModal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; border-radius: 28px; z-index: 1000; width: 90%; max-width: 580px; max-height: 85vh; overflow-y: auto; box-shadow: 0 25px 50px rgba(0,0,0,0.3);">
+            <div style="position: sticky; top: 0; background: white; padding: 20px 24px 12px 24px; border-bottom: 1px solid #e2e8f0; border-radius: 28px 28px 0 0; z-index: 10;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <h3 style="color: #2C3E50; margin: 0;">📝 Create New Post</h3>
+                    <button id="closePostModalBtn" style="background: none; border: none; font-size: 28px; cursor: pointer; color: #94a3b8; line-height: 1;">&times;</button>
+                </div>
+            </div>
+            <div style="padding: 20px 24px;">
+                <div style="display: grid; gap: 16px;">
+                    <div>
+                        <label style="font-size: 12px; font-weight: 700; color: #27AE60;">Title</label>
+                        <input type="text" id="postTitle" placeholder="Enter article title" style="width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #e2e8f0;">
+                    </div>
+                    <div>
+                        <label style="font-size: 12px; font-weight: 700; color: #27AE60;">Excerpt (short summary)</label>
+                        <textarea id="postExcerpt" rows="2" placeholder="Brief summary of the article..." style="width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #e2e8f0;"></textarea>
+                    </div>
+                    <div>
+                        <label style="font-size: 12px; font-weight: 700; color: #27AE60;">Content (full article)</label>
+                        <textarea id="postContent" rows="5" placeholder="Write the complete article here..." style="width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #e2e8f0;"></textarea>
+                    </div>
+                    <div>
+                        <label style="font-size: 12px; font-weight: 700; color: #27AE60;">Featured Image URL</label>
+                        <input type="text" id="postImage" placeholder="https://images.unsplash.com/..." style="width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #e2e8f0;">
+                    </div>
+                    <div>
+                        <label style="font-size: 12px; font-weight: 700; color: #27AE60;">Category</label>
+                        <select id="postCategory" style="width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #e2e8f0;">
+                            <option value="Articles">📰 Articles</option>
+                            <option value="Healthy Recipes">🥗 Healthy Recipes</option>
+                            <option value="Wellness Tips">💆 Wellness Tips</option>
+                            <option value="Nutrition">🍎 Nutrition</option>
+                            <option value="Success Stories">⭐ Success Stories</option>
+                        </select>
+                    </div>
+                    <div style="display: flex; gap: 12px;">
+                        <div style="flex: 1;">
+                            <label style="font-size: 12px; font-weight: 700; color: #27AE60;">Author</label>
+                            <input type="text" id="postAuthor" placeholder="Author name" style="width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #e2e8f0;">
+                        </div>
+                        <div style="flex: 1;">
+                            <label style="font-size: 12px; font-weight: 700; color: #27AE60;">Read Time</label>
+                            <input type="text" id="postReadTime" placeholder="5 min read" style="width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #e2e8f0;">
+                        </div>
+                    </div>
+                    <div>
+                        <label style="font-size: 12px; font-weight: 700; color: #27AE60;">Status</label>
+                        <select id="postStatus" style="width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #e2e8f0;">
+                            <option value="published">✅ Published</option>
+                            <option value="pending">⏳ Pending Review</option>
+                            <option value="draft">📝 Draft</option>
+                        </select>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 12px; margin-top: 24px; margin-bottom: 8px;">
+                    <button id="savePostBtn" class="btn-primary" style="flex: 1; padding: 12px;">✅ Publish Article</button>
+                    <button id="cancelPostBtn" class="btn-outline" style="flex: 1; padding: 12px;">❌ Cancel</button>
+                </div>
+            </div>
+        </div>
+        <div id="postModalOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(3px); z-index: 999;"></div>
+                <!-- Modal pour voir les détails d'un article -->
+        <div id="postDetailsModal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; border-radius: 28px; z-index: 1001; width: 90%; max-width: 700px; max-height: 85vh; overflow-y: auto; box-shadow: 0 25px 50px rgba(0,0,0,0.3);">
+            <div style="position: sticky; top: 0; background: white; padding: 20px 24px 12px 24px; border-bottom: 1px solid #e2e8f0; border-radius: 28px 28px 0 0;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <h3 style="color: #2C3E50; margin: 0;">📄 Article Details</h3>
+                    <button id="closeDetailsModalBtn" style="background: none; border: none; font-size: 28px; cursor: pointer; color: #94a3b8;">&times;</button>
+                </div>
+            </div>
+            <div style="padding: 24px;" id="postDetailsContent">
+                <div style="text-align: center; padding: 40px;">Loading...</div>
+            </div>
+            <div style="padding: 16px 24px 24px 24px; border-top: 1px solid #e2e8f0; display: flex; gap: 12px; justify-content: flex-end;">
+                <button id="approveFromDetailsBtn" class="btn-primary" style="background: #27AE60;">✓ Approve</button>
+                <button id="rejectFromDetailsBtn" class="btn-outline" style="color: #ef4444; border-color: #ef4444;">✗ Reject</button>
+                <button id="closeDetailsModalBtn2" class="btn-outline">Close</button>
+            </div>
+        </div>
+        <div id="postDetailsOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(3px); z-index: 1000;"></div>
+            
+        <!-- Manage Trial Consultations Tab -->
+        <div id="manage-trials" class="tab-content">
+            <div class="admin-card">
+                <div class="card-header">
+                    <h3><i class="fas fa-calendar-plus"></i> Trial Consultation Requests</h3>
+                    <span id="trialRequestsCount" class="badge-active" style="background: #ef4444; color: white;">0</span>
+                </div>
+                <div id="trialRequestsList">
+                    <div class="message-item">Loading trial requests...</div>
+                </div>
+            </div>
+        </div>
+        
+                <!-- Plans & Payments Tab -->
+        <div id="plans-payments" class="tab-content">
+            
+            <!-- Section Offres Saisonnières  -->
+            <div class="admin-card">
+                <div class="card-header">
+                    <h3><i class="fas fa-calendar-alt"></i> Seasonal Offers</h3>
+                    <button class="btn-primary" id="createSeasonalOfferBtn" style="background: #FF7A00;">+ Create Seasonal Offer</button>
+                </div>
+                <div id="seasonalOffersList">
+                    <div class="message-item">Loading seasonal offers...</div>
+                </div>
+            </div>
+            <!-- MODAL pour créer une offre saisonnière -->
+<div id="seasonalOfferModal" class="modal" style="display: none;">
+    <div style="background: white; border-radius: 28px; max-width: 550px; width: 90%; max-height: 85vh; overflow-y: auto; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1001;">
+        <div style="padding: 24px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #e2e8f0; padding-bottom: 16px;">
+                <h3><i class="fas fa-calendar-alt"></i> Create Seasonal Offer</h3>
+                <button id="closeSeasonalModalBtn" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #94a3b8;">&times;</button>
+            </div>
+            <div id="seasonalOfferForm">
+                <div style="display: grid; gap: 16px;">
+                    <div>
+                        <label>Offer Name *</label>
+                        <input type="text" id="seasonalName" placeholder="e.g., Ramadan Special, Summer Sale" style="width: 100%; padding: 12px; border-radius: 12px;">
+                    </div>
+                    <div>
+                        <label>Short Description *</label>
+                        <input type="text" id="seasonalShortDesc" placeholder="Short description for the card" style="width: 100%; padding: 12px; border-radius: 12px;">
+                    </div>
+                    <div>
+                        <label>Full Description</label>
+                        <textarea id="seasonalDescription" rows="3" placeholder="Detailed description of the offer..." style="width: 100%; padding: 12px; border-radius: 12px;"></textarea>
+                    </div>
+                    <div style="display: flex; gap: 16px;">
+                        <div style="flex: 1;">
+                            <label>Original Price ($)</label>
+                            <input type="number" id="seasonalOriginalPrice" step="0.01" placeholder="99.99" style="width: 100%; padding: 12px;">
+                        </div>
+                        <div style="flex: 1;">
+                            <label>Discounted Price ($) *</label>
+                            <input type="number" id="seasonalPrice" step="0.01" placeholder="49.99" style="width: 100%; padding: 12px;">
+                        </div>
+                    </div>
+                    <div>
+                        <label>Features (one per line)</label>
+                        <textarea id="seasonalFeatures" rows="3" placeholder="✅ Special meal plans&#10;✅ 1 free consultation&#10;✅ Hydration guide" style="width: 100%; padding: 12px;"></textarea>
+                    </div>
+                    <div style="display: flex; gap: 16px;">
+                        <div style="flex: 1;">
+                            <label>Valid Until *</label>
+                            <input type="date" id="seasonalValidUntil" style="width: 100%; padding: 12px;">
+                        </div>
+                        <div style="flex: 1;">
+                            <label>Icon (emoji)</label>
+                            <input type="text" id="seasonalIcon" placeholder="🌙, 🎄, 🎉" value="🌙" style="width: 100%; padding: 12px;">
+                        </div>
+                    </div>
+                    <div>
+                        <label>Duration (display)</label>
+                        <select id="seasonalDuration" style="width: 100%; padding: 12px;">
+                            <option value="month">Month</option>
+                            <option value="2 months">2 Months</option>
+                            <option value="3 months">3 Months</option>
+                            <option value="season">Season</option>
+                        </select>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 12px; margin-top: 24px; padding-top: 16px; border-top: 1px solid #e2e8f0;">
+                    <button id="saveSeasonalOfferBtn" class="btn-primary" style="background: #FF7A00; flex: 1;">Create Offer →</button>
+                    <button id="cancelSeasonalBtn" class="btn-outline" style="flex: 1;">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="seasonalModalOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000;"></div>
+            <!-- Section Plans Standards EN ATTENTE d'approbation -->
+            <div class="admin-card">
+                <div class="card-header">
+                    <h3><i class="fas fa-clock"></i> Pending Standard Plans</h3>
+                    <span id="pendingPlansCount" class="badge-active" style="background: #FF7A00; color: white;">0</span>
+                </div>
+                <div id="pendingPlansList">
+                    <div class="message-item">Loading pending plans...</div>
+                </div>
+            </div>
+
+            <!-- Section Plans Standards APPROUVÉS -->
+            <div class="admin-card">
+                <div class="card-header">
+                    <h3><i class="fas fa-check-circle"></i> Approved Plans</h3>
+                    <button class="btn-outline" id="refreshPlansBtn"><i class="fas fa-sync-alt"></i> Refresh</button>
+                </div>
+                <div id="approvedPlansList">
+                    <div class="message-item">Loading approved plans...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL pour voir les détails d'un plan -->
+        <div id="planDetailsModal" class="modal" style="display: none;">
+            <div style="background: white; border-radius: 28px; max-width: 550px; width: 90%; max-height: 85vh; overflow-y: auto; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1001;">
+                <div style="padding: 24px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #e2e8f0; padding-bottom: 16px;">
+                        <h3><i class="fas fa-clipboard-list"></i> Plan Details</h3>
+                        <button id="closePlanModalBtn" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #94a3b8;">&times;</button>
+                    </div>
+                    <div id="planDetailsContent">
+                        <div style="text-align: center; padding: 40px;">Loading...</div>
+                    </div>
+                    <div style="display: flex; gap: 12px; margin-top: 20px; padding-top: 16px; border-top: 1px solid #e2e8f0;" id="planModalActions">
+                        <!-- Boutons ajoutés dynamiquement -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="planModalOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000;"></div>
+
+        
+        <!-- Reports Tab -->
+        <div id="reports" class="tab-content">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-header">📊 Total Consultations</div>
+                    <div class="stat-value" id="totalConsultations">--</div>
+                    <div class="stat-label">This quarter</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-header">🤖 AI Track Usage</div>
+                    <div class="stat-value" id="aiTrackUsage">--</div>
+                    <div class="stat-label">Meals analyzed</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-header">📈 Avg User Progress</div>
+                    <div class="stat-value" id="avgUserProgress">--</div>
+                    <div class="stat-label">Goal achievement rate</div>
+                    <div class="stat-header">🎫 Trial Consultations</div>
+                    <div class="stat-value" id="totalTrials">--</div>
+                    <div class="stat-label">Total requests</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-header">✅ Approved Trials</div>
+                    <div class="stat-value" id="approvedTrials">--</div>
+                    <div class="stat-label">Confirmed</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-header">❌ Rejected Trials</div>
+                    <div class="stat-value" id="rejectedTrials">--</div>
+                    <div class="stat-label">Not accepted</div>
+                                </div>
+            </div>
+            <div class="admin-card">
+                <div class="card-header">
+                    <h3>📅 Monthly Revenue Report</h3>
+                    <button class="btn-outline" id="refreshReportsBtn" style="font-size: 11px;">Refresh</button>
+                </div>
+                <canvas id="revenueChart" style="max-height: 250px;"></canvas>
+            </div>
+            <div class="admin-card">
+                <div class="card-header">
+                    <h3>📊 Platform Overview</h3>
+                </div>
+                <div class="stats-grid" style="grid-template-columns: repeat(2, 1fr);">
+                    <div class="stat-card">
+                        <div class="stat-header">👩‍⚕️ Active Nutritionists</div>
+                        <div class="stat-value" id="activeNutritionists">--</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">👤 Active Patients</div>
+                        <div class="stat-value" id="activePatients">--</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    function getCSRFToken() {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, 10) === ('csrftoken' + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(10));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    // Tab switching
+    const tabs = document.querySelectorAll('.tab-content');
+    const navItems = document.querySelectorAll('.nav-item');
+    const titles = {
+        'dashboard-overview': { title: 'Admin Dashboard', subtitle: 'Platform Management & Analytics' },
+        'manage-users': { title: 'Manage Users', subtitle: 'View, add, and manage all platform users' },
+        'manage-nutritionists': { title: 'Manage Nutritionists', subtitle: 'Verify and manage nutrition experts' },
+        'manage-subscriptions': { title: 'Manage Subscriptions', subtitle: 'Track active plans and renewals' },
+        'manage-blog': { title: 'Blog & Testimonials', subtitle: 'Create content and manage community feedback' },
+        'plans-payments': { title: 'Plans & Payments', subtitle: 'Configure pricing plans and view transactions' },
+        'reports': { title: 'Reports', subtitle: 'Platform analytics and performance metrics' },
+        'manage-trials': { title: 'Manage Trial Consultations', subtitle: 'Review and manage free trial requests' },
+    
+    };
+
+    function switchTab(tabId) {
+        tabs.forEach(tab => tab.classList.remove('active-tab'));
+        const activeTab = document.getElementById(tabId);
+        if(activeTab) activeTab.classList.add('active-tab');
+        navItems.forEach(item => item.classList.remove('active'));
+        const activeNav = Array.from(navItems).find(item => item.getAttribute('data-tab') === tabId);
+        if(activeNav) activeNav.classList.add('active');
+        if(titles[tabId]) {
+            document.getElementById('dynamicTitle').innerText = titles[tabId].title;
+            document.getElementById('dynamicSubtitle').innerText = titles[tabId].subtitle;
+        }
+        if(tabId === 'dashboard-overview') setTimeout(initActivityChart, 100);
+    }
+
+    navItems.forEach(item => {
+        const tabId = item.getAttribute('data-tab');
+        if(tabId) item.addEventListener('click', () => switchTab(tabId));
+    });
+
+    // Logout
+    async function handleLogout() {
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        try {
+            const response = await fetch("/api/accounts/logout/", {
+                method: "POST",
+                headers: { "Content-Type": "application/json",
+                    "X-CSRFToken": getCookie('csrftoken')
+                },
+                credentials: 'include'
+            });
+    
+            if (response.ok) {
+                localStorage.removeItem('userData');
+                sessionStorage.removeItem('userData');
+                window.location.href = "/login/"; 
+            }
+        } catch (error) {
+            console.error("Logout error:", error);
+        }
+    }
+
+    document.getElementById('logoutBtn').addEventListener('click', handleLogout);
+
+    // Mobile sidebar
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('overlay');
+    const menuToggle = document.getElementById('menuToggleBtn');
+    function closeSidebar() { sidebar.classList.remove('open'); overlay.classList.remove('active'); }
+    function openSidebar() { sidebar.classList.add('open'); overlay.classList.add('active'); }
+    menuToggle?.addEventListener('click', () => { sidebar.classList.contains('open') ? closeSidebar() : openSidebar(); });
+    overlay?.addEventListener('click', closeSidebar);
+
+    // Activity Chart
+    let activityChart = null;
+    function initActivityChart() {
+        const ctx = document.getElementById('activityChart')?.getContext('2d');
+        if(ctx) {
+            if(activityChart) activityChart.destroy();
+            activityChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    datasets: [{
+                        label: 'Active Users',
+                        data: [425, 489, 512, 578, 634, 598, 542],
+                        borderColor: '#27AE60',
+                        backgroundColor: 'rgba(39, 174, 96, 0.05)',
+                        tension: 0.4,
+                        fill: true,
+                        pointBackgroundColor: '#FF7A00',
+                        pointBorderColor: '#fff',
+                        borderWidth: 3
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { position: 'top' } } }
+            });
+        }
+    }
+
+    // ==================== ADD PATIENT MODAL ====================
+    const addPatientModal = document.getElementById('addPatientModal');
+    const modalBgOverlay = document.getElementById('modalOverlay');
+    const otherCheckbox = document.querySelector('#healthConditionsCheckboxes input[value="Other"]');
+    const otherInput = document.getElementById('otherHealthCondition');
+
+    if (otherCheckbox) {
+        otherCheckbox.addEventListener('change', () => {
+            otherInput.style.display = otherCheckbox.checked ? 'block' : 'none';
+        });
+    }
+
+    function getSelectedHealthConditions() {
+        const selected = [];
+        const checkboxes = document.querySelectorAll('#healthConditionsCheckboxes input[type="checkbox"]:checked');
+        checkboxes.forEach(cb => {
+            if (cb.value === 'Other') {
+                const otherText = otherInput.value.trim();
+                if (otherText) selected.push(otherText);
+            } else {
+                selected.push(cb.value);
+            }
+        });
+        return selected;
+    }
+
+    function openAddPatientModal() {
+        if (addPatientModal) addPatientModal.style.display = 'block';
+        if (modalBgOverlay) modalBgOverlay.style.display = 'block';
+    }
+
+    function closeAddPatientModal() {
+        if (addPatientModal) addPatientModal.style.display = 'none';
+        if (modalBgOverlay) modalBgOverlay.style.display = 'none';
+        document.getElementById('newFirstName').value = '';
+        document.getElementById('newLastName').value = '';
+        document.getElementById('newEmail').value = '';
+        document.getElementById('newPassword').value = '';
+        document.getElementById('newWeight').value = '';
+        document.getElementById('newHeight').value = '';
+        document.getElementById('newGoalWeight').value = '';
+        const checkboxes = document.querySelectorAll('#healthConditionsCheckboxes input[type="checkbox"]');
+        checkboxes.forEach(cb => cb.checked = false);
+        otherInput.value = '';
+        otherInput.style.display = 'none';
+    }
+
+    document.getElementById('openAddPatientModal')?.addEventListener('click', openAddPatientModal);
+    document.getElementById('closeModalBtn')?.addEventListener('click', closeAddPatientModal);
+    modalBgOverlay?.addEventListener('click', closeAddPatientModal);
+
+    document.getElementById('saveNewPatientBtn')?.addEventListener('click', async () => {
+        const healthConditions = getSelectedHealthConditions();
+        const patientData = {
+            first_name: document.getElementById('newFirstName').value,
+            last_name: document.getElementById('newLastName').value,
+            email: document.getElementById('newEmail').value,
+            password: document.getElementById('newPassword').value,
+            weight: parseFloat(document.getElementById('newWeight').value) || 0,
+            height: parseFloat(document.getElementById('newHeight').value) || 0,
+            goal_weight: parseFloat(document.getElementById('newGoalWeight').value) || null,
+            health_conditions: healthConditions
+        };
+        
+        if (!patientData.email || !patientData.password) {
+            alert('❌ Email and password are required');
+            return;
+        }
+        
+        const saveBtn = document.getElementById('saveNewPatientBtn');
+        const originalText = saveBtn.innerText;
+        saveBtn.innerText = '⏳ Saving...';
+        saveBtn.disabled = true;
+        
+        try {
+            const response = await fetch('/api/admin/create-patient/', {
+                method: 'POST',
+                credentials: 'include',
+                headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCSRFToken() },
+                body: JSON.stringify(patientData)
+            });
+            const data = await response.json();
+            if (response.ok) {
+                alert(`✅ ${data.message}`);
+                closeAddPatientModal();
+                loadAllUsers();
+            } else {
+                alert(`❌ Error: ${data.error}`);
+            }
+        } catch (error) {
+            console.error('Error creating patient:', error);
+            alert('❌ Network error');
+        } finally {
+            saveBtn.innerText = originalText;
+            saveBtn.disabled = false;
+        }
+    });
+
+    // ==================== ADMIN DASHBOARD ====================
+    let nutritionistsList = [];
+
+    async function loadAllUsers() {
+        try {
+            const response = await fetch('/api/admin/users/', { credentials: 'include' });
+            const tbody = document.getElementById('usersTableBody');
+            if (response.ok) {
+                const users = await response.json();
+                if (users.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="10" style="text-align: center;">No users found</td></tr>';
+                    return;
+                }
+                tbody.innerHTML = '';
+                users.forEach(user => {
+                    const healthConditions = user.health_conditions ? user.health_conditions.join(', ') : 'None';
+                    const statusColor = user.status === 'Active' ? '#27AE60' : '#ef4444';
+                    
+                    // 🔥 AFFICHER LE NUTRITIONNISTE ASSIGNÉ (sans dropdown de sélection) 🔥
+                    const assignedNutritionist = user.assigned_nutritionist_name 
+                        ? `<span style="background: #e8f5e9; padding: 4px 10px; border-radius: 20px; font-size: 12px; color: #27AE60;">
+                               <i class="fas fa-user-md"></i> ${escapeHtml(user.assigned_nutritionist_name)}
+                           </span>`
+                        : '<span style="color: #94a3b8;">Not assigned</span>';
+                    
+                    tbody.innerHTML += `
+                        <tr>
+                            <td><strong>${escapeHtml(user.name)}</strong></td>
+                            <td>${escapeHtml(user.email)}</td>
+                            <td><span class="badge-active">${user.role}</span></td>
+                            <td>${user.weight || '-'}</td>
+                            <td>${user.height || '-'}</td>
+                            <td>${user.goal_weight || '-'}</td>
+                            <td style="max-width: 150px; font-size: 11px;">${escapeHtml(healthConditions)}</td>
+                            <td>${assignedNutritionist}</td>
+                            <td><span style="color: ${statusColor};">${user.status}</span></td>
+                            <td>
+                                <button class="btn-outline block-user-btn" 
+                                        data-user-id="${user.id}" 
+                                        data-user-name="${escapeHtml(user.name)}" 
+                                        style="color: #ef4444; border-color: #ef4444; padding: 4px 12px;">
+                                    ${user.status === 'Active' ? 'Block' : 'Unblock'}
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                });
+                
+                // Attacher les événements de blocage
+                document.querySelectorAll('.block-user-btn').forEach(btn => {
+                    btn.removeEventListener('click', handleBlock);
+                    btn.addEventListener('click', handleBlock);
+                });
+            }
+        } catch (error) {
+            console.error('Error loading users:', error);
+        }
+    }
+
+
+    function handleAssign(e) {
+        const btn = e.target;
+        const patientId = btn.dataset.patientId;
+        const select = document.querySelector(`.assign-nutritionist-select[data-patient-id="${patientId}"]`);
+        const nutritionistId = select.value;
+        if (nutritionistId) {
+            assignPatientToNutritionist(patientId, nutritionistId);
+        } else {
+            alert('Please select a nutritionist');
+        }
+    }
+
+    function handleBlock(e) {
+        const btn = e.target;
+        const userId = btn.dataset.userId;
+        const userName = btn.dataset.userName;
+        if (confirm(`Are you sure you want to block/unblock ${userName}?`)) {
+            blockUser(userId);
+        }
+    }
+
+    async function assignPatientToNutritionist(patientId, nutritionistId) {
+        try {
+            const response = await fetch('/api/admin/assign-patient/', {
+                method: 'POST',
+                credentials: 'include',
+                headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCSRFToken() },
+                body: JSON.stringify({ patient_id: parseInt(patientId), nutritionist_id: parseInt(nutritionistId) })
+            });
+            const data = await response.json();
+            if (response.ok) {
+                alert(`✅ ${data.message}`);
+                loadAllUsers();
+            } else {
+                alert(`❌ Error: ${data.error}`);
+            }
+        } catch (error) {
+            console.error('Error assigning patient:', error);
+            alert('❌ Network error');
+        }
+    }
+
+    async function blockUser(userId) {
+        try {
+            const response = await fetch(`/api/admin/block-user/${userId}/`, {
+                method: 'POST',
+                credentials: 'include',
+                headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCSRFToken() }
+            });
+            const data = await response.json();
+            if (response.ok) {
+                alert(`✅ ${data.message}`);
+                loadAllUsers();
+            } else {
+                alert(`❌ Error: ${data.error}`);
+            }
+        } catch (error) {
+            console.error('Error blocking user:', error);
+            alert('❌ Network error');
+        }
+    }
+
+    async function loadNutritionistsList() {
+        try {
+            const response = await fetch('/api/admin/nutritionists/', { credentials: 'include' });
+            if (response.ok) {
+                nutritionistsList = await response.json();
+            }
+        } catch (error) {
+            console.error('Error loading nutritionists:', error);
+        }
+    }
+
+    // ==================== MANAGE NUTRITIONISTS ====================
+    async function loadNutritionists() {
+        try {
+            const response = await fetch('/api/admin/nutritionists/', { credentials: 'include' });
+            const tbody = document.getElementById('nutritionistsTableBody');
+            if (response.ok) {
+                const nutritionists = await response.json();
+                if (nutritionists.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 40px;">No nutritionists found</td></tr>';
+                    return;
+                }
+                tbody.innerHTML = '';
+                nutritionists.forEach(nutri => {
+                    const statusColor = nutri.status === 'Active' ? '#27AE60' : '#f97316';
+                    const actionText = nutri.status === 'Active' ? 'Deactivate' : 'Activate';
+                    const actionColor = nutri.status === 'Active' ? '#ef4444' : '#27AE60';
+                    tbody.innerHTML += `
+                        <tr>
+                            <td><strong>${nutri.name}</strong><br><span style="font-size: 11px; color: #64748b;">${nutri.email}</span></td>
+                            <td><span style="background: #e8f5e9; padding: 4px 10px; border-radius: 20px; font-size: 12px;">${nutri.specialization || 'Not specified'}</span></td>
+                            <td style="text-align: center; font-weight: 600;">${nutri.patients_count || 0}</td>
+                            <td><span style="color: ${statusColor}; font-weight: 600;">${nutri.status}</span></td>
+                            <td>
+                                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                                    <button class="btn-outline edit-nutri-btn" data-id="${nutri.id}" style="padding: 4px 12px;">Edit</button>
+                                    <button class="btn-outline toggle-nutri-status" data-id="${nutri.id}" data-status="${nutri.status}" style="padding: 4px 12px; color: ${actionColor}; border-color: ${actionColor};">${actionText}</button>
+                                    <button class="btn-outline delete-nutri-btn" data-id="${nutri.id}" data-name="${nutri.name}" style="padding: 4px 12px; color: #ef4444; border-color: #ef4444;">Delete</button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                });
+                document.querySelectorAll('.toggle-nutri-status').forEach(btn => {
+                    btn.addEventListener('click', () => toggleNutritionistStatus(btn.dataset.id, btn.dataset.status));
+                });
+                document.querySelectorAll('.delete-nutri-btn').forEach(btn => {
+                    btn.addEventListener('click', () => deleteNutritionist(btn.dataset.id, btn.dataset.name));
+                });
+            }
+        } catch (error) {
+            console.error('Error loading nutritionists:', error);
+        }
+    }
+
+    async function toggleNutritionistStatus(nutritionistId, currentStatus) {
+        const newStatus = currentStatus === 'Active' ? false : true;
+        const action = newStatus ? 'activate' : 'deactivate';
+        if (confirm(`Are you sure you want to ${action} this nutritionist?`)) {
+            try {
+                const response = await fetch(`/api/admin/nutritionist-status/${nutritionistId}/`, {
+                    method: 'PUT',
+                    credentials: 'include',
+                    headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCSRFToken() },
+                    body: JSON.stringify({ is_active: newStatus })
+                });
+                if (response.ok) {
+                    alert(`✅ Nutritionist ${action}d successfully!`);
+                    loadNutritionists();
+                } else {
+                    alert('❌ Error updating status');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+    }
+
+    async function deleteNutritionist(nutritionistId, name) {
+        if (confirm(`Are you sure you want to delete ${name}? This action cannot be undone.`)) {
+            try {
+                const response = await fetch(`/api/admin/delete-nutritionist/${nutritionistId}/`, {
+                    method: 'DELETE',
+                    credentials: 'include',
+                    headers: { 'X-CSRFToken': getCSRFToken() }
+                });
+                if (response.ok) {
+                    alert(`✅ Nutritionist ${name} deleted!`);
+                    loadNutritionists();
+                } else {
+                    alert('❌ Error deleting nutritionist');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+    }
+
+    // Modal pour ajouter un nutritionniste
+    const nutriModal = document.getElementById('addNutritionistModal');
+    const nutriOverlay = document.getElementById('nutriModalOverlay');
+
+    document.getElementById('addNutritionistBtn')?.addEventListener('click', () => {
+        nutriModal.style.display = 'block';
+        nutriOverlay.style.display = 'block';
+    });
+
+    function closeNutriModal() {
+        nutriModal.style.display = 'none';
+        nutriOverlay.style.display = 'none';
+        document.getElementById('nutriFirstName').value = '';
+        document.getElementById('nutriLastName').value = '';
+        document.getElementById('nutriEmail').value = '';
+        document.getElementById('nutriPassword').value = '';
+        document.getElementById('nutriSpecialization').value = '';
+        document.getElementById('nutriBio').value = '';
+        document.getElementById('nutriExperience').value = '';
+    }
+
+    document.getElementById('closeNutriModalBtn')?.addEventListener('click', closeNutriModal);
+    nutriOverlay?.addEventListener('click', closeNutriModal);
+
+    document.getElementById('saveNutritionistBtn')?.addEventListener('click', async () => {
+        const nutritionistData = {
+            first_name: document.getElementById('nutriFirstName').value,
+            last_name: document.getElementById('nutriLastName').value,
+            email: document.getElementById('nutriEmail').value,
+            password: document.getElementById('nutriPassword').value,
+            specialization: document.getElementById('nutriSpecialization').value,
+            bio: document.getElementById('nutriBio').value,
+            experience_years: parseInt(document.getElementById('nutriExperience').value) || 0,
+        };
+        if (!nutritionistData.email || !nutritionistData.password) {
+            alert('❌ Email and password are required');
+            return;
+        }
+        const saveBtn = document.getElementById('saveNutritionistBtn');
+        const originalText = saveBtn.innerText;
+        saveBtn.innerText = '⏳ Saving...';
+        saveBtn.disabled = true;
+        try {
+            const response = await fetch('/api/admin/create-nutritionist/', {
+                method: 'POST',
+                credentials: 'include',
+                headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCSRFToken() },
+                body: JSON.stringify(nutritionistData)
+            });
+            if (response.ok) {
+                alert('✅ Nutritionist added successfully!');
+                closeNutriModal();
+                loadNutritionists();
+            } else {
+                const data = await response.json();
+                alert(`❌ Error: ${data.error}`);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('❌ Network error');
+        } finally {
+            saveBtn.innerText = originalText;
+            saveBtn.disabled = false;
+        }
+    });
+
+
+    // ==================== MANAGE ASSIGNMENT REQUESTS ====================
+
+    // ==================== MANAGE ASSIGNMENT REQUESTS (VERSION COMPLÈTE) ====================
+
+// Stocker la liste des nutritionnistes pour le select alternatif
+let availableNutritionistsList = [];
+
+async function loadAssignmentRequests() {
+    const container = document.getElementById('assignmentRequestsList');
+    const countSpan = document.getElementById('assignmentRequestsCount');
+    if (!container) return;
+    
+    try {
+        // D'abord charger la liste des nutritionnistes
+        const nutriResponse = await fetch('/api/admin/nutritionists/', { credentials: 'include' });
+        if (nutriResponse.ok) {
+            availableNutritionistsList = await nutriResponse.json();
+        }
+        
+        const response = await fetch('/api/nutritionists/assignment-requests/', { 
+            credentials: 'include' 
+        });
+        
+        if (response.ok) {
+            const data = await response.json();
+            const requests = data.requests || [];
+            
+            if (countSpan) countSpan.innerText = requests.length;
+            
+            // Mettre à jour le badge dans la sidebar
+            const badge = document.getElementById('adminNotificationBadge');
+            if (badge && requests.length > 0) {
+                badge.style.display = 'inline-block';
+                badge.innerText = requests.length > 9 ? '9+' : requests.length;
+            } else if (badge) {
+                badge.style.display = 'none';
+            }
+            
+            if (requests.length === 0) {
+                container.innerHTML = '<div class="message-item">✅ No pending assignment requests</div>';
+                return;
+            }
+            
+            container.innerHTML = '';
+            requests.forEach(req => {
+                // Options pour le select alternatif
+                let altOptions = '<option value="">-- Keep requested nutritionist --</option>';
+                availableNutritionistsList.forEach(nutri => {
+                    if (nutri.id != req.requested_nutritionist_id) {
+                        altOptions += `<option value="${nutri.id}">👩‍⚕️ ${escapeHtml(nutri.name)} (${escapeHtml(nutri.specialization || 'Nutritionist')})</option>`;
+                    }
+                });
+                
+                container.innerHTML += `
+                    <div class="assignment-request-card" data-id="${req.id}" style="background: white; border-radius: 16px; padding: 16px; margin-bottom: 12px; border: 1px solid #e2e8f0;">
+                        <div style="display: flex; align-items: flex-start; gap: 12px; flex-wrap: wrap;">
+                            <div class="message-avatar" style="background: #e8f5e9;">
+                                <i class="fas fa-user-plus" style="color: #27AE60;"></i>
+                            </div>
+                            <div style="flex: 1; min-width: 200px;">
+                                <strong style="font-size: 15px;">${escapeHtml(req.patient_name)}</strong>
+                                <div style="font-size: 12px; color: #64748b;">📧 ${escapeHtml(req.patient_email)}</div>
+                                <div style="font-size: 12px; color: #27AE60; margin-top: 4px;">
+                                    <i class="fas fa-user-md"></i> Requested: ${escapeHtml(req.requested_nutritionist_name)}
+                                </div>
+                                <div style="font-size: 11px; color: #94a3b8; margin-top: 4px;">
+                                    📅 ${req.created_at_display}
+                                </div>
+                                ${req.order_data?.planName ? `<div style="font-size: 11px; color: #FF7A00; margin-top: 4px;">📋 Plan: ${req.order_data.planName}</div>` : ''}
+                            </div>
+                        </div>
+                        <div style="margin-top: 16px; padding-top: 12px; border-top: 1px solid #e2e8f0;">
+                            <div style="margin-bottom: 12px;">
+                                <label style="font-size: 12px; font-weight: 600; color: #475569;">🔄 Alternative nutritionist (optional):</label>
+                                <select id="altNutriSelect_${req.id}" class="alt-nutri-select" style="width: 100%; padding: 10px; border-radius: 12px; border: 1px solid #e2e8f0; margin-top: 6px;">
+                                    ${altOptions}
+                                </select>
+                            </div>
+                            <div style="display: flex; gap: 12px;">
+                                <button class="btn-primary approve-assignment-btn" data-id="${req.id}" style="background: #27AE60; flex: 1;">
+                                    <i class="fas fa-check"></i> Approve
+                                </button>
+                                <button class="btn-outline reject-assignment-btn" data-id="${req.id}" style="color: #ef4444; border-color: #ef4444; flex: 1;">
+                                    <i class="fas fa-times"></i> Reject
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            // Attacher les événements
+            document.querySelectorAll('.approve-assignment-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const requestId = btn.dataset.id;
+                    const select = document.getElementById(`altNutriSelect_${requestId}`);
+                    const alternativeId = select?.value || '';
+                    handleAssignmentRequest(requestId, 'approve', alternativeId);
+                });
+            });
+            
+            document.querySelectorAll('.reject-assignment-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const reason = prompt('❌ Reason for rejection (will be sent to the patient):');
+                    if (reason && reason.trim()) {
+                        handleAssignmentRequest(btn.dataset.id, 'reject', null, reason);
+                    } else if (reason === '') {
+                        alert('Please provide a reason for rejection');
+                    }
+                });
+            });
+        } else {
+            container.innerHTML = '<div class="message-item">Error loading requests</div>';
+        }
+    } catch (error) {
+        console.error('Error loading assignment requests:', error);
+        container.innerHTML = '<div class="message-item">Error loading requests</div>';
+    }
+}
+
+async function loadAssignmentRequests() {
+    const container = document.getElementById('assignmentRequestsList');
+    const countSpan = document.getElementById('assignmentRequestsCount');
+    if (!container) return;
+    
+    try {
+        // Utiliser l'URL admin
+        const response = await fetch('/api/admin/assignment-requests/', { 
+            credentials: 'include' 
+        });
+        
+        if (response.ok) {
+            const requests = await response.json();
+            if (countSpan) countSpan.innerText = requests.length;
+            
+            const badge = document.getElementById('adminNotificationBadge');
+            if (badge && requests.length > 0) {
+                badge.style.display = 'inline-block';
+                badge.innerText = requests.length;
+            } else if (badge) {
+                badge.style.display = 'none';
+            }
+            
+            if (requests.length === 0) {
+                container.innerHTML = '<div class="message-item">✅ No pending assignment requests</div>';
+                return;
+            }
+            
+            container.innerHTML = '';
+            requests.forEach(req => {
+                container.innerHTML += `
+                    <div class="assignment-request-card" style="background: white; border-radius: 16px; padding: 16px; margin-bottom: 12px; border: 1px solid #e2e8f0;">
+                        <div style="display: flex; align-items: flex-start; gap: 12px; flex-wrap: wrap;">
+                            <div class="message-avatar" style="background: #e8f5e9;">
+                                <i class="fas fa-user-plus" style="color: #27AE60;"></i>
+                            </div>
+                            <div style="flex: 1; min-width: 200px;">
+                                <strong style="font-size: 15px;">${escapeHtml(req.patient_name)}</strong>
+                                <div style="font-size: 12px; color: #64748b;">📧 ${escapeHtml(req.patient_email)}</div>
+                                <div style="font-size: 12px; color: #27AE60; margin-top: 4px;">
+                                    <i class="fas fa-user-md"></i> Requested: ${escapeHtml(req.nutritionist_name)}
+                                </div>
+                                <div style="font-size: 11px; color: #94a3b8; margin-top: 4px;">
+                                    📅 ${req.created_at_display}
+                                </div>
+                            </div>
+                        </div>
+                        <div style="margin-top: 16px; padding-top: 12px; border-top: 1px solid #e2e8f0;">
+                            <select id="altNutriSelect_${req.id}" style="width: 100%; padding: 10px; border-radius: 12px; margin-bottom: 12px;">
+                                <option value="">-- Keep requested nutritionist --</option>
+                                ${availableNutritionistsList.map(n => 
+                                    `<option value="${n.id}">👩‍⚕️ ${n.name} (${n.specialization || 'Nutritionist'})</option>`
+                                ).join('')}
+                                <option value="other">🔄 Choose another nutritionist...</option>
+                            </select>
+                            <div style="display: flex; gap: 12px;">
+                                <button class="btn-primary approve-assignment-btn" data-id="${req.id}" style="background: #27AE60; flex: 1;">
+                                    ✓ Approve
+                                </button>
+                                <button class="btn-outline reject-assignment-btn" data-id="${req.id}" style="color: #ef4444; border-color: #ef4444; flex: 1;">
+                                    ✗ Reject
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            // Attacher les événements
+            document.querySelectorAll('.approve-assignment-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const requestId = btn.dataset.id;
+                    const select = document.getElementById(`altNutriSelect_${requestId}`);
+                    const alternativeId = select?.value || '';
+                    handleAssignmentRequest(requestId, 'approve', alternativeId);
+                });
+            });
+            
+            document.querySelectorAll('.reject-assignment-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const reason = prompt('❌ Reason for rejection:');
+                    if (reason && reason.trim()) {
+                        handleAssignmentRequest(btn.dataset.id, 'reject', null, reason);
+                    }
+                });
+            });
+        }
+    } catch (error) {
+        console.error('Error loading assignment requests:', error);
+        container.innerHTML = '<div class="message-item">Error loading requests</div>';
+    }
+}
+
+// Charger les notifications admin (pour le badge)
+async function loadAdminNotifications() {
+    try {
+        const response = await fetch('/api/nutritionists/admin-notifications/', { 
+            credentials: 'include' 
+        });
+        
+        if (response.ok) {
+            const data = await response.json();
+            const badge = document.getElementById('adminNotificationBadge');
+            const assignmentCount = document.getElementById('assignmentRequestsCount');
+            
+            if (badge && data.unread_count > 0) {
+                badge.style.display = 'inline-block';
+                badge.innerText = data.unread_count > 9 ? '9+' : data.unread_count;
+            } else if (badge) {
+                badge.style.display = 'none';
+            }
+        }
+    } catch (error) {
+        console.error('Error loading admin notifications:', error);
+    }
+}
+
+async function handleAssignmentRequest(requestId, action, reason = '') {
+    try {
+        const response = await fetch(`/api/admin/assignment-requests/${requestId}/handle/`, {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCSRFToken()
+            },
+            body: JSON.stringify({ action, reason })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            alert(`✅ Request ${action === 'approve' ? 'approved' : 'rejected'} successfully!`);
+            loadAssignmentRequests();
+            loadAssignmentStats();
+            loadAllUsers(); // Rafraîchir la liste des utilisateurs
+        } else {
+            alert(`❌ Error: ${data.error || 'Unknown error'}`);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('❌ Network error');
+    }
+}
+
+async function loadAssignmentStats() {
+    try {
+        const response = await fetch('/api/admin/assignment-stats/', { 
+            credentials: 'include' 
+        });
+        
+        if (response.ok) {
+            const data = await response.json();
+            // Mettre à jour les stats si besoin
+        }
+    } catch (error) {
+        console.error('Error loading assignment stats:', error);
+    }
+}
+
+
+
+// Appeler toutes les 30 secondes
+setInterval(loadAdminNotifications, 30000);
+
+    // ==================== ADMIN BLOG MANAGEMENT ====================
+    async function loadPendingPosts() {
+        try {
+            const response = await fetch('/api/blog/posts/pending/', { credentials: 'include' });
+            const container = document.getElementById('pendingPostsList');
+            const countSpan = document.getElementById('pendingCount');
+            if (response.ok) {
+                const posts = await response.json();
+                countSpan.innerText = posts.length;
+                if (posts.length === 0) {
+                    container.innerHTML = '<div class="message-item">No pending articles</div>';
+                    return;
+                }
+                container.innerHTML = '';
+                posts.forEach(post => {
+                    container.innerHTML += `
+                        <div class="message-item" data-id="${post.id}" style="flex-wrap: wrap;">
+                            <div class="message-avatar"><i class="fas fa-pen-fancy"></i></div>
+                            <div style="flex: 1; min-width: 200px;">
+                                <strong>${escapeHtml(post.title)}</strong>
+                                <div style="font-size: 12px; color: #64748b;">By ${escapeHtml(post.author)} • ${new Date(post.created_at).toLocaleDateString()}</div>
+                                <div style="font-size: 11px; color: #94a3b8; margin-top: 4px;">${escapeHtml(post.excerpt?.substring(0, 100))}...</div>
+                            </div>
+                            <div style="display: flex; gap: 8px; margin-top: 8px;">
+                                <button class="btn-outline view-details-btn" data-id="${post.id}" style="background: #3b82f6; color: white; border: none;">
+                                    👁️ View Details
+                                </button>
+                                <button class="btn-outline approve-post" data-id="${post.id}" style="background: #27AE60; color: white; border: none;">
+                                    ✓ Approve
+                                </button>
+                                <button class="btn-outline reject-post" data-id="${post.id}" style="background: #ef4444; color: white; border: none;">
+                                    ✗ Reject
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                // Ajouter les event listeners pour les boutons "View Details"
+                document.querySelectorAll('.view-details-btn').forEach(btn => {
+                    btn.addEventListener('click', () => showPostDetails(btn.dataset.id));
+                });
+                document.querySelectorAll('.approve-post').forEach(btn => {
+                    btn.addEventListener('click', () => handlePostApproval(btn.dataset.id, 'approve'));
+                });
+                document.querySelectorAll('.reject-post').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const explanation = prompt('Reason for rejection (will be sent to author):');
+                        if (explanation) handlePostApproval(btn.dataset.id, 'reject', explanation);
+                    });
+                });
+            }
+        } catch (error) {
+            console.error('Error loading pending posts:', error);
+        }
+    }
+    async function handlePostApproval(postId, action, explanation = '') {
+        try {
+            const response = await fetch(`/api/blog/posts/approve/${postId}/`, {
+                method: 'POST',
+                credentials: 'include',
+                headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCSRFToken() },
+                body: JSON.stringify({ action, explanation })
+            });
+            if (response.ok) {
+                alert(`✅ Article ${action === 'approve' ? 'approved and published!' : 'rejected'}`);
+                loadPendingPosts();
+                loadAllPosts();
+            } else {
+                alert('❌ Error processing article');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+
+    let currentViewingPostId = null;
+let currentViewingPostData = null;
+
+async function showPostDetails(postId) {
+    const modal = document.getElementById('postDetailsModal');
+    const overlay = document.getElementById('postDetailsOverlay');
+    const contentDiv = document.getElementById('postDetailsContent');
+    
+    // Afficher le modal
+    modal.style.display = 'block';
+    overlay.style.display = 'block';
+    
+    // Chercher l'article dans les données déjà chargées
+    const post = allPostsData.find(p => p.id == postId);
+    
+    if (post) {
+        currentViewingPostId = postId;
+        currentViewingPostData = post;
+        
+        const statusText = post.status === 'published' ? 'Published' : (post.status === 'pending' ? 'Pending Approval' : 'Draft');
+        const statusColor = post.status === 'published' ? '#27AE60' : (post.status === 'pending' ? '#d97706' : '#64748b');
+        
+        // Afficher le contenu complet
+        contentDiv.innerHTML = `
+            <div style="margin-bottom: 20px;">
+                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px; flex-wrap: wrap;">
+                    <span style="background: #f1f5f9; padding: 4px 12px; border-radius: 40px; font-size: 12px;">
+                        📁 ${escapeHtml(post.category || 'Articles')}
+                    </span>
+                    <span style="background: #f1f5f9; padding: 4px 12px; border-radius: 40px; font-size: 12px;">
+                        👤 ${escapeHtml(post.author || 'Unknown')}
+                    </span>
+                    <span style="background: #f1f5f9; padding: 4px 12px; border-radius: 40px; font-size: 12px;">
+                        ⏱️ ${post.read_time || '5 min read'}
+                    </span>
+                    <span style="background: ${statusColor}20; padding: 4px 12px; border-radius: 40px; font-size: 12px; color: ${statusColor};">
+                        ${statusText}
+                    </span>
+                </div>
+                
+                <h2 style="color: #1e293b; margin-bottom: 16px; font-size: 24px;">${escapeHtml(post.title)}</h2>
+                
+                ${post.featured_image ? `<img src="${post.featured_image}" alt="${escapeHtml(post.title)}" style="width: 100%; border-radius: 16px; margin-bottom: 20px; max-height: 300px; object-fit: cover;">` : ''}
+                
+                <div style="background: #f8fafc; padding: 16px; border-radius: 16px; margin-bottom: 20px; border-left: 4px solid #27AE60;">
+                    <strong style="color: #27AE60;">📝 Excerpt</strong>
+                    <p style="margin-top: 8px; color: #475569;">${escapeHtml(post.excerpt)}</p>
+                </div>
+                
+                <div>
+                    <strong style="color: #27AE60;">📄 Full Content</strong>
+                    <div style="margin-top: 12px; color: #334155; line-height: 1.6; white-space: pre-wrap;">
+                        ${escapeHtml(post.content || 'No content provided')}
+                    </div>
+                </div>
+                
+                ${post.created_at ? `
+                <div style="margin-top: 20px; padding-top: 16px; border-top: 1px solid #e2e8f0; font-size: 12px; color: #94a3b8;">
+                    📅 Created: ${new Date(post.created_at).toLocaleString()}
+                </div>
+                ` : ''}
+            </div>
+        `;
+    } else {
+        contentDiv.innerHTML = '<div style="text-align: center; padding: 40px; color: #ef4444;">❌ Article not found</div>';
+    }
+}
+
+function closePostDetailsModal() {
+    document.getElementById('postDetailsModal').style.display = 'none';
+    document.getElementById('postDetailsOverlay').style.display = 'none';
+    currentViewingPostId = null;
+    currentViewingPostData = null;
+}
+
+// Gérer l'approbation depuis le modal de détails
+async function approveFromDetails() {
+    if (currentViewingPostId) {
+        await handlePostApproval(currentViewingPostId, 'approve');
+        closePostDetailsModal();
+    }
+}
+
+async function rejectFromDetails() {
+    if (currentViewingPostId) {
+        const explanation = prompt('Reason for rejection (will be sent to author):');
+        if (explanation) {
+            await handlePostApproval(currentViewingPostId, 'reject', explanation);
+            closePostDetailsModal();
+        }
+    }
+}
+
+    // ==================== BLOG POSTS WITH CATEGORY FILTER ====================
+    let allPostsData = [];
+    let currentCategoryFilter = 'all';
+
+    // Fonction pour charger tous les posts avec leurs catégories
+    async function loadAllPosts() {
+        try {
+            const response = await fetch('/api/blog/posts/all/', { credentials: 'include' });
+            if (response.ok) {
+                allPostsData = await response.json();
+                updateCategoryCounts();
+                renderPostsByCategory(currentCategoryFilter);
+            } else {
+                document.getElementById('allPostsList').innerHTML = '<div class="message-item">Error loading posts</div>';
+            }
+        } catch (error) {
+            console.error('Error loading posts:', error);
+            document.getElementById('allPostsList').innerHTML = '<div class="message-item">Error loading posts</div>';
+        }
+    }
+
+    // Fonction pour mettre à jour les compteurs par catégorie
+    function updateCategoryCounts() {
+        const counts = {
+            all: allPostsData.length,
+            Articles: 0,
+            'Healthy Recipes': 0,
+            'Wellness Tips': 0,
+            Nutrition: 0,
+            'Success Stories': 0
+        };
+        
+        allPostsData.forEach(post => {
+            const cat = post.category || 'Articles';
+            if (counts[cat] !== undefined) counts[cat]++;
+        });
+        
+        const countAll = document.getElementById('countAll');
+        const countArticles = document.getElementById('countArticles');
+        const countRecipes = document.getElementById('countRecipes');
+        const countWellness = document.getElementById('countWellness');
+        const countNutrition = document.getElementById('countNutrition');
+        const countSuccess = document.getElementById('countSuccess');
+        
+        if (countAll) countAll.innerText = counts.all;
+        if (countArticles) countArticles.innerText = counts.Articles;
+        if (countRecipes) countRecipes.innerText = counts['Healthy Recipes'];
+        if (countWellness) countWellness.innerText = counts['Wellness Tips'];
+        if (countNutrition) countNutrition.innerText = counts.Nutrition;
+        if (countSuccess) countSuccess.innerText = counts['Success Stories'];
+    }
+
+    // Fonction pour afficher les posts selon la catégorie sélectionnée
+    function renderPostsByCategory(category) {
+        const container = document.getElementById('allPostsList');
+        if (!container) return;
+        
+        let filteredPosts = allPostsData;
+        
+        if (category !== 'all') {
+            filteredPosts = allPostsData.filter(post => (post.category || 'Articles') === category);
+        }
+        
+        if (filteredPosts.length === 0) {
+            container.innerHTML = `<div class="message-item" style="text-align: center; padding: 40px;">
+                📭 No posts found in ${category === 'all' ? 'any category' : category}
+            </div>`;
+            return;
+        }
+        
+        container.innerHTML = '';
+        filteredPosts.forEach(post => {
+            const statusClass = post.status === 'published' ? 'badge-active' : (post.status === 'pending' ? 'badge-pending' : 'badge-draft');
+            const statusText = post.status === 'published' ? 'Published' : (post.status === 'pending' ? 'Pending' : 'Draft');
+            const categoryIcon = getCategoryIcon(post.category || 'Articles');
+            
+            container.innerHTML += `
+                <div class="post-item-card" data-id="${post.id}" style="background: #f8fafc; border-radius: 16px; padding: 16px; margin-bottom: 12px; border: 1px solid #e2e8f0; transition: all 0.2s;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 12px;">
+                        <div style="flex: 1;">
+                            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 8px;">
+                                <span style="font-size: 20px;">${categoryIcon}</span>
+                                <strong style="font-size: 16px; color: #1e293b;">"${escapeHtml(post.title)}"</strong>
+                                <span class="${statusClass}" style="font-size: 11px; padding: 4px 12px;">${statusText}</span>
+                            </div>
+                            <div style="font-size: 12px; color: #64748b; margin-top: 4px;">
+                                📅 ${new Date(post.created_at).toLocaleDateString()} • ✍️ ${escapeHtml(post.author || 'Admin')} • ⏱️ ${post.read_time || '5 min read'}
+                            </div>
+                            <div style="font-size: 13px; color: #475569; margin-top: 8px;">${escapeHtml(post.excerpt?.substring(0, 100))}${post.excerpt?.length > 100 ? '...' : ''}</div>
+                        </div>
+                        <div style="display: flex; gap: 8px;">
+                            <button class="edit-post-btn btn-outline" data-id="${post.id}" data-title="${escapeHtml(post.title)}" style="padding: 8px 16px; font-size: 12px; display: flex; align-items: center; gap: 6px;">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
+                            <button class="delete-post-btn btn-outline" data-id="${post.id}" data-title="${escapeHtml(post.title)}" style="padding: 8px 16px; font-size: 12px; color: #ef4444; border-color: #ef4444; display: flex; align-items: center; gap: 6px;">
+                                <i class="fas fa-trash"></i> Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+        
+        // Attacher les événements Edit et Delete
+        document.querySelectorAll('.edit-post-btn').forEach(btn => {
+            btn.removeEventListener('click', handleEditPost);
+            btn.addEventListener('click', handleEditPost);
+        });
+        document.querySelectorAll('.delete-post-btn').forEach(btn => {
+            btn.removeEventListener('click', () => deleteBlogPost(btn.dataset.id, btn.dataset.title));
+            btn.addEventListener('click', () => deleteBlogPost(btn.dataset.id, btn.dataset.title));
+        });
+    }
+    
+    // Fonction pour échapper le HTML (sécurité)
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+
+    // Fonction pour l'icône de catégorie
+    function getCategoryIcon(category) {
+        const icons = {
+            'Articles': '📰',
+            'Healthy Recipes': '🥗',
+            'Wellness Tips': '💆',
+            'Nutrition': '🍎',
+            'Success Stories': '⭐'
+        };
+        return icons[category] || '📄';
+    }
+
+    // Gestionnaire pour le bouton Edit
+    function handleEditPost(e) {
+        const btn = e.currentTarget;
+        const postId = btn.dataset.id;
+        const post = allPostsData.find(p => p.id == postId);
+        
+        if (post) {
+            // Remplir le modal avec les données existantes
+            document.getElementById('postTitle').value = post.title || '';
+            document.getElementById('postExcerpt').value = post.excerpt || '';
+            document.getElementById('postContent').value = post.content || '';
+            document.getElementById('postImage').value = post.featured_image || '';
+            document.getElementById('postCategory').value = post.category || 'Articles';
+            document.getElementById('postAuthor').value = post.author || 'Admin';
+            document.getElementById('postReadTime').value = post.read_time || '5 min read';
+            document.getElementById('postStatus').value = post.status || 'published';
+            
+            // Changer le texte du bouton Save pour indiquer l'édition
+            const saveBtn = document.getElementById('savePostBtn');
+            saveBtn.textContent = '✏️ Update Article';
+            saveBtn.dataset.editMode = 'true';
+            saveBtn.dataset.editId = postId;
+            
+            // Ouvrir le modal
+            openPostModal();
+        }
+    }
+
+    // Fonction de sauvegarde modifiée pour gérer l'édition
+    async function saveOrUpdatePost() {
+        const saveBtn = document.getElementById('savePostBtn');
+        const isEdit = saveBtn.dataset.editMode === 'true';
+        const postId = saveBtn.dataset.editId;
+        
+        const articleData = {
+            title: document.getElementById('postTitle').value,
+            excerpt: document.getElementById('postExcerpt').value,
+            content: document.getElementById('postContent').value,
+            featured_image: document.getElementById('postImage').value || "https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=800&q=80",
+            author: document.getElementById('postAuthor').value || "Admin",
+            read_time: document.getElementById('postReadTime').value || "5 min read",
+            category: document.getElementById('postCategory').value,
+            status: document.getElementById('postStatus').value,
+        };
+        
+        if (!articleData.title || !articleData.excerpt) {
+            alert('❌ Please fill Title and Excerpt');
+            return;
+        }
+        
+        const originalText = saveBtn.innerText;
+        saveBtn.innerText = '⏳ Saving...';
+        saveBtn.disabled = true;
+        
+        try {
+            const url = isEdit ? `/api/blog/posts/update/${postId}/` : '/api/blog/posts/create/';
+            const method = isEdit ? 'PUT' : 'POST';
+            
+            const response = await fetch(url, {
+                method: method,
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCSRFToken()
+                },
+                body: JSON.stringify(articleData)
+            });
+            
+            const data = await response.json();
+            
+            if (response.ok) {
+                alert(isEdit ? '✅ Article updated successfully!' : '✅ Article created successfully!');
+                closePostModal();
+                loadAllPosts();
+                loadPendingPosts();
+                // Reset le bouton
+                saveBtn.textContent = '✅ Publish Article';
+                saveBtn.dataset.editMode = 'false';
+                delete saveBtn.dataset.editId;
+            } else {
+                alert('❌ Error: ' + JSON.stringify(data));
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('❌ Network error');
+        } finally {
+            saveBtn.innerText = originalText;
+            saveBtn.disabled = false;
+        }
+    }
+
+    // Fonction pour supprimer un post
+    async function deleteBlogPost(postId, title) {
+        if (!confirm(`Delete "${title}"? This action cannot be undone.`)) return;
+        
+        try {
+            const response = await fetch(`/api/blog/posts/delete/${postId}/`, {
+                method: 'DELETE',
+                credentials: 'include',
+                headers: { 'X-CSRFToken': getCSRFToken() }
+            });
+            if (response.ok) {
+                alert('✅ Post deleted successfully');
+                loadAllPosts();
+                loadPendingPosts();
+            } else {
+                alert('❌ Error deleting post');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('❌ Network error');
+        }
+    }
+
+    // Gestionnaires des filtres par catégorie
+    function setupCategoryFilters() {
+        const filterBtns = document.querySelectorAll('.category-filter-btn');
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Mettre à jour le style des boutons
+                filterBtns.forEach(b => {
+                    b.style.background = '#f1f5f9';
+                    b.style.color = '#475569';
+                });
+                btn.style.background = '#27AE60';
+                btn.style.color = 'white';
+                
+                // Filtrer les posts
+                currentCategoryFilter = btn.dataset.category;
+                renderPostsByCategory(currentCategoryFilter);
+            });
+        });
+    }
+
+    // Modal functions
+    const postModal = document.getElementById('createPostModal');
+    const postModalOverlay = document.getElementById('postModalOverlay');
+
+    function openPostModal() {
+        if (postModal) postModal.style.display = 'block';
+        if (postModalOverlay) postModalOverlay.style.display = 'block';
+    }
+
+    function closePostModal() {
+        if (postModal) postModal.style.display = 'none';
+        if (postModalOverlay) postModalOverlay.style.display = 'none';
+        
+        // Reset form
+        const titleInput = document.getElementById('postTitle');
+        const excerptInput = document.getElementById('postExcerpt');
+        const contentInput = document.getElementById('postContent');
+        const imageInput = document.getElementById('postImage');
+        const authorInput = document.getElementById('postAuthor');
+        const readTimeInput = document.getElementById('postReadTime');
+        const statusSelect = document.getElementById('postStatus');
+        const categorySelect = document.getElementById('postCategory');
+        const saveBtn = document.getElementById('savePostBtn');
+        
+        if (titleInput) titleInput.value = '';
+        if (excerptInput) excerptInput.value = '';
+        if (contentInput) contentInput.value = '';
+        if (imageInput) imageInput.value = '';
+        if (authorInput) authorInput.value = '';
+        if (readTimeInput) readTimeInput.value = '';
+        if (statusSelect) statusSelect.value = 'published';
+        if (categorySelect) categorySelect.value = 'Articles';
+        
+        // Reset save button
+        if (saveBtn) {
+            saveBtn.textContent = '✅ Publish Article';
+            saveBtn.dataset.editMode = 'false';
+            delete saveBtn.dataset.editId;
+        }
+    }
+// ==================== MANAGE SUBSCRIPTIONS ====================
+async function loadAllSubscriptions() {
+    const tbody = document.getElementById('subscriptionsTableBody');
+    if (!tbody) return;
+    
+    try {
+        const response = await fetch('/api/admin/subscriptions/', { 
+            credentials: 'include' 
+        });
+        
+        if (response.ok) {
+            const subscriptions = await response.json();
+            
+            if (subscriptions.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 40px;">No subscriptions yet</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = '';
+            subscriptions.forEach(sub => {
+                // Formater le prix
+                const price = sub.total_amount ? `$${parseFloat(sub.total_amount).toFixed(2)}` : `$${parseFloat(sub.price_paid).toFixed(2)}`;
+                
+                // Formater les dates
+                const startDate = sub.start_date ? new Date(sub.start_date).toLocaleDateString() : (sub.created_at ? new Date(sub.created_at).toLocaleDateString() : 'N/A');
+                const endDate = sub.end_date ? new Date(sub.end_date).toLocaleDateString() : 'N/A';
+                
+                // Badge de statut
+                const statusClass = sub.status === 'active' ? 'badge-active' : 'badge-pending';
+                const statusText = sub.status === 'active' ? 'Active' : (sub.status === 'expired' ? 'Expired' : 'Inactive');
+                
+                // Construction du nom du plan avec options
+                let planDisplay = sub.plan_name || sub.plan || 'Standard';
+                if (sub.has_ai || sub.include_ai) {
+                    planDisplay += ' + 🤖 AI';
+                }
+                if (sub.has_consultations || sub.include_consultations) {
+                    planDisplay += ' + 👩‍⚕️ Consult';
+                }
+                if (sub.duration_months) {
+                    planDisplay += ` (${sub.duration_months}m)`;
+                }
+                
+                tbody.innerHTML += `
+                    <tr>
+                        <td><strong>${escapeHtml(sub.customer_name || sub.patient_name || 'N/A')}</strong></td>
+                        <td>${escapeHtml(sub.customer_email || sub.patient_email || 'N/A')}</td>
+                        <td>${escapeHtml(planDisplay)}</td>
+                        <td style="color: #27AE60; font-weight: 600;">${price}</td>
+                        <td>${sub.duration_months || sub.duration || 1} month(s)</td>
+                        <td>${startDate}</td>
+                        <td>${endDate}</td>
+                        <td><span class="${statusClass}">${statusText}</span></td>
+                    </tr>
+                `;
+            });
+        } else {
+            console.error('Failed to load subscriptions');
+            tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; color: #ef4444;">Error loading subscriptions</td></tr>';
+        }
+    } catch (error) {
+        console.error('Error loading subscriptions:', error);
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; color: #ef4444;">Error loading subscriptions</td></tr>';
+    }
+}
+
+    // ==================== MANAGE TRIAL CONSULTATIONS ====================
+async function loadTrialRequests() {
+    const container = document.getElementById('trialRequestsList');
+    const countSpan = document.getElementById('trialRequestsCount');
+    if (!container) return;
+    
+    try {
+        const response = await fetch('/api/admin/trial-requests/', { 
+            credentials: 'include' 
+        });
+        
+        if (response.ok) {
+            const requests = await response.json();
+            if (countSpan) countSpan.innerText = requests.length;
+            
+            if (requests.length === 0) {
+                container.innerHTML = '<div class="message-item">No trial requests</div>';
+                return;
+            }
+            
+            container.innerHTML = '';
+            requests.forEach(req => {
+                const statusBadge = req.status === 'pending' ? 'badge-pending' : (req.status === 'confirmed' ? 'badge-active' : 'badge-pending');
+                const statusText = req.status === 'pending' ? 'Pending' : (req.status === 'confirmed' ? 'Confirmed' : 'Rejected');
+                
+                container.innerHTML += `
+                    <div class="message-item" data-id="${req.id}" style="flex-wrap: wrap;">
+                        <div class="message-avatar"><i class="fas fa-calendar-plus"></i></div>
+                        <div style="flex: 1; min-width: 200px;">
+                            <strong>${escapeHtml(req.patient_name)}</strong>
+                            <div style="font-size: 12px; color: #64748b;">📅 ${req.date_display}</div>
+                            <div style="font-size: 11px; color: #94a3b8;">👩‍⚕️ Nutritionist: ${escapeHtml(req.nutritionist_name)}</div>
+                            <div style="font-size: 11px; color: #94a3b8;">📧 Patient: ${escapeHtml(req.patient_email)}</div>
+                            ${req.notes ? `<div style="font-size: 11px; color: #c2410c;">📝 "${escapeHtml(req.notes)}"</div>` : ''}
+                            ${req.rejection_reason ? `<div style="font-size: 11px; color: #ef4444;">❌ Rejection reason: ${escapeHtml(req.rejection_reason)}</div>` : ''}
+                        </div>
+                        <div style="display: flex; gap: 8px; margin-top: 8px;">
+                            <span class="${statusBadge}">${statusText}</span>
+                            ${req.status === 'pending' ? `
+                                <button class="btn-outline approve-trial-btn" data-id="${req.id}" style="background: #27AE60; color: white;">✓ Approve</button>
+                                <button class="btn-outline reject-trial-btn" data-id="${req.id}" style="background: #ef4444; color: white;">✗ Reject</button>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            // Attacher les événements
+            document.querySelectorAll('.approve-trial-btn').forEach(btn => {
+                btn.addEventListener('click', () => handleTrialRequest(btn.dataset.id, 'approve'));
+            });
+            document.querySelectorAll('.reject-trial-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const reason = prompt('Reason for rejection (will be sent to the nutritionist and patient):');
+                    if (reason) handleTrialRequest(btn.dataset.id, 'reject', reason);
+                });
+            });
+        }
+    } catch (error) {
+        console.error('Error loading trial requests:', error);
+        container.innerHTML = '<div class="message-item">Error loading trial requests</div>';
+    }
+}
+
+async function handleTrialRequest(requestId, action, reason = '') {
+    try {
+        const response = await fetch(`/api/admin/trial-requests/${requestId}/handle/`, {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCSRFToken()
+            },
+            body: JSON.stringify({ action, reason })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            alert(`✅ Trial ${action === 'approve' ? 'approved' : 'rejected'} successfully!`);
+            loadTrialRequests();
+            loadTrialStats();
+        } else {
+            alert(`❌ Error: ${data.error || 'Unknown error'}`);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('❌ Network error');
+    }
+}
+
+async function loadTrialStats() {
+    try {
+        const response = await fetch('/api/admin/trial-stats/', { 
+            credentials: 'include' 
+        });
+        
+        if (response.ok) {
+            const data = await response.json();
+            const totalTrials = document.getElementById('totalTrials');
+            const approvedTrials = document.getElementById('approvedTrials');
+            const rejectedTrials = document.getElementById('rejectedTrials');
+            
+            if (totalTrials) totalTrials.innerText = data.total || 0;
+            if (approvedTrials) approvedTrials.innerText = data.approved || 0;
+            if (rejectedTrials) rejectedTrials.innerText = data.rejected || 0;
+        }
+    } catch (error) {
+        console.error('Error loading trial stats:', error);
+    }
+}
+
+    // ==================== PLANS & PAYMENTS MANAGEMENT ====================
+    // ==================== SEASONAL OFFER MODAL ====================
+
+function openSeasonalModal() {
+    document.getElementById('seasonalOfferModal').style.display = 'block';
+    document.getElementById('seasonalModalOverlay').style.display = 'block';
+    document.body.style.overflow = 'hidden';
+}
+
+function closeSeasonalModal() {
+    document.getElementById('seasonalOfferModal').style.display = 'none';
+    document.getElementById('seasonalModalOverlay').style.display = 'none';
+    document.body.style.overflow = 'auto';
+}
+
+// Créer une offre saisonnière
+async function createSeasonalOffer() {
+    const name = document.getElementById('seasonalName').value.trim();
+    const shortDesc = document.getElementById('seasonalShortDesc').value.trim();
+    const description = document.getElementById('seasonalDescription').value.trim();
+    const originalPrice = document.getElementById('seasonalOriginalPrice').value;
+    const price = document.getElementById('seasonalPrice').value;
+    const featuresText = document.getElementById('seasonalFeatures').value;
+    const validUntil = document.getElementById('seasonalValidUntil').value;
+    const icon = document.getElementById('seasonalIcon').value;
+    
+    if (!name || !shortDesc || !price || !validUntil) {
+        alert('❌ Please fill required fields');
+        return;
+    }
+    
+    const features = featuresText.split('\n').filter(f => f.trim().length > 0);
+    const discountPercent = originalPrice ? Math.round(((parseFloat(originalPrice) - parseFloat(price)) / parseFloat(originalPrice)) * 100) : 0;
+    
+    const saveBtn = document.getElementById('saveSeasonalOfferBtn');
+    const originalText = saveBtn.innerText;
+    saveBtn.innerText = '⏳ Creating...';
+    saveBtn.disabled = true;
+    
+    try {
+        const response = await fetch('/api/nutritionists/create-seasonal-offer/', {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCSRFToken()
+            },
+            body: JSON.stringify({
+                name: name,
+                short_description: shortDesc,
+                description: description,
+                price: parseFloat(price),
+                original_price: originalPrice ? parseFloat(originalPrice) : null,
+                discount_percent: discountPercent,
+                features: features,
+                icon: icon,
+                valid_until: validUntil,
+                offer_type: 'seasonal',
+                is_active: true
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok && data.success) {
+            alert('✅ Seasonal offer created successfully!');
+            closeSeasonalModal();
+            loadSeasonalOffers(); // Rafraîchir la liste
+            // Reset form
+            document.getElementById('seasonalName').value = '';
+            document.getElementById('seasonalShortDesc').value = '';
+            document.getElementById('seasonalDescription').value = '';
+            document.getElementById('seasonalOriginalPrice').value = '';
+            document.getElementById('seasonalPrice').value = '';
+            document.getElementById('seasonalFeatures').value = '';
+            document.getElementById('seasonalValidUntil').value = '';
+            document.getElementById('seasonalIcon').value = '🌙';
+        } else {
+            alert('❌ Error: ' + (data.error || 'Could not create offer'));
+        }
+    } catch (error) {
+        console.error('Error creating seasonal offer:', error);
+        alert('❌ Network error');
+    } finally {
+        saveBtn.innerText = originalText;
+        saveBtn.disabled = false;
+    }
+}
+
+// Attacher les événements
+document.getElementById('createSeasonalOfferBtn')?.addEventListener('click', openSeasonalModal);
+document.getElementById('closeSeasonalModalBtn')?.addEventListener('click', closeSeasonalModal);
+document.getElementById('cancelSeasonalBtn')?.addEventListener('click', closeSeasonalModal);
+document.getElementById('seasonalModalOverlay')?.addEventListener('click', closeSeasonalModal);
+document.getElementById('saveSeasonalOfferBtn')?.addEventListener('click', createSeasonalOffer);
+
+    // Variables globales
+    let currentViewingPlan = null;
+    let currentViewingPlanType = null; // 'pending' or 'approved'
+
+    // Charger les plans en attente
+    async function loadPendingPlans() {
+        try {
+            const response = await fetch('/api/nutritionists/admin/pending-offers/', {
+                credentials: 'include'
+            });
+            
+            const container = document.getElementById('pendingPlansList');
+            const countSpan = document.getElementById('pendingPlansCount');
+            
+            if (response.ok) {
+                const plans = await response.json();
+                countSpan.innerText = plans.length;
+                
+                if (plans.length === 0) {
+                    container.innerHTML = '<div class="message-item" style="justify-content: center; color: #94a3b8;">No pending plans</div>';
+                    return;
+                }
+                
+                container.innerHTML = '';
+                plans.forEach(plan => {
+                    container.innerHTML += `
+                        <div class="plan-item-card" data-id="${plan.id}">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 12px;">
+                                <div style="flex: 1;">
+                                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+                                        <span class="plan-icon-large">${plan.icon || '🍽️'}</span>
+                                        <div>
+                                            <strong style="font-size: 16px;">${escapeHtml(plan.name)}</strong>
+                                            <div style="font-size: 12px; color: #64748b;">Submitted by: ${escapeHtml(plan.submitted_by)}</div>
+                                        </div>
+                                    </div>
+                                    <p style="font-size: 13px; color: #475569; margin: 8px 0;">${escapeHtml(plan.short_description)}</p>
+                                    <div class="features-list">
+                                        ${plan.features.map(f => `<span class="feature-tag">✅ ${escapeHtml(f)}</span>`).join('')}
+                                    </div>
+                                    <div style="margin-top: 8px;">
+                                        <span class="badge-pending">⏳ Pending Approval</span>
+                                    </div>
+                                </div>
+                                <div style="display: flex; gap: 8px;">
+                                    <button class="btn-outline view-plan-details" data-id="${plan.id}" data-type="pending" style="padding: 6px 14px;">👁️ Details</button>
+                                    <button class="btn-outline approve-plan" data-id="${plan.id}" style="background: #27AE60; color: white; border: none; padding: 6px 14px;">✓ Approve</button>
+                                    <button class="btn-outline reject-plan" data-id="${plan.id}" style="color: #ef4444; border-color: #ef4444; padding: 6px 14px;">✗ Reject</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                // Attacher les événements
+                document.querySelectorAll('.view-plan-details').forEach(btn => {
+                    btn.addEventListener('click', () => showPlanDetails(btn.dataset.id, btn.dataset.type));
+                });
+                document.querySelectorAll('.approve-plan').forEach(btn => {
+                    btn.addEventListener('click', () => approvePlan(btn.dataset.id));
+                });
+                document.querySelectorAll('.reject-plan').forEach(btn => {
+                    btn.addEventListener('click', () => rejectPlan(btn.dataset.id));
+                });
+            }
+        } catch (error) {
+            console.error('Error loading pending plans:', error);
+            document.getElementById('pendingPlansList').innerHTML = '<div class="message-item">Error loading plans</div>';
+        }
+    }
+
+    // Charger les plans approuvés
+    async function loadApprovedPlans() {
+        try {
+            const response = await fetch('/api/nutritionists/special-offers/', {
+                credentials: 'include'
+            });
+            
+            const container = document.getElementById('approvedPlansList');
+            
+            if (response.ok) {
+                const data = await response.json();
+                const plans = data.diet_plans || [];
+                
+                if (plans.length === 0) {
+                    container.innerHTML = '<div class="message-item" style="justify-content: center; color: #94a3b8;">No approved plans</div>';
+                    return;
+                }
+                
+                container.innerHTML = '';
+                plans.forEach(plan => {
+                    container.innerHTML += `
+                        <div class="plan-item-card" data-id="${plan.id}">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 12px;">
+                                <div style="flex: 1;">
+                                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+                                        <span class="plan-icon-large">${plan.icon || '🍽️'}</span>
+                                        <div>
+                                            <strong style="font-size: 16px;">${escapeHtml(plan.name)}</strong>
+                                            <div class="offer-price" style="margin-top: 4px;">
+                                                <span class="old-price" style="font-size: 12px;">${plan.original_price ? `$${plan.original_price}` : ''}</span>
+                                                <span class="new-price" style="font-size: 18px; color: #27AE60;">$${plan.price}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <p style="font-size: 13px; color: #475569;">${escapeHtml(plan.description?.substring(0, 100))}...</p>
+                                    <div class="features-list">
+                                        ${plan.features?.map(f => `<span class="feature-tag">✅ ${escapeHtml(f)}</span>`).join('') || '<span class="feature-tag">No features listed</span>'}
+                                    </div>
+                                    <div style="margin-top: 8px;">
+                                        <span class="badge-active">✅ Published</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+        } catch (error) {
+            console.error('Error loading approved plans:', error);
+            document.getElementById('approvedPlansList').innerHTML = '<div class="message-item">Error loading plans</div>';
+        }
+    }
+
+    // Afficher les détails d'un plan
+    async function showPlanDetails(planId, type) {
+        const modal = document.getElementById('planDetailsModal');
+        const overlay = document.getElementById('planModalOverlay');
+        const contentDiv = document.getElementById('planDetailsContent');
+        const actionsDiv = document.getElementById('planModalActions');
+        
+        modal.style.display = 'block';
+        overlay.style.display = 'block';
+        
+        currentViewingPlan = planId;
+        currentViewingPlanType = type;
+        
+        try {
+            // Récupérer les détails
+            let plan;
+            if (type === 'pending') {
+                const response = await fetch(`/api/nutritionists/admin/pending-offers/`);
+                const plans = await response.json();
+                plan = plans.find(p => p.id == planId);
+            } else {
+                const response = await fetch('/api/nutritionists/special-offers/');
+                const data = await response.json();
+                plan = data.diet_plans?.find(p => p.id == planId);
+            }
+            
+            if (plan) {
+                contentDiv.innerHTML = `
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <span style="font-size: 48px;">${plan.icon || '🍽️'}</span>
+                    </div>
+                    <h2 style="font-size: 22px; margin-bottom: 12px;">${escapeHtml(plan.name)}</h2>
+                    <p><strong>Short description:</strong> ${escapeHtml(plan.short_description || plan.description?.substring(0, 100))}</p>
+                    <p><strong>Full description:</strong> ${escapeHtml(plan.description)}</p>
+                    <div><strong>Price:</strong> $${plan.price}</div>
+                    ${plan.original_price ? `<div><strong>Original price:</strong> $${plan.original_price} <span style="color: #27AE60;">(-${plan.discount_percent}%)</span></div>` : ''}
+                    <div style="margin-top: 16px;"><strong>Features:</strong></div>
+                    <div class="features-list" style="margin-top: 8px;">
+                        ${plan.features?.map(f => `<span class="feature-tag">✅ ${escapeHtml(f)}</span>`).join('') || '<span>No features listed</span>'}
+                    </div>
+                    ${plan.submitted_by ? `<div style="margin-top: 16px;"><strong>Submitted by:</strong> ${escapeHtml(plan.submitted_by)}</div>` : ''}
+                    ${plan.created_at ? `<div><strong>Submitted on:</strong> ${new Date(plan.created_at).toLocaleString()}</div>` : ''}
+                `;
+                
+                if (type === 'pending') {
+                    actionsDiv.innerHTML = `
+                        <button id="approveFromModalBtn" class="btn-primary" style="background: #27AE60; flex: 1;">✓ Approve Plan</button>
+                        <button id="rejectFromModalBtn" class="btn-outline" style="color: #ef4444; border-color: #ef4444; flex: 1;">✗ Reject Plan</button>
+                        <button id="closeModalActionsBtn" class="btn-outline" style="flex: 1;">Close</button>
+                    `;
+                    document.getElementById('approveFromModalBtn')?.addEventListener('click', () => {
+                        approvePlan(planId);
+                        closePlanModal();
+                    });
+                    document.getElementById('rejectFromModalBtn')?.addEventListener('click', () => {
+                        rejectPlan(planId);
+                        closePlanModal();
+                    });
+                    document.getElementById('closeModalActionsBtn')?.addEventListener('click', closePlanModal);
+                } else {
+                    actionsDiv.innerHTML = `<button id="closeModalActionsBtn" class="btn-outline" style="flex: 1;">Close</button>`;
+                    document.getElementById('closeModalActionsBtn')?.addEventListener('click', closePlanModal);
+                }
+            }
+        } catch (error) {
+            contentDiv.innerHTML = '<div style="text-align: center; color: #ef4444;">Error loading plan details</div>';
+        }
+    }
+
+    function closePlanModal() {
+        document.getElementById('planDetailsModal').style.display = 'none';
+        document.getElementById('planModalOverlay').style.display = 'none';
+        currentViewingPlan = null;
+    }
+
+    // Approuver un plan
+    async function approvePlan(planId) {
+        if (!confirm('Are you sure you want to approve this plan? It will become visible on the home page.')) return;
+        
+        try {
+            const response = await fetch(`/api/nutritionists/admin/approve-offer/${planId}/`, {
+                method: 'POST',
+                credentials: 'include',
+                headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCSRFToken() }
+            });
+            
+            const data = await response.json();
+            
+            if (response.ok && data.success) {
+                alert('✅ Plan approved successfully!');
+                loadPendingPlans();
+                loadApprovedPlans();
+                closePlanModal();
+            } else {
+                alert('❌ Error: ' + (data.error || 'Could not approve plan'));
+            }
+        } catch (error) {
+            console.error('Error approving plan:', error);
+            alert('❌ Network error');
+        }
+    }
+
+    // Rejeter un plan
+    async function rejectPlan(planId) {
+        const explanation = prompt('Reason for rejection (will be sent to the nutritionist):');
+        if (!explanation) return;
+        
+        if (!confirm('Are you sure you want to reject this plan?')) return;
+        
+        try {
+            const response = await fetch(`/api/nutritionists/admin/reject-offer/${planId}/`, {
+                method: 'POST',
+                credentials: 'include',
+                headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCSRFToken() },
+                body: JSON.stringify({ explanation })
+            });
+            
+            const data = await response.json();
+            
+            if (response.ok && data.success) {
+                alert('✅ Plan rejected and nutritionist notified');
+                loadPendingPlans();
+                closePlanModal();
+            } else {
+                alert('❌ Error: ' + (data.error || 'Could not reject plan'));
+            }
+        } catch (error) {
+            console.error('Error rejecting plan:', error);
+            alert('❌ Network error');
+        }
+    }
+
+    // Charger les offres saisonnières
+    async function loadSeasonalOffers() {
+        try {
+            const response = await fetch('/api/nutritionists/special-offers/', {
+                credentials: 'include'
+            });
+            
+            const container = document.getElementById('seasonalOffersList');
+            
+            if (response.ok) {
+                const data = await response.json();
+                const offers = data.seasonal_offers || [];
+                
+                if (offers.length === 0) {
+                    container.innerHTML = '<div class="message-item" style="justify-content: center; color: #94a3b8;">No seasonal offers</div>';
+                    return;
+                }
+                
+                container.innerHTML = '';
+                offers.forEach(offer => {
+                    container.innerHTML += `
+                        <div class="plan-item-card">
+                            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+                                <div>
+                                    <strong>${escapeHtml(offer.name)}</strong>
+                                    <div style="font-size: 12px; color: #64748b;">Valid until: ${new Date(offer.valid_until).toLocaleDateString()} (${offer.days_left} days left)</div>
+                                </div>
+                                <div class="offer-price">
+                                    <span class="old-price">$${offer.original_price}</span>
+                                    <span class="new-price" style="color: #FF7A00;">$${offer.price}</span>
+                                    <span class="badge-active" style="background: #FF7A00; color: white;">-${offer.discount_percent}%</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+        } catch (error) {
+            console.error('Error loading seasonal offers:', error);
+        }
+    }
+
+    // Écouteurs
+    document.getElementById('refreshPlansBtn')?.addEventListener('click', () => {
+        loadPendingPlans();
+        loadApprovedPlans();
+        loadSeasonalOffers();
+    });
+
+    document.getElementById('createSeasonalOfferBtn')?.addEventListener('click', () => {
+        alert('✨ Create seasonal offer - This will open a form to create a new seasonal promotion.');
+    });
+
+    // Initialiser au chargement
+    setTimeout(() => {
+        loadPendingPlans();
+        loadApprovedPlans();
+        loadSeasonalOffers();
+    }, 500);
+
+    // ==================== REPORTS & STATS ====================
+    let revenueChartInstance = null;
+
+    async function loadAdminStats() {
+        try {
+            const response = await fetch('/api/admin/stats/', { credentials: 'include' });
+            if (response.ok) {
+                const data = await response.json();
+                const totalConsultations = document.getElementById('totalConsultations');
+                const aiTrackUsage = document.getElementById('aiTrackUsage');
+                const avgUserProgress = document.getElementById('avgUserProgress');
+                const activeNutritionists = document.getElementById('activeNutritionists');
+                const activePatients = document.getElementById('activePatients');
+                const totalUsers = document.getElementById('totalUsers');
+                const totalNutritionists = document.getElementById('totalNutritionists');
+                const activeSubscriptions = document.getElementById('activeSubscriptions');
+                const mtdRevenue = document.getElementById('mtdRevenue');
+                
+                if (totalConsultations) totalConsultations.innerText = data.total_consultations?.toLocaleString() || '0';
+                if (aiTrackUsage) aiTrackUsage.innerText = data.ai_track_usage?.toLocaleString() || '0';
+                if (avgUserProgress) avgUserProgress.innerHTML = `${data.avg_user_progress || 0}%`;
+                if (activeNutritionists) activeNutritionists.innerText = data.active_nutritionists || '0';
+                if (activePatients) activePatients.innerText = data.active_patients || '0';
+                
+                // Dashboard overview stats
+                if (totalUsers) totalUsers.innerText = ((data.active_patients || 0) + (data.active_nutritionists || 0)).toLocaleString();
+                if (totalNutritionists) totalNutritionists.innerText = data.active_nutritionists || '0';
+                if (activeSubscriptions) activeSubscriptions.innerText = data.active_patients || '0';
+                if (mtdRevenue) mtdRevenue.innerHTML = `$${(data.monthly_revenue?.reduce((s, m) => s + m.revenue, 0) || 0).toLocaleString()}`;
+                
+                const canvas = document.getElementById('revenueChart');
+                if (canvas && data.monthly_revenue) updateRevenueChart(data.monthly_revenue);
+            }
+        } catch (error) {
+            console.error('Error loading admin stats:', error);
+        }
+    }
+
+    function updateRevenueChart(revenueData) {
+        const canvas = document.getElementById('revenueChart');
+        if (!canvas) return;
+        if (revenueChartInstance) { revenueChartInstance.destroy(); revenueChartInstance = null; }
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const labels = revenueData.map(item => item.month);
+        const revenues = revenueData.map(item => item.revenue);
+        revenueChartInstance = new Chart(ctx, {
+            type: 'bar',
+            data: { labels: labels, datasets: [{ label: 'Revenue ($)', data: revenues, backgroundColor: 'rgba(39, 174, 96, 0.7)', borderColor: '#27AE60', borderWidth: 2, borderRadius: 8 }] },
+            options: { responsive: true, maintainAspectRatio: true, plugins: { tooltip: { callbacks: { label: (ctx) => `$${ctx.raw.toLocaleString()}` } }, legend: { position: 'top' } }, scales: { y: { title: { display: true, text: 'Revenue ($)' }, ticks: { callback: (v) => '$' + v.toLocaleString() } }, x: { title: { display: true, text: 'Month' } } } }
+        });
+    }
+
+    // Event listeners
+    document.getElementById('refreshReportsBtn')?.addEventListener('click', () => loadAdminStats());
+    document.getElementById('refreshStats')?.addEventListener('click', () => loadAdminStats());
+    document.getElementById('exportDataBtn')?.addEventListener('click', () => alert('📄 Platform report exported as CSV (Demo)'));
+    document.getElementById('createPlanBtn')?.addEventListener('click', () => alert('💰 Create new pricing plan (demo)'));
+    document.getElementById('approveTestimonialBtn')?.addEventListener('click', () => alert('✅ Pending testimonials approved (demo)'));
+
+    // Search users
+    document.getElementById('userSearch')?.addEventListener('input', function(e) {
+        const searchTerm = e.target.value.toLowerCase();
+        const rows = document.querySelectorAll('#usersTableBody tr');
+        rows.forEach(row => { row.style.display = row.innerText.toLowerCase().includes(searchTerm) ? '' : 'none'; });
+    });
+
+    // Event listeners pour le modal blog
+    const newBlogBtn = document.getElementById('newBlogBtn');
+    const closePostModalBtn = document.getElementById('closePostModalBtn');
+    const cancelPostBtn = document.getElementById('cancelPostBtn');
+    const savePostBtn = document.getElementById('savePostBtn');
+    const closeDetailsBtn2 = document.getElementById('closeDetailsModalBtn2');
+    const detailsOverlay = document.getElementById('postDetailsOverlay');
+    const approveFromDetailsBtn = document.getElementById('approveFromDetailsBtn');
+    const rejectFromDetailsBtn = document.getElementById('rejectFromDetailsBtn');
+    const closeDetailsBtn1 = document.getElementById('closeDetailsModalBtn');
+
+    if (newBlogBtn) newBlogBtn.addEventListener('click', openPostModal);
+    if (closePostModalBtn) closePostModalBtn.addEventListener('click', closePostModal);
+    if (cancelPostBtn) cancelPostBtn.addEventListener('click', closePostModal);
+    if (postModalOverlay) postModalOverlay.addEventListener('click', closePostModal);
+    if (savePostBtn) savePostBtn.addEventListener('click', saveOrUpdatePost);
+    if (closeDetailsBtn2) closeDetailsBtn2.addEventListener('click', closePostDetailsModal);
+    if (detailsOverlay) detailsOverlay.addEventListener('click', closePostDetailsModal);
+    if (approveFromDetailsBtn) approveFromDetailsBtn.addEventListener('click', approveFromDetails);
+    if (rejectFromDetailsBtn) rejectFromDetailsBtn.addEventListener('click', rejectFromDetails);
+    if (closeDetailsBtn1) closeDetailsBtn1.addEventListener('click', closePostDetailsModal);
+    if (rejectFromDetailsBtn) rejectFromDetailsBtn.addEventListener('click', rejectFromDetails);
+
+    // Initialize
+    setTimeout(() => {
+        initActivityChart();
+        loadAdminStats();
+    }, 200);
+
+    document.addEventListener('DOMContentLoaded', () => {
+        // Dans DOMContentLoaded, ajoute :
+        document.getElementById('refreshSubscriptionsBtn')?.addEventListener('click', loadAllSubscriptions);
+        loadAllSubscriptions();
+        loadAssignmentRequests(); 
+        loadAllUsers();
+        loadNutritionists();
+        loadPendingPosts();
+        loadAllPosts();
+        setupCategoryFilters();
+        loadTrialRequests();
+        loadTrialStats();
+        
+    });
+</script>
+</body>
+</html>

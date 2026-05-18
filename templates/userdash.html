@@ -1,0 +1,1974 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>NutriLife - User Dashboard | Personalized Nutrition</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #F8F9FA;
+            color: #2C3E50;
+            overflow-x: hidden;
+        }
+
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 280px;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            border-right: 1px solid rgba(39, 174, 96, 0.15);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            z-index: 100;
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            padding: 28px 24px;
+            border-bottom: 1px solid rgba(39, 174, 96, 0.15);
+            margin-bottom: 24px;
+        }
+
+        .logo {
+            font-size: 1.9rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #27AE60 0%, #27AE60 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.3px;
+        }
+
+        .logo span {
+            font-size: 1.7rem;
+        }
+
+        .user-welcome {
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .avatar {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #27AE60, #27AE60);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 12px rgba(39,174,96,0.2);
+        }
+
+        .user-info h4 {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+            color: #2C3E50;
+        }
+
+        .user-info p {
+            font-size: 0.75rem;
+            color: #5a6e7c;
+        }
+
+        .nav-menu {
+            padding: 0 16px 24px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 16px;
+            margin-bottom: 6px;
+            border-radius: 18px;
+            color: #5a6e7c;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .nav-item i {
+            width: 24px;
+            font-size: 1.2rem;
+            color: #27AE60;
+            transition: all 0.3s ease;
+        }
+
+        .nav-item span {
+            font-size: 0.95rem;
+        }
+
+        .nav-item.active {
+            background: linear-gradient(135deg, rgba(39,174,96,0.12), rgba(255,122,0,0.08));
+            color: #27AE60;
+            font-weight: 600;
+        }
+
+        .nav-item.active i {
+            color: #FF7A00;
+        }
+
+        .nav-item:hover:not(.active) {
+            background: rgba(39, 174, 96, 0.08);
+            transform: translateX(4px);
+        }
+
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 28px 36px;
+            transition: all 0.3s;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .page-title h1 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #FF7A00 0%, #27AE60 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .page-title p {
+            color: #5a6e7c;
+            font-size: 0.85rem;
+            margin-top: 4px;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 26px;
+            margin-bottom: 40px;
+        }
+
+        .dash-card {
+            background: white;
+            border-radius: 28px;
+            padding: 1.6rem;
+            box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.08);
+            transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            border: 1px solid rgba(39, 174, 96, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dash-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, #27AE60, #2ecc71, #27AE60);
+            transform: scaleX(0);
+            transition: transform 0.5s ease;
+            transform-origin: left;
+        }
+
+        .dash-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .dash-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 30px 45px -15px rgba(39, 174, 96, 0.2);
+            border-color: rgba(39, 174, 96, 0.3);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+
+        .card-header h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .card-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, rgba(39, 174, 96, 0.12), rgba(255, 122, 0, 0.08));
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: #27AE60;
+        }
+
+        .card-value {
+            font-size: 2rem;
+            font-weight: 800;
+            margin: 12px 0 8px;
+            color: #2C3E50;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1.5px solid #27AE60;
+            color: #27AE60;
+            padding: 8px 16px;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 12px;
+            display: inline-block;
+        }
+
+        .btn-outline:hover {
+            background: linear-gradient(135deg, #27AE60, #27AE60);
+            border-color: transparent;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #27AE60 0%, #27AE60 100%);
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(39, 174, 96, 0.4);
+        }
+
+        .calendar-day {
+            flex: 1;
+            min-width: 100px;
+            background: #f8fafc;
+            border-radius: 20px;
+            padding: 12px;
+            text-align: center;
+            border: 1px solid rgba(39, 174, 96, 0.15);
+        }
+
+        .calendar-day-header {
+            font-weight: 700;
+            padding-bottom: 8px;
+            margin-bottom: 8px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .calendar-day-name {
+            font-size: 14px;
+            color: #27AE60;
+        }
+
+        .calendar-day-date {
+            font-size: 18px;
+            font-weight: 800;
+            color: #2C3E50;
+        }
+
+        .calendar-event {
+            background: white;
+            border-radius: 12px;
+            padding: 8px;
+            margin-top: 8px;
+            text-align: left;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            border-left: 3px solid #27AE60;
+        }
+
+        .calendar-event-time {
+            font-size: 10px;
+            color: #64748b;
+        }
+
+        .calendar-event-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: #2C3E50;
+        }
+
+        .calendar-event-nutritionist {
+            font-size: 10px;
+            color: #27AE60;
+        }
+
+        .calendar-empty {
+            font-size: 11px;
+            color: #94a3b8;
+            padding: 16px 0;
+        }
+
+        .calendar-event.event-consultation {
+            border-left-color: #27AE60;
+        }
+        
+        .calendar-event.event-meal {
+            border-left-color: #FF7A00;
+        }
+        
+        .calendar-event.event-meal .calendar-event-title {
+            color: #FF7A00;
+        }
+
+        .progress-section {
+            background: white;
+            border-radius: 28px;
+            padding: 1.6rem;
+            margin-bottom: 30px;
+            border: 1px solid rgba(39, 174, 96, 0.1);
+            box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .progress-section:hover {
+            box-shadow: 0 25px 40px -15px rgba(39, 174, 96, 0.12);
+        }
+
+        .progress-bar-container {
+            background: #e9ecef;
+            border-radius: 12px;
+            height: 10px;
+            width: 100%;
+            margin: 16px 0;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #27AE60, #27AE60);
+            height: 10px;
+            border-radius: 12px;
+        }
+
+        .meal-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(39, 174, 96, 0.1);
+        }
+
+        .badge-cal {
+            background: rgba(39, 174, 96, 0.1);
+            padding: 4px 10px;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #27AE60;
+        }
+
+        .ai-upload {
+            border: 2px dashed #cbd5e1;
+            border-radius: 24px;
+            padding: 24px;
+            text-align: center;
+            background: linear-gradient(135deg, #fff9f0, #ffffff);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .ai-upload:hover {
+            border-color: #27AE60;
+            background: linear-gradient(135deg, #fff5e6, #ffffff);
+            transform: scale(1.02);
+        }
+
+        .message-item {
+            display: flex;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(39, 174, 96, 0.1);
+        }
+
+        .message-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, rgba(39, 174, 96, 0.12), rgba(255, 122, 0, 0.08));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #27AE60;
+        }
+
+        .tab-content {
+            display: none;
+        }
+        
+        .active-tab {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        /* ==================== NOTIFICATION BELL ==================== */
+.notification-bell {
+    position: relative;
+    cursor: pointer;
+    background: none;
+    border: none;
+    font-size: 1.3rem;
+    color: #5a6e7c;
+    transition: all 0.3s ease;
+    padding: 8px;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.notification-bell:hover {
+    background: rgba(39, 174, 96, 0.1);
+    color: #27AE60;
+    transform: scale(1.05);
+}
+
+.notification-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: #ef4444;
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 50%;
+    min-width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Notification Panel */
+.notification-panel {
+    position: absolute;
+    top: 60px;
+    right: 20px;
+    width: 380px;
+    max-width: calc(100vw - 40px);
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    border: 1px solid #e2e8f0;
+    z-index: 1000;
+    display: none;
+    overflow: hidden;
+    animation: slideDown 0.2s ease;
+}
+
+.notification-panel.show {
+    display: block;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.notification-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+}
+
+.notification-header h4 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 0;
+}
+
+.notification-header button {
+    background: none;
+    border: none;
+    color: #27AE60;
+    font-size: 12px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.notification-header button:hover {
+    text-decoration: underline;
+}
+
+.notification-list {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.notification-item {
+    display: flex;
+    gap: 12px;
+    padding: 14px 20px;
+    border-bottom: 1px solid #f1f5f9;
+    transition: all 0.2s;
+    cursor: pointer;
+}
+
+.notification-item:hover {
+    background: #f8fafc;
+}
+
+.notification-item.unread {
+    background: #f0fdf4;
+    border-left: 3px solid #27AE60;
+}
+
+.notification-icon {
+    width: 36px;
+    height: 36px;
+    background: #e8f5e9;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.notification-icon i {
+    font-size: 16px;
+    color: #27AE60;
+}
+
+.notification-content {
+    flex: 1;
+}
+
+.notification-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 4px;
+}
+
+.notification-message {
+    font-size: 12px;
+    color: #64748b;
+    margin-bottom: 4px;
+    line-height: 1.4;
+}
+
+.notification-time {
+    font-size: 10px;
+    color: #94a3b8;
+}
+
+.empty-notifications {
+    text-align: center;
+    padding: 40px 20px;
+    color: #94a3b8;
+}
+
+.empty-notifications i {
+    font-size: 48px;
+    opacity: 0.3;
+    margin-bottom: 12px;
+}
+
+.empty-notifications p {
+    font-size: 13px;
+}
+
+        @media (max-width: 1024px) {
+            .sidebar {
+                transform: translateX(-100%);
+                position: fixed;
+                z-index: 200;
+                transition: transform 0.3s;
+            }
+            .sidebar.open {
+                transform: translateX(0);
+            }
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+            }
+            .menu-toggle {
+                display: block;
+                background: white;
+                border: none;
+                font-size: 1.6rem;
+                cursor: pointer;
+                color: #27AE60;
+            }
+        }
+
+        @media (min-width: 1025px) {
+            .menu-toggle {
+                display: none;
+            }
+        }
+
+        .menu-toggle {
+            background: none;
+            border: none;
+            font-size: 26px;
+            color: #27AE60;
+            margin-right: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .menu-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 150;
+            display: none;
+        }
+        
+        .overlay.active {
+            display: block;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 8px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #27AE60;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="dashboard-container">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">NutriLife <span>🍎</span></div>
+            <div class="user-welcome">
+                <div class="avatar" id="avatarDisplay">SM</div>
+                <div class="user-info">
+                    <h4 id="userNameDisplay">Sarah M.</h4>
+                    <p id="userEmailDisplay">✨ Member since 2025</p>
+                </div>
+            </div>
+        </div>
+        <div class="nav-menu">
+            <div class="nav-item active" data-tab="profile-overview"><i class="fas fa-user-circle"></i><span>Profile & Overview</span></div>
+            <div class="nav-item" data-tab="diet-plans"><i class="fas fa-apple-alt"></i><span>Diet Plans</span></div>
+            <div class="nav-item" data-tab="consultation"><i class="fas fa-calendar-check"></i><span>Book Consultation</span></div>
+            <div class="nav-item" data-tab="ai-tracker"><i class="fas fa-robot"></i><span>AI Calorie Tracker</span></div>
+            <div class="nav-item" data-tab="progress"><i class="fas fa-chart-line"></i><span>Tracking Progress</span></div>
+            <div class="nav-item" data-tab="payments"><i class="fas fa-credit-card"></i><span>Payments</span></div>
+            <div class="nav-item" data-tab="messages"><i class="fas fa-envelope"></i><span>Messages</span></div>
+        </div>
+        <div style="padding: 20px 24px; border-top: 1px solid rgba(39,174,96,0.1); margin-top: 20px;">
+            <div class="nav-item" id="logoutBtn"><i class="fas fa-sign-out-alt"></i><span>Log out</span></div>
+        </div>
+    </aside>
+
+    <div class="overlay" id="overlay"></div>
+
+    <main class="main-content">
+        <div class="top-bar">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <button class="menu-toggle" id="menuToggleBtn"><i class="fas fa-bars"></i></button>
+                <div class="page-title">
+                    <h1 id="dynamicTitle">User Dashboard</h1>
+                    <p id="dynamicSubtitle">Manage your health journey & nutrition</p>
+                </div>
+            </div>
+            <button class="btn-primary" id="supportBtn"><i class="fas fa-headset"></i> Support</button>
+            <button class="btn-primary" id="availabilityBtn"><i class="fas fa-clock"></i> Set Availability</button>
+                    <!-- Notification Bell -->
+        <div style="position: relative;">
+            <button class="notification-bell" id="notificationBell">
+                <i class="fas fa-bell"></i>
+                <span class="notification-badge" id="notificationBadge" style="display: none;">0</span>
+            </button>
+            
+            <!-- Notification Panel -->
+            <div class="notification-panel" id="notificationPanel">
+                <div class="notification-header">
+                    <h4><i class="fas fa-bell"></i> Notifications</h4>
+                    <button id="markAllNotificationsBtn">Tout marquer comme lu</button>
+                </div>
+                    <div class="notification-list" id="notificationList">
+                        <div class="empty-notifications">
+                            <i class="fas fa-bell-slash"></i>
+                            <p>Aucune notification</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========= TAB CONTENT ========= -->
+        
+        <!-- Profile & Overview Tab -->
+        <div id="profile-overview" class="tab-content active-tab">
+            <div class="dashboard-grid">
+                <div class="dash-card">
+                    <div class="card-header"><h3>Current Plan</h3><div class="card-icon"><i class="fas fa-clipboard-list"></i></div></div>
+                    <div class="card-value" id="currentPlanName">🌿 Loading...</div>
+                    <p id="planExpiryInfo">Loading...</p>
+                    <button class="btn-outline view-diet-btn">View details →</button>
+                </div>
+                <div class="dash-card">
+                    <div class="card-header"><h3>Next Consultation</h3><div class="card-icon"><i class="fas fa-video"></i></div></div>
+                    <div class="card-value" id="nextConsultation">📅 Loading...</div>
+                    <p id="consultationInfo">Loading...</p>
+                    <button class="btn-outline reschedule-btn">Reschedule</button>
+                </div>
+                <div class="dash-card">
+                    <div class="card-header"><h3>Today's Calories</h3><div class="card-icon"><i class="fas fa-fire"></i></div></div>
+                    <div class="card-value" id="todayCalories">-- / -- kcal</div>
+                    <div class="progress-bar-container"><div class="progress-fill" id="calorieProgressFill" style="width:0%"></div></div>
+                    <button class="btn-outline log-meal-btn">Log meal +</button>
+                </div>
+            </div>
+            <div class="dashboard-grid" style="grid-template-columns: repeat(3, 1fr);">
+                <div class="dash-card">
+                    <div class="card-header"><h3>Health Score</h3><div class="card-icon"><i class="fas fa-heartbeat"></i></div></div>
+                    <div class="card-value" id="healthScore">--</div>
+                    <p id="healthStatus">--</p>
+                </div>
+                <div class="dash-card">
+                    <div class="card-header"><h3>BMI</h3><div class="card-icon"><i class="fas fa-calculator"></i></div></div>
+                    <div class="card-value" id="bmiValue">--</div>
+                    <p id="bmiCategory">--</p>
+                </div>
+                <div class="dash-card">
+                    <div class="card-header"><h3>Weight</h3><div class="card-icon"><i class="fas fa-weight-scale"></i></div></div>
+                    <div class="card-value" id="currentWeight">--</div>
+                    <p id="weightChange">--</p>
+                </div>
+            </div>
+            <div class="progress-section">
+                <div class="card-header"><h3><i class="fas fa-chart-line"></i> BMI Timeline</h3></div>
+                <div id="bmiTimelineContainer" style="padding: 20px 0;"></div>
+            </div>
+            <div class="progress-section">
+                <div class="card-header"><h3><i class="fas fa-weight-scale"></i> Update Your Weight</h3></div>
+                <div style="display: flex; gap: 16px; align-items: flex-end; flex-wrap: wrap;">
+                    <div style="flex: 1;">
+                        <label>New weight (kg)</label>
+                        <input type="number" id="newWeight" step="0.1" placeholder="72.5" style="width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #e2e8f0; margin-top: 8px;">
+                    </div>
+                    <button class="btn-primary" id="saveWeightBtn">Save Weight</button>
+                </div>
+            </div>
+            <div class="progress-section">
+                <div class="card-header"><h3><i class="fas fa-calendar-week"></i> This Week's Schedule</h3></div>
+                <div id="weeklyCalendar" style="display: flex; gap: 8px; overflow-x: auto; padding: 16px 0;"></div>
+            </div>
+            <div class="progress-section">
+                <div class="card-header"><h3><i class="fas fa-calendar-check"></i> Daily Check-in</h3></div>
+                <div style="display: flex; gap: 16px; align-items: center; flex-wrap: wrap;">
+                    <button class="btn-primary" id="checkinBtn"><i class="fas fa-check-circle"></i> I followed my plan today!</button>
+                    <p style="font-size: 12px; color: #64748b; margin: 0;">Click each day to maintain your streak 🔥</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Diet Plans Tab -->
+        <div id="diet-plans" class="tab-content">
+            <div class="dashboard-grid">
+                <div class="dash-card">
+                    <div class="card-header"><h3>🌱 My Current Plan</h3><div class="card-icon"><i class="fas fa-leaf"></i></div></div>
+                    <div id="activePlanInfo"><p>Loading...</p></div>
+                </div>
+            </div>
+            <div class="progress-section">
+                <div class="card-header"><h3><i class="fas fa-check-circle"></i> Today's Meal Checklist</h3><span id="mealProgress" class="badge-cal">0/0 completed</span></div>
+                <div id="todayMealsChecklist"><div class="meal-item">Loading...</div></div>
+            </div>
+            <div class="dashboard-grid" id="seasonalPlans"></div>
+        </div>
+
+        <!-- Book Consultation Tab -->
+        <div id="consultation" class="tab-content">
+            <div class="dashboard-grid">
+                <div class="dash-card">
+                    <div class="card-header"><h3>📹 Online Consultation</h3><div class="card-icon"><i class="fas fa-calendar-alt"></i></div></div>
+                    <p>Select available slot with certified nutritionist via Zoom call.</p>
+                    <div style="margin: 12px 0;"><label>👩‍⚕️ Choose Nutritionist:</label><select id="nutritionistSelect" style="width:100%; padding: 10px; border-radius: 40px; border:1px solid #ddd; margin-top: 8px;"><option value="">Loading nutritionists...</option></select></div>
+                    <div style="margin: 12px 0;"><label>📅 Choose date and time:</label><input type="datetime-local" id="consultationDateTime" style="width:100%; padding: 10px; border-radius: 40px; border:1px solid #ddd; margin-top: 8px;"></div>
+                    <div style="margin: 12px 0;"><label>📝 Notes (optional):</label><textarea id="consultationNotes" rows="3" style="width:100%; padding: 10px; border-radius: 20px; border:1px solid #ddd; margin-top: 8px;" placeholder="Any specific concerns or questions?"></textarea></div>
+                    <button class="btn-primary book-consult-btn">Book Now →</button>
+                    <div id="bookingMessage" style="margin-top: 12px; font-size: 12px;"></div>
+                </div>
+                <div class="dash-card">
+                    <div class="card-header"><h3>📋 My Consultations</h3><div class="card-icon"><i class="fas fa-list"></i></div></div>
+                    <div id="myConsultationsList"><p style="color: #94a3b8;">Loading your consultations...</p></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- AI Calorie Tracker Tab -->
+        <div id="ai-tracker" class="tab-content">
+            <div class="progress-section">
+                <div class="card-header"><h3>📸 Upload Meal Image</h3><div class="card-icon"><i class="fas fa-camera"></i></div></div>
+                <div class="ai-upload" id="aiUploadArea" style="cursor: pointer;">
+                    <i class="fas fa-cloud-upload-alt" style="font-size: 2rem; color:#27AE60;"></i>
+                    <p style="margin-top: 12px;">Click to select an image (JPG or PNG)</p>
+                    <input type="file" id="mealImage" accept="image/jpeg,image/png" style="display:none">
+                </div>
+                <div style="margin-top: 16px;"><label>Meal Type</label><select id="mealType" style="width:100%; padding: 10px; border-radius: 12px; border:1px solid #ddd;"><option value="breakfast">🥣 Breakfast</option><option value="lunch" selected>🥗 Lunch</option><option value="dinner">🍲 Dinner</option><option value="snack">🍎 Snack</option></select></div>
+                <div style="margin-top: 12px;"><label>Food Name (optional)</label><input type="text" id="foodName" placeholder="e.g., Grilled chicken salad" style="width:100%; padding: 10px; border-radius: 12px; border:1px solid #ddd;"></div>
+                <div style="margin-top: 12px;"><label>Calories (optional)</label><input type="number" id="calories" placeholder="e.g., 450" style="width:100%; padding: 10px; border-radius: 12px; border:1px solid #ddd;"></div>
+                <button id="uploadMealBtn" class="btn-primary" style="margin-top: 16px; width:100%;"><i class="fas fa-upload"></i> Upload Meal</button>
+                <div id="uploadResult" style="margin-top: 16px; display: none;"></div>
+            </div>
+            <div class="progress-section">
+                <div class="card-header"><h3>📊 Today's Meals</h3></div>
+                <div id="todayMealsList"><div class="meal-item">Loading...</div></div>
+                <div id="todayTotal" style="margin-top: 12px; text-align: right; font-weight: bold;"></div>
+            </div>
+        </div>
+
+        <!-- Tracking Progress Tab -->
+        <div id="progress" class="tab-content">
+            <div class="dashboard-grid">
+                <div class="dash-card">
+                    <div class="card-header"><h3>📈 Weight Journey</h3><div class="card-icon"><i class="fas fa-chart-line"></i></div></div>
+                    <canvas id="weightChart" style="max-height: 200px; width:100%"></canvas>
+                    <p id="goalText">Loading goal...</p>
+                </div>
+                <div class="dash-card">
+                    <div class="card-header"><h3>🏆 Achievements</h3><div class="card-icon"><i class="fas fa-trophy"></i></div></div>
+                    <div id="achievementsList"><div class="meal-item">Loading achievements...</div></div>
+                </div>
+            </div>
+            <div class="progress-section"><h3>📆 Weekly Report</h3><div id="weeklyReportContent"><p>Loading report...</p></div></div>
+        </div>
+
+        <!-- Payments Tab -->
+        <div id="payments" class="tab-content">
+            <div class="dashboard-grid">
+                <div class="dash-card">
+                    <div class="card-header"><h3>💳 Subscription & Invoices</h3></div>
+                    <div id="invoicesList"><div class="meal-item">Loading your subscriptions...</div></div>
+                    <button class="btn-primary" onclick="window.location.href='/payment/'" style="margin-top:16px;">➕ Buy New Plan</button>
+                </div>
+                <div class="dash-card">
+                    <h3>💳 Payment Methods</h3>
+                    <p>Visa • Mastercard • PayPal • Stripe secure</p>
+                    <button class="btn-outline add-card-btn" onclick="alert('💳 Add new payment method (demo)')">➕ Add new card</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== MESSAGES TAB - UN SEUL NUTRITIONNISTE ==================== -->
+        <div id="messages" class="tab-content">
+            <div class="progress-section" style="padding: 0; overflow: hidden;">
+                <div style="display: flex; height: 70vh; min-height: 500px;">
+                    
+                    <!-- LEFT SIDE: UNIQUEMENT le nutritionniste (pas de liste) -->
+                    <div style="width: 320px; border-right: 1px solid #e2e8f0; display: flex; flex-direction: column; background: white;">
+                        <div style="padding: 20px; border-bottom: 1px solid #e2e8f0; background: white;">
+                            <h3 style="font-size: 1.1rem; margin: 0;">
+                                <i class="fas fa-user-md" style="color: #27AE60;"></i> My Nutritionist
+                            </h3>
+                            <p style="font-size: 12px; color: #64748b; margin-top: 4px;">Your dedicated expert</p>
+                        </div>
+                        
+                        <!-- Conteneur du nutritionniste unique -->
+                        <div id="nutritionistContainer" style="flex: 1; overflow-y: auto;">
+                            <div style="text-align: center; padding: 40px 20px; color: #94a3b8;">
+                                <i class="fas fa-spinner fa-spin" style="font-size: 24px;"></i>
+                                <p style="margin-top: 12px;">Loading your nutritionist...</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- RIGHT SIDE: Zone de chat -->
+                    <div style="flex: 1; display: flex; flex-direction: column; background: #f8fafc;">
+                        
+                        <!-- Header du chat -->
+                        <div id="chatHeader" style="display: none; padding: 16px 20px; border-bottom: 1px solid #e2e8f0; background: white; align-items: center; gap: 12px;">
+                            <div id="chatAvatar" style="width: 45px; height: 45px; background: linear-gradient(135deg, #27AE60, #2ecc71); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 18px;">
+                                N
+                            </div>
+                            <div style="flex: 1;">
+                                <h4 id="chatWithName" style="margin: 0; font-size: 16px; color: #1e293b;">Your Nutritionist</h4>
+                                <p id="chatStatus" style="margin: 4px 0 0; font-size: 11px; color: #64748b;">
+                                    <i class="fas fa-circle" style="color: #27AE60; font-size: 8px;"></i> Online
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <!-- Messages area -->
+                        <div id="messagesArea" style="flex: 1; overflow-y: auto; padding: 20px;">
+                            <div style="text-align: center; color: #94a3b8; padding: 60px 20px;">
+                                <i class="fas fa-comment-dots" style="font-size: 48px; margin-bottom: 16px; opacity: 0.3;"></i>
+                                <p>Select your nutritionist to start messaging</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Zone de saisie -->
+                        <div id="messageInputArea" style="display: none; padding: 16px 20px; border-top: 1px solid #e2e8f0; background: white;">
+                            <div style="display: flex; gap: 12px;">
+                                <textarea id="messageInput" 
+                                          placeholder="Write a message to your nutritionist..." 
+                                          rows="2" 
+                                          style="flex: 1; border-radius: 20px; padding: 12px 16px; resize: none; border: 1px solid #e2e8f0; font-family: inherit; font-size: 14px;"></textarea>
+                                <button id="sendMsgBtn" class="btn-primary" style="padding: 12px 24px; border-radius: 40px;">
+                                    <i class="fas fa-paper-plane"></i> Send
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // ==================== TAB SWITCHING ====================
+    const tabs = document.querySelectorAll('.tab-content');
+    const navItems = document.querySelectorAll('.nav-item');
+    const titles = {
+        'profile-overview': { title: 'User Dashboard', subtitle: 'Manage your health journey & nutrition' },
+        'diet-plans': { title: 'My Diet Plans', subtitle: 'Personalized & seasonal nutrition plans' },
+        'consultation': { title: 'Book Consultation', subtitle: 'Connect with expert worldwide' },
+        'ai-tracker': { title: 'AI Calorie Tracker', subtitle: 'Snap a photo & get instant insights' },
+        'progress': { title: 'Tracking Progress', subtitle: 'Weight, metrics & weekly reports' },
+        'payments': { title: 'Payments & Subscriptions', subtitle: 'Secure billing & plan invoices' },
+        'messages': { title: 'Messages', subtitle: 'Chat with your nutritionist' }
+    };
+
+    let messagePollingInterval = null;
+
+    function switchTab(tabId) {
+        tabs.forEach(tab => tab.classList.remove('active-tab'));
+        const activeTab = document.getElementById(tabId);
+        if(activeTab) activeTab.classList.add('active-tab');
+        navItems.forEach(item => item.classList.remove('active'));
+        const activeNav = Array.from(navItems).find(item => item.getAttribute('data-tab') === tabId);
+        if(activeNav) activeNav.classList.add('active');
+        if(titles[tabId]) {
+            document.getElementById('dynamicTitle').innerText = titles[tabId].title;
+            document.getElementById('dynamicSubtitle').innerText = titles[tabId].subtitle;
+        }
+        
+        // Nettoyer le polling si on quitte l'onglet messages
+        if (tabId !== 'messages' && messagePollingInterval) {
+            clearInterval(messagePollingInterval);
+            messagePollingInterval = null;
+        }
+    }
+
+    navItems.forEach(item => {
+        const tabId = item.getAttribute('data-tab');
+        if(tabId) item.addEventListener('click', () => switchTab(tabId));
+    });
+
+    // ==================== LOGOUT ====================
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    async function handleLogout() {
+        try {
+            const response = await fetch("/api/accounts/logout/", {
+                method: "POST",
+                headers: { "Content-Type": "application/json", "X-CSRFToken": getCookie('csrftoken') },
+                credentials: 'include'
+            });
+            if (response.ok) {
+                localStorage.removeItem('userData');
+                sessionStorage.removeItem('userData');
+                window.location.href = "/login/";
+            }
+        } catch (error) {
+            console.error("Logout error:", error);
+        }
+    }
+    document.getElementById('logoutBtn').addEventListener('click', handleLogout);
+
+    // ==================== SIDEBAR MOBILE ====================
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('overlay');
+    const menuToggle = document.getElementById('menuToggleBtn');
+    function closeSidebar() { sidebar.classList.remove('open'); overlay.classList.remove('active'); }
+    function openSidebar() { sidebar.classList.add('open'); overlay.classList.add('active'); }
+    if (menuToggle) menuToggle.addEventListener('click', () => { sidebar.classList.contains('open') ? closeSidebar() : openSidebar(); });
+    if (overlay) overlay.addEventListener('click', closeSidebar);
+
+    // ==================== SUPPORT BUTTON ====================
+    document.getElementById('supportBtn')?.addEventListener('click', () => {
+        alert('📞 Support Team is here!\n\nContact: support@nutrilife.com\n+213 555 123 456\nAvailable 9AM-6PM GMT+1');
+    });
+
+    // ==================== DASHBOARD BUTTONS ====================
+    document.querySelectorAll('.view-diet-btn').forEach(btn => btn.addEventListener('click', () => switchTab('diet-plans')));
+    document.querySelectorAll('.reschedule-btn').forEach(btn => btn.addEventListener('click', () => alert('📅 Reschedule consultation: Please select new date in "Book Consultation" tab.')));
+    document.querySelectorAll('.log-meal-btn').forEach(btn => btn.addEventListener('click', () => switchTab('ai-tracker')));
+
+    // ==================== FUNCTIONS ====================
+    function getCSRFToken() {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, 10) === 'csrftoken=') {
+                    cookieValue = decodeURIComponent(cookie.substring(10));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+
+    // ==================== WEEKLY CALENDAR ====================
+    function formatTime(isoString) {
+        const date = new Date(isoString);
+        let hours = date.getHours();
+        const minutes = date.getMinutes();
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12 || 12;
+        return `${hours}:${minutes.toString().padStart(2, '0')} ${ampm}`;
+    }
+
+    async function loadWeeklyCalendar() {
+        try {
+            const response = await fetch('/api/users/calendar/', { credentials: 'include' });
+            const container = document.getElementById('weeklyCalendar');
+            if (response.ok) {
+                const data = await response.json();
+                const eventsByDate = {};
+                data.consultations?.forEach(c => {
+                    const dateKey = c.date.split('T')[0];
+                    if (!eventsByDate[dateKey]) eventsByDate[dateKey] = [];
+                    eventsByDate[dateKey].push({ type: 'consultation', title: c.nutritionist_name, time: formatTime(c.date), zoom_link: c.zoom_link, icon: '👩‍⚕️' });
+                });
+                data.meals?.forEach(dayMeals => {
+                    const dateKey = dayMeals.date;
+                    if (!eventsByDate[dateKey]) eventsByDate[dateKey] = [];
+                    dayMeals.meals.forEach(meal => { eventsByDate[dateKey].push({ type: 'meal', title: meal.name, time: meal.time || '12:00', icon: '🍽️' }); });
+                });
+                const today = new Date();
+                const startOfWeek = new Date(today);
+                startOfWeek.setDate(today.getDate() - today.getDay());
+                const daysFR = ['DIM', 'LUN', 'MAR', 'MER', 'JEU', 'VEN', 'SAM'];
+                container.innerHTML = '';
+                for (let i = 0; i < 7; i++) {
+                    const currentDate = new Date(startOfWeek);
+                    currentDate.setDate(startOfWeek.getDate() + i);
+                    const dateKey = currentDate.toISOString().split('T')[0];
+                    const dayEvents = eventsByDate[dateKey] || [];
+                    const dayDiv = document.createElement('div');
+                    dayDiv.className = 'calendar-day';
+                    let eventsHtml = '';
+                    if (dayEvents.length === 0) eventsHtml = '<div class="calendar-empty">—</div>';
+                    else eventsHtml = dayEvents.map(event => `<div class="calendar-event ${event.type === 'consultation' ? 'event-consultation' : 'event-meal'}"><div class="calendar-event-time">🕐 ${event.time}</div><div class="calendar-event-title">${event.icon} ${event.title}</div>${event.type === 'consultation' && event.zoom_link ? `<div class="calendar-event-time"><a href="${event.zoom_link}" target="_blank" style="color: #27AE60; font-size: 10px;">Join Zoom →</a></div>` : '<div class="calendar-event-nutritionist">🍽️ Meal plan</div>'}</div>`).join('');
+                    dayDiv.innerHTML = `<div class="calendar-day-header"><div class="calendar-day-name">${daysFR[i]}</div><div class="calendar-day-date">${currentDate.getDate()}</div></div><div class="calendar-events">${eventsHtml}</div>`;
+                    container.appendChild(dayDiv);
+                }
+            }
+        } catch (error) { console.error('Error loading calendar:', error); document.getElementById('weeklyCalendar').innerHTML = '<div class="message-item">Error loading calendar</div>'; }
+    }
+
+    // ==================== PROFILE STATS ====================
+    async function loadProfileStats() {
+        try {
+            const response = await fetch('/api/users/stats/', { credentials: 'include' });
+            if (response.ok) {
+                const data = await response.json();
+                const streakElement = document.querySelector('.streak-display') || createStreakDisplay();
+                if (streakElement) streakElement.innerHTML = `🔥 ${data.streak} day streak`;
+                document.getElementById('healthScore').innerText = data.health_score;
+                let healthText = data.health_score >= 80 ? "Excellent! 🎉" : data.health_score >= 60 ? "Good 👍" : "Needs attention ⚠️";
+                document.getElementById('healthStatus').innerText = healthText;
+                document.getElementById('bmiValue').innerText = data.bmi;
+                document.getElementById('bmiCategory').innerHTML = data.bmi_category;
+                document.getElementById('currentWeight').innerHTML = `${data.current_weight} kg`;
+                const changeText = data.weight_change ? `${data.weight_change > 0 ? '▲' : '▼'} ${Math.abs(data.weight_change)} kg` : '';
+                document.getElementById('weightChange').innerHTML = changeText;
+                updateTimeline(data.timeline);
+            }
+        } catch (error) { console.error('Error loading stats:', error); }
+    }
+
+    function createStreakDisplay() {
+        const topBar = document.querySelector('.top-bar');
+        if (topBar && !document.querySelector('.streak-display')) {
+            const streakDiv = document.createElement('div');
+            streakDiv.className = 'streak-display';
+            streakDiv.style.cssText = 'background: linear-gradient(135deg, #27AE60, #2ecc71); padding: 8px 20px; border-radius: 40px; color: white; font-weight: bold;';
+            topBar.insertAdjacentElement('afterbegin', streakDiv);
+            return streakDiv;
+        }
+        return document.querySelector('.streak-display');
+    }
+
+    async function loadUserInfo() {
+        try {
+            const response = await fetch('/api/users/stats/', { credentials: 'include' });
+            if (response.ok) {
+                const data = await response.json();
+                let initials = "U";
+                if (data.first_name && data.last_name) {
+                    initials = (data.first_name[0] + data.last_name[0]).toUpperCase();
+                    document.getElementById('userNameDisplay').innerText = `${data.first_name} ${data.last_name}`;
+                } else if (data.email) {
+                    initials = data.email.charAt(0).toUpperCase();
+                    document.getElementById('userNameDisplay').innerText = data.email.split('@')[0];
+                }
+                document.getElementById('avatarDisplay').innerText = initials;
+                if (data.email) document.getElementById('userEmailDisplay').innerHTML = `📧 ${data.email}`;
+            }
+        } catch (error) { console.error('Error loading user info:', error); }
+    }
+
+    function updateTimeline(timeline) {
+        const container = document.getElementById('bmiTimelineContainer');
+        if (!container) return;
+        if (!timeline || timeline.length === 0) { container.innerHTML = '<p style="text-align: center; color: #94a3b8;">No data yet. Update your weight to see your BMI timeline.</p>'; return; }
+        function getBMIColor(bmi) { if (bmi < 18.5) return '#3b82f6'; if (bmi < 25) return '#22c55e'; if (bmi < 30) return '#f97316'; if (bmi < 40) return '#ef4444'; return '#7f1d1d'; }
+        function getBMILabel(bmi) { if (bmi < 18.5) return 'Underweight'; if (bmi < 25) return 'Healthy'; if (bmi < 30) return 'Overweight'; if (bmi < 40) return 'Obese'; return 'Severely Obese'; }
+        const itemWidth = 120;
+        const totalWidth = timeline.length * itemWidth;
+        let itemsHtml = '';
+        timeline.forEach((entry, index) => {
+            const color = getBMIColor(entry.bmi);
+            const label = getBMILabel(entry.bmi);
+            itemsHtml += `<div style="text-align: center; width: ${itemWidth}px; flex-shrink: 0;"><div style="font-size: 14px; font-weight: 700; color: ${color}; margin-bottom: 10px;">${entry.bmi}</div><div style="width: 12px; height: 12px; background: ${color}; border-radius: 50%; margin: 0 auto; box-shadow: 0 0 0 2px white, 0 0 0 4px ${color};"></div><div style="margin-top: 12px; font-size: 11px; color: #64748b;">${entry.date}</div><div style="margin-top: 4px; font-size: 10px; color: ${color}; font-weight: 600;">${label}</div></div>`;
+        });
+        container.innerHTML = `<div style="overflow-x: auto; padding: 20px 0;"><div style="position: relative; min-width: ${totalWidth}px;"><div style="position: absolute; top: 32px; left: 0; right: 0; height: 3px; background: #e2e8f0; border-radius: 2px;"></div><div style="display: flex; position: relative; z-index: 2;">${itemsHtml}</div></div></div>`;
+    }
+
+    // ==================== SAVE WEIGHT ====================
+    async function saveWeight() {
+        const newWeight = document.getElementById('newWeight').value;
+        if (!newWeight) { alert('Please enter your weight'); return; }
+        try {
+            const response = await fetch('/api/users/update-weight/', {
+                method: 'POST', credentials: 'include',
+                headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCSRFToken() },
+                body: JSON.stringify({ weight: parseFloat(newWeight) })
+            });
+            if (response.ok) { alert('✅ Weight updated successfully!'); document.getElementById('newWeight').value = ''; loadProfileStats(); }
+            else if (response.status === 403) { alert('❌ Session expired. Please login again.'); window.location.href = '/login/'; }
+            else { const errorData = await response.json(); alert('❌ Error: ' + (errorData.error || 'Unknown error')); }
+        } catch (error) { console.error('Error:', error); alert('❌ Network error'); }
+    }
+    document.getElementById('saveWeightBtn')?.addEventListener('click', saveWeight);
+
+    // ==================== UPDATE STREAK ====================
+    async function updateStreak() {
+        try {
+            const response = await fetch('/api/users/update-streak/', {
+                method: 'POST', credentials: 'include',
+                headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCSRFToken() }
+            });
+            const data = await response.json();
+            if (response.ok) {
+                if (data.already) alert('✅ You already checked in today!');
+                else alert(`🎉 Great! You've maintained your streak: ${data.streak} days!`);
+                loadProfileStats();
+            } else alert('❌ Error updating streak');
+        } catch (error) { console.error('Error:', error); alert('❌ Network error'); }
+    }
+    document.getElementById('checkinBtn')?.addEventListener('click', updateStreak);
+
+    // ==================== WEIGHT HISTORY ====================
+    let weightChartInstance = null;
+    async function loadWeightHistory() {
+        const canvas = document.getElementById('weightChart');
+        if (!canvas) return;
+        try {
+            const response = await fetch('/api/users/weight-history/', { credentials: 'include' });
+            if (response.ok) {
+                const data = await response.json();
+                document.getElementById('goalText').innerHTML = data.goal_weight ? `🎯 Goal: ${data.goal_weight} kg` : `🎯 Set your goal weight in profile`;
+                if (weightChartInstance) weightChartInstance.destroy();
+                if (!data.labels || data.labels.length === 0) { canvas.parentElement.innerHTML = '<p style="text-align: center; color: #94a3b8; padding: 40px;">No weight data yet. Update your weight to see your progress.</p>'; return; }
+                weightChartInstance = new Chart(canvas.getContext('2d'), {
+                    type: 'line',
+                    data: { labels: data.labels, datasets: [{ label: 'Your Weight (kg)', data: data.weights, borderColor: '#27AE60', backgroundColor: 'rgba(39, 174, 96, 0.1)', borderWidth: 3, pointRadius: 5, pointBackgroundColor: '#27AE60', pointBorderColor: '#fff', pointBorderWidth: 2, tension: 0.3, fill: true }] },
+                    options: { responsive: true, maintainAspectRatio: true, plugins: { tooltip: { callbacks: { label: (ctx) => `Weight: ${ctx.raw} kg` } } }, scales: { y: { title: { display: true, text: 'Weight (kg)' }, min: Math.min(...data.weights) - 2, max: Math.max(...data.weights) + 2 }, x: { title: { display: true, text: 'Date' } } } }
+                });
+            }
+        } catch (error) { console.error('Error loading weight history:', error); }
+    }
+
+    // ==================== ACHIEVEMENTS ====================
+    async function loadAchievements() {
+        const container = document.getElementById('achievementsList');
+        if (!container) return;
+        try {
+            const response = await fetch('/api/users/achievements/', { credentials: 'include' });
+            if (response.ok) {
+                const data = await response.json();
+                container.innerHTML = '';
+                data.achievements.forEach(achievement => {
+                    const icon = achievement.completed ? achievement.icon : '⭕';
+                    const color = achievement.completed ? '#27AE60' : '#94a3b8';
+                    container.innerHTML += `<div class="meal-item"><div style="display: flex; align-items: center; gap: 12px;"><span style="font-size: 18px;">${icon}</span><span style="color: ${color};">${achievement.text}</span></div>${achievement.completed ? '<span class="badge-cal">✅ Completed</span>' : (achievement.progress ? `<span class="badge-cal" style="background:#f1f5f9;">${achievement.progress}</span>` : '<span class="badge-cal" style="background:#f1f5f9;">🔜 In progress</span>')}</div>`;
+                });
+            }
+        } catch (error) { console.error('Error loading achievements:', error); }
+    }
+
+    // ==================== WEEKLY REPORT ====================
+    async function loadWeeklyReport() {
+        const container = document.getElementById('weeklyReportContent');
+        if (!container) return;
+        try {
+            const response = await fetch('/api/users/weekly-report/', { credentials: 'include' });
+            if (response.ok) {
+                const data = await response.json();
+                if (data.has_report) container.innerHTML = `<div style="background: #f0fdf4; border-radius: 16px; padding: 16px; border-left: 4px solid #27AE60;"><p style="font-style: italic; color: #2C3E50; margin: 0;">“${data.content}”</p><div style="margin-top: 12px; font-size: 12px; color: #64748b;">— ${data.nutritionist_name}, ${data.date}</div></div>`;
+                else container.innerHTML = `<div style="background: #f8fafc; border-radius: 16px; padding: 16px; text-align: center; color: #64748b;"><i class="fas fa-comment-dots"></i> ${data.message}</div>`;
+            } else container.innerHTML = `<div style="background: #f8fafc; border-radius: 16px; padding: 16px; text-align: center; color: #64748b;">Unable to load report</div>`;
+        } catch (error) { console.error('Error loading weekly report:', error); }
+    }
+
+    // ==================== TODAY'S MEALS CHECKLIST ====================
+    async function loadTodayMealsChecklist() {
+        const container = document.getElementById('todayMealsChecklist');
+        const progressSpan = document.getElementById('mealProgress');
+        if (!container) return;
+        try {
+            const response = await fetch('/api/users/today-meals-checklist/', { credentials: 'include' });
+            if (response.ok) {
+                const data = await response.json();
+                if (progressSpan) progressSpan.innerText = `${data.completed_count}/${data.total_count} completed`;
+                if (data.meals.length === 0) { container.innerHTML = '<div class="meal-item">No meals planned for today 🎉</div>'; return; }
+                container.innerHTML = '';
+                data.meals.forEach(meal => {
+                    const isCompleted = meal.status === 'completed';
+                    container.innerHTML += `<div class="meal-item" data-id="${meal.id}"><div style="display: flex; align-items: center; gap: 12px;"><div class="checkbox" style="width: 24px; height: 24px; border-radius: 50%; border: 2px solid ${isCompleted ? '#27AE60' : '#cbd5e1'}; background: ${isCompleted ? '#27AE60' : 'white'}; cursor: pointer; display: flex; align-items: center; justify-content: center;">${isCompleted ? '<i class="fas fa-check" style="color: white; font-size: 12px;"></i>' : ''}</div><div><div style="font-weight: 600;">${meal.name}</div><div style="font-size: 12px; color: #64748b;">⏰ ${meal.meal_time}</div></div></div></div>`;
+                });
+                document.querySelectorAll('#todayMealsChecklist .meal-item').forEach((item, index) => {
+                    const checkbox = item.querySelector('.checkbox');
+                    const mealId = data.meals[index]?.id;
+                    if (checkbox && mealId && data.meals[index]?.status !== 'completed') checkbox.addEventListener('click', () => completeMealChecklist(mealId));
+                });
+            }
+        } catch (error) { console.error('Error loading checklist:', error); container.innerHTML = '<div class="meal-item">Error loading meals</div>'; }
+    }
+
+    async function completeMealChecklist(checklistId) {
+        try {
+            const response = await fetch(`/api/users/complete-meal-checklist/${checklistId}/`, { method: 'POST', credentials: 'include', headers: { 'X-CSRFToken': getCSRFToken() } });
+            if (response.ok) { loadTodayMealsChecklist(); loadProfileStats(); }
+        } catch (error) { console.error('Error:', error); }
+    }
+
+    // ==================== BOOK CONSULTATION ====================
+    async function loadNutritionists() {
+        const select = document.getElementById('nutritionistSelect');
+        if (!select) return;
+        try {
+            const response = await fetch('/api/consultations/nutritionists/', { credentials: 'include' });
+            if (response.ok) {
+                const nutritionists = await response.json();
+                if (nutritionists.length === 0) { select.innerHTML = '<option value="">No nutritionists available</option>'; return; }
+                select.innerHTML = '<option value="">Select a nutritionist</option>';
+                nutritionists.forEach(n => { select.innerHTML += `<option value="${n.id}">${n.name} - ${n.specialization}</option>`; });
+            }
+        } catch (error) { console.error('Error loading nutritionists:', error); select.innerHTML = '<option value="">Error loading nutritionists</option>'; }
+    }
+
+    async function loadMyConsultations() {
+        const container = document.getElementById('myConsultationsList');
+        if (!container) return;
+        try {
+            const response = await fetch('/api/consultations/my-consultations/', { credentials: 'include' });
+            if (response.ok) {
+                const consultations = await response.json();
+                if (consultations.length === 0) { container.innerHTML = '<p style="color: #94a3b8;">No consultations booked yet.</p>'; return; }
+                container.innerHTML = '';
+                consultations.forEach(c => {
+                    const statusColor = c.status === 'confirmed' ? '#27AE60' : (c.status === 'cancelled' ? '#ef4444' : '#f97316');
+                    container.innerHTML += `<div style="border-bottom: 1px solid #e2e8f0; padding: 12px 0;"><div style="display: flex; justify-content: space-between; align-items: center;"><div><strong>👩‍⚕️ ${c.nutritionist_name || 'Nutritionist'}</strong><div style="font-size: 12px; color: #64748b;">📅 ${c.date}</div></div><div><span style="background: ${statusColor}; color: white; padding: 2px 8px; border-radius: 20px; font-size: 10px;">${c.status}</span>${c.status === 'pending' ? `<button class="cancel-consult-btn" data-id="${c.id}" style="background: none; border: none; color: #ef4444; cursor: pointer; margin-left: 8px;"><i class="fas fa-times"></i></button>` : ''}</div></div>${c.zoom_link ? `<div style="margin-top: 8px;"><a href="${c.zoom_link}" target="_blank" style="color: #27AE60; font-size: 12px;">🔗 Join Zoom Meeting</a></div>` : ''}</div>`;
+                });
+                document.querySelectorAll('.cancel-consult-btn').forEach(btn => btn.addEventListener('click', () => cancelConsultation(btn.dataset.id)));
+            }
+        } catch (error) { console.error('Error loading consultations:', error); container.innerHTML = '<p style="color: #94a3b8;">Error loading consultations</p>'; }
+    }
+
+    async function bookConsultation() {
+        const nutritionistId = document.getElementById('nutritionistSelect').value;
+        const dateTime = document.getElementById('consultationDateTime').value;
+        const notes = document.getElementById('consultationNotes').value;
+        const messageDiv = document.getElementById('bookingMessage');
+        if (!nutritionistId) { messageDiv.innerHTML = '<span style="color: #ef4444;">Please select a nutritionist</span>'; return; }
+        if (!dateTime) { messageDiv.innerHTML = '<span style="color: #ef4444;">Please select a date and time</span>'; return; }
+        messageDiv.innerHTML = '<span style="color: #27AE60;">Booking...</span>';
+        try {
+            const response = await fetch('/api/consultations/book/', { method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCSRFToken() }, body: JSON.stringify({ nutritionist_id: parseInt(nutritionistId), date: dateTime, notes: notes }) });
+            const data = await response.json();
+            if (response.ok) { messageDiv.innerHTML = '<span style="color: #27AE60;">✅ Consultation booked successfully!</span>'; document.getElementById('consultationDateTime').value = ''; document.getElementById('consultationNotes').value = ''; loadMyConsultations(); }
+            else { messageDiv.innerHTML = `<span style="color: #ef4444;">❌ ${data.error || 'Booking failed'}</span>`; }
+        } catch (error) { console.error('Error booking consultation:', error); messageDiv.innerHTML = '<span style="color: #ef4444;">❌ Network error</span>'; }
+    }
+
+    async function cancelConsultation(consultationId) {
+        if (!confirm('Are you sure you want to cancel this consultation?')) return;
+        try {
+            const response = await fetch(`/api/consultations/cancel/${consultationId}/`, { method: 'PUT', credentials: 'include', headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCSRFToken() } });
+            if (response.ok) loadMyConsultations();
+            else alert('Error cancelling consultation');
+        } catch (error) { console.error('Error:', error); }
+    }
+
+    document.querySelector('.book-consult-btn')?.addEventListener('click', bookConsultation);
+    document.querySelector('[data-tab="consultation"]')?.addEventListener('click', () => { setTimeout(() => { loadNutritionists(); loadMyConsultations(); }, 100); });
+
+    // ==================== AI TRACKER ====================
+    const aiUploadArea = document.getElementById('aiUploadArea');
+    const mealImageInput = document.getElementById('mealImage');
+    if (aiUploadArea) aiUploadArea.addEventListener('click', () => mealImageInput.click());
+    mealImageInput?.addEventListener('change', (event) => {
+        if(event.target.files && event.target.files[0]) {
+            const file = event.target.files[0];
+            if(file.type.startsWith('image/')) {
+                const resultDiv = document.getElementById('uploadResult');
+                resultDiv.style.display = 'block';
+                resultDiv.innerHTML = '<div style="padding: 10px; background: #d1fae5; border-radius: 12px; color: #065f46;">✅ Image uploaded successfully!</div>';
+                setTimeout(() => { resultDiv.style.display = 'none'; }, 3000);
+                document.getElementById('mealImage').value = '';
+            } else alert('Please upload an image file (jpg, png)');
+        }
+    });
+
+    // ==================== USER PLAN ====================
+    async function loadUserPlan() {
+        try {
+            const response = await fetch('/api/users/my-plan/', { credentials: 'include' });
+            if (response.ok) {
+                const data = await response.json();
+                const plan = data.subscription_plan;
+                if (plan === 'free') window.location.href = '/payment/';
+                // Ne plus cacher les onglets pour les utilisateurs premium !
+            }
+        } catch (error) { console.error('Error loading user plan:', error); }
+    }
+
+    // ==================== INVOICES ====================
+    async function loadInvoices() {
+        const container = document.getElementById('invoicesList');
+        if (!container) return;
+        try {
+            const response = await fetch('/api/users/invoices/', { credentials: 'include' });
+            if (response.ok) {
+                const data = await response.json();
+                const subscriptions = data.subscriptions || [];
+                if (subscriptions.length === 0) {
+                    container.innerHTML = `<div class="meal-item" style="justify-content: center; flex-direction: column; gap: 12px; padding: 20px;"><div style="font-size: 48px;">💳</div><div>No subscriptions yet.</div><a href="/payment/" style="color: #27AE60; text-decoration: underline;">Buy a plan to get started →</a></div>`;
+                    return;
+                }
+                let html = `<div style="background: linear-gradient(135deg, #f0fdf4, #f8fafc); border-radius: 16px; padding: 16px; margin-bottom: 20px; border: 1px solid #e2e8f0;"><div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; text-align: center;"><div><div style="font-size: 11px; color: #64748b;">Total Spent</div><div style="font-size: 20px; font-weight: 800; color: #27AE60;">$${data.summary?.total_spent?.toFixed(2) || '0'}</div></div><div><div style="font-size: 11px; color: #64748b;">Active Plans</div><div style="font-size: 20px; font-weight: 800; color: #27AE60;">${data.summary?.active_subscriptions || 0}</div></div><div><div style="font-size: 11px; color: #64748b;">Total Subscriptions</div><div style="font-size: 20px; font-weight: 800; color: #64748b;">${data.summary?.total_subscriptions || 0}</div></div></div></div>`;
+                if (data.summary?.last_payment) {
+                    html += `<div style="background: #f8fafc; border-radius: 12px; padding: 12px; margin-bottom: 20px; border-left: 3px solid #27AE60;"><div style="font-size: 11px; color: #64748b; margin-bottom: 4px;">🕐 LAST PAYMENT</div><div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;"><div><strong>${escapeHtml(data.summary.last_payment.plan)}</strong><div style="font-size: 12px; color: #64748b;">${data.summary.last_payment.date}</div></div><div style="font-size: 18px; font-weight: 800; color: #27AE60;">$${data.summary.last_payment.amount?.toFixed(2)}</div></div></div>`;
+                }
+                html += `<div style="margin-top: 16px;"><strong>📋 All subscriptions</strong></div>`;
+                subscriptions.forEach(sub => {
+                    const statusColor = sub.status === 'active' ? '#27AE60' : '#ef4444';
+                    const statusText = sub.status === 'active' ? 'Active' : 'Expired';
+                    html += `<div style="border-bottom: 1px solid #e2e8f0; padding: 14px 0;"><div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 8px;"><div><div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;"><strong>${escapeHtml(sub.plan_name)}</strong><span style="background: ${statusColor}20; color: ${statusColor}; padding: 2px 8px; border-radius: 20px; font-size: 10px;">${statusText}</span></div><div style="font-size: 11px; color: #64748b; margin-top: 6px;"><div>💳 Paid on: <strong>${new Date(sub.created_at).toLocaleDateString()}</strong></div><div>📅 Valid: ${new Date(sub.start_date).toLocaleDateString()} → ${new Date(sub.end_date).toLocaleDateString()}</div><div>🕐 Duration: ${sub.duration_months} month${sub.duration_months > 1 ? 's' : ''}</div>${sub.is_active ? `<div style="color: #FF7A00; margin-top: 4px;">⏰ ${sub.days_left} days remaining</div>` : '<div style="color: #94a3b8; margin-top: 4px;">⏰ Expired</div>'}</div></div><div style="text-align: right;"><div style="font-size: 18px; font-weight: 800; color: #27AE60;">$${parseFloat(sub.amount).toFixed(2)}</div></div></div></div>`;
+                });
+                container.innerHTML = html;
+            } else container.innerHTML = '<div class="meal-item">Error loading subscriptions</div>';
+        } catch (error) { console.error('Error loading invoices:', error); if (container) container.innerHTML = '<div class="meal-item">Error loading subscriptions</div>'; }
+    }
+
+    // ==================== TODAY'S MEALS PLACEHOLDER ====================
+    async function loadTodayMeals() {
+        console.log('loadTodayMeals called');
+    }
+
+    // ==================== MESSAGERIE PATIENT - UN SEUL NUTRITIONNISTE ====================
+    let currentChatNutritionistId = null;
+    let currentChatNutritionistName = null;
+
+    // Charger le nutritionniste unique du patient
+    async function loadMyNutritionist() {
+        const container = document.getElementById('nutritionistContainer');
+        if (!container) return;
+        
+        try {
+            const response = await fetch('/api/users/my-nutritionist/', {
+                credentials: 'include'
+            });
+            
+            if (response.ok) {
+                const nutritionist = await response.json();
+                
+                if (!nutritionist || !nutritionist.id) {
+                    container.innerHTML = `
+                        <div style="text-align: center; padding: 40px 20px; color: #94a3b8;">
+                            <i class="fas fa-user-md" style="font-size: 48px; margin-bottom: 16px; opacity: 0.3;"></i>
+                            <p>No nutritionist assigned yet</p>
+                            <p style="font-size: 12px; margin-top: 8px;">Book a consultation to get a dedicated nutritionist</p>
+                            <button class="btn-primary" onclick="switchTab('consultation')" style="margin-top: 16px;">
+                                Book Consultation →
+                            </button>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                const avatar = nutritionist.name ? nutritionist.name.charAt(0).toUpperCase() : 'N';
+                const statusDot = nutritionist.is_available ? '#27AE60' : '#94a3b8';
+                const statusText = nutritionist.is_available ? 'Available' : 'Away';
+                
+                container.innerHTML = `
+                    <div class="nutritionist-card-single" 
+                         data-nutritionist-id="${nutritionist.id}" 
+                         data-nutritionist-name="${escapeHtml(nutritionist.name)}"
+                         style="display: flex; align-items: center; gap: 15px; padding: 20px; cursor: pointer; transition: all 0.2s; border-bottom: 1px solid #e2e8f0; background: white; margin: 0;">
+                        <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #27AE60, #2ecc71); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 24px; flex-shrink: 0;">
+                            ${avatar}
+                        </div>
+                        <div style="flex: 1;">
+                            <strong style="font-size: 16px; color: #1e293b;">${escapeHtml(nutritionist.name)}</strong>
+                            <div style="font-size: 13px; color: #64748b; margin-top: 4px;">
+                                <i class="fas fa-stethoscope"></i> ${escapeHtml(nutritionist.specialization || 'Clinical Nutritionist')}
+                            </div>
+                            <div style="font-size: 12px; margin-top: 6px;">
+                                <i class="fas fa-circle" style="color: ${statusDot}; font-size: 8px;"></i> ${statusText}
+                            </div>
+                        </div>
+                        <div style="font-size: 14px; color: #27AE60;">
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                    </div>
+                    <div style="padding: 16px; background: #f8fafc; margin: 12px; border-radius: 16px;">
+                        <div style="font-size: 12px; color: #64748b;">
+                            <i class="fas fa-envelope"></i> <strong>Email:</strong> ${escapeHtml(nutritionist.email || 'Not provided')}
+                        </div>
+                        ${nutritionist.phone ? `<div style="font-size: 12px; color: #64748b; margin-top: 8px;"><i class="fas fa-phone"></i> <strong>Phone:</strong> ${escapeHtml(nutritionist.phone)}</div>` : ''}
+                    </div>
+                `;
+                
+                // Attacher l'événement de clic
+                const card = document.querySelector('.nutritionist-card-single');
+                if (card) {
+                    card.addEventListener('click', () => {
+                        openChatWithNutritionist(nutritionist.id, nutritionist.name, avatar);
+                    });
+                }
+                
+            } else if (response.status === 404) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 40px 20px; color: #94a3b8;">
+                        <i class="fas fa-user-md" style="font-size: 48px; margin-bottom: 16px; opacity: 0.3;"></i>
+                        <p>No nutritionist assigned yet</p>
+                        <p style="font-size: 12px; margin-top: 8px;">Book a consultation to get a dedicated nutritionist</p>
+                        <button class="btn-primary" onclick="switchTab('consultation')" style="margin-top: 16px;">
+                            Book Consultation →
+                        </button>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = '<div style="text-align: center; padding: 40px; color: #ef4444;">Error loading nutritionist</div>';
+            }
+        } catch (error) {
+            console.error('Error loading nutritionist:', error);
+            container.innerHTML = '<div style="text-align: center; padding: 40px; color: #ef4444;">Network error</div>';
+        }
+    }
+
+    // Ouvrir le chat avec le nutritionniste
+    window.openChatWithNutritionist = function(nutritionistId, nutritionistName, avatar) {
+        currentChatNutritionistId = nutritionistId;
+        currentChatNutritionistName = nutritionistName;
+        
+        // Mettre à jour le header
+        document.getElementById('chatWithName').innerHTML = nutritionistName;
+        document.getElementById('chatAvatar').innerText = avatar;
+        document.getElementById('chatHeader').style.display = 'flex';
+        document.getElementById('messageInputArea').style.display = 'block';
+        
+        // Charger les messages
+        loadMessagesWithNutritionist(nutritionistId);
+        
+        // Démarrer le polling pour les nouveaux messages
+        if (messagePollingInterval) clearInterval(messagePollingInterval);
+        messagePollingInterval = setInterval(() => {
+            if (currentChatNutritionistId) loadMessagesWithNutritionist(currentChatNutritionistId);
+        }, 5000);
+    };
+
+    // Formater le temps des messages
+    function formatMessageTime(isoString) {
+        if (!isoString) return '';
+        const date = new Date(isoString);
+        const now = new Date();
+        const diffMs = now - date;
+        const diffMins = Math.floor(diffMs / 60000);
+        const diffHours = Math.floor(diffMs / 3600000);
+        
+        if (diffMins < 1) return 'Just now';
+        if (diffMins < 60) return `${diffMins} min ago`;
+        if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+        return date.toLocaleDateString();
+    }
+
+    // Charger les messages avec le nutritionniste
+    async function loadMessagesWithNutritionist(nutritionistId) {
+        try {
+            const response = await fetch(`/api/users/messages/${nutritionistId}/`, {
+                credentials: 'include'
+            });
+            
+            const messagesArea = document.getElementById('messagesArea');
+            
+            if (response.ok) {
+                const messages = await response.json();
+                
+                if (!messages || messages.length === 0) {
+                    messagesArea.innerHTML = `
+                        <div style="text-align: center; color: #94a3b8; padding: 60px 20px;">
+                            <i class="fas fa-comment-dots" style="font-size: 48px; margin-bottom: 16px; opacity: 0.3;"></i>
+                            <p>No messages yet</p>
+                            <p style="font-size: 12px; margin-top: 8px;">Send a message to start the conversation!</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                messagesArea.innerHTML = messages.map(msg => `
+                    <div style="display: flex; justify-content: ${msg.is_mine ? 'flex-end' : 'flex-start'}; margin-bottom: 16px;">
+                        <div style="max-width: 75%; background: ${msg.is_mine ? '#27AE60' : 'white'}; color: ${msg.is_mine ? 'white' : '#1e293b'}; padding: 12px 16px; border-radius: 18px; ${msg.is_mine ? 'border-bottom-right-radius: 4px;' : 'border-bottom-left-radius: 4px;'} box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
+                            <div style="font-size: 14px; word-wrap: break-word;">${escapeHtml(msg.content)}</div>
+                            <div style="font-size: 10px; margin-top: 6px; opacity: 0.7; text-align: ${msg.is_mine ? 'right' : 'left'};">${msg.time_display || formatMessageTime(msg.created_at)}</div>
+                        </div>
+                    </div>
+                `).join('');
+                
+                messagesArea.scrollTop = messagesArea.scrollHeight;
+            }
+        } catch (error) {
+            console.error('Error loading messages:', error);
+        }
+    }
+
+    // Envoyer un message
+    async function sendMessageToNutritionist() {
+        if (!currentChatNutritionistId) {
+            alert('Please select your nutritionist first');
+            return;
+        }
+        
+        const input = document.getElementById('messageInput');
+        const content = input.value.trim();
+        
+        if (!content) return;
+        
+        // Afficher immédiatement
+        const messagesArea = document.getElementById('messagesArea');
+        const time = new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+        
+        if (messagesArea.innerHTML.includes('No messages yet')) {
+            messagesArea.innerHTML = '';
+        }
+        
+        messagesArea.innerHTML += `
+            <div style="display: flex; justify-content: flex-end; margin-bottom: 16px;">
+                <div style="max-width: 75%; background: #27AE60; color: white; padding: 12px 16px; border-radius: 18px; border-bottom-right-radius: 4px;">
+                    <div style="font-size: 14px; word-wrap: break-word;">${escapeHtml(content)}</div>
+                    <div style="font-size: 10px; margin-top: 6px; opacity: 0.7; text-align: right;">${time}</div>
+                </div>
+            </div>
+        `;
+        messagesArea.scrollTop = messagesArea.scrollHeight;
+        
+        // Vider l'input
+        input.value = '';
+        input.style.height = 'auto';
+        
+        // Envoyer via API
+        try {
+            const response = await fetch('/api/users/send-message/', {
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCSRFToken()
+                },
+                body: JSON.stringify({
+                    receiver_id: currentChatNutritionistId,
+                    content: content
+                })
+            });
+            
+            if (!response.ok) {
+                console.error('Failed to send message');
+            }
+        } catch (error) {
+            console.error('Error sending message:', error);
+        }
+    }
+
+    // ==================== WEBSOCKET CHAT EN TEMPS RÉEL ====================
+let chatSocket = null;
+let currentChatReceiverId = null;
+let typingTimeout = null;
+
+// Fonction pour connecter le WebSocket
+function connectWebSocket(receiverId) {
+    if (chatSocket && chatSocket.readyState === WebSocket.OPEN) {
+        chatSocket.close();
+    }
+    
+    currentChatReceiverId = receiverId;
+    const wsUrl = `ws://${window.location.host}/ws/chat/${receiverId}/`;
+    
+    chatSocket = new WebSocket(wsUrl);
+    
+    chatSocket.onopen = function(e) {
+        console.log('WebSocket connected');
+    };
+    
+    chatSocket.onmessage = function(e) {
+        const data = JSON.parse(e.data);
+        
+        if (data.type === 'message') {
+            // Ajouter le message reçu
+            addMessageToChat(data.message, false);
+        } else if (data.type === 'typing') {
+            // Afficher "l'utilisateur écrit..."
+            showTypingIndicator(data.is_typing, data.user_name);
+        }
+    };
+    
+    chatSocket.onclose = function(e) {
+        console.log('WebSocket disconnected');
+        // Tenter de reconnecter après 3 secondes
+        setTimeout(() => {
+            if (currentChatReceiverId) {
+                connectWebSocket(currentChatReceiverId);
+            }
+        }, 3000);
+    };
+    
+    chatSocket.onerror = function(e) {
+        console.error('WebSocket error:', e);
+    };
+}
+
+// Envoyer un message via WebSocket
+function sendMessageViaWebSocket(receiverId, content) {
+    if (chatSocket && chatSocket.readyState === WebSocket.OPEN) {
+        chatSocket.send(JSON.stringify({
+            type: 'message',
+            receiver_id: receiverId,
+            content: content
+        }));
+    } else {
+        console.error('WebSocket not connected');
+        // Fallback à l'API REST
+        sendMessageViaAPI(receiverId, content);
+    }
+}
+
+// Indicateur de saisie
+function sendTypingIndicator(isTyping) {
+    if (chatSocket && chatSocket.readyState === WebSocket.OPEN && currentChatReceiverId) {
+        chatSocket.send(JSON.stringify({
+            type: 'typing',
+            is_typing: isTyping
+        }));
+    }
+}
+
+// Afficher l'indicateur "écrit..."
+function showTypingIndicator(isTyping, userName) {
+    const statusElement = document.getElementById('chatStatus');
+    if (statusElement) {
+        if (isTyping) {
+            statusElement.innerHTML = `<i class="fas fa-pen"></i> ${userName} is typing...`;
+        } else {
+            statusElement.innerHTML = '<i class="fas fa-circle" style="color: #27AE60; font-size: 8px;"></i> Online';
+        }
+    }
+}
+
+// Ajouter un message au chat
+function addMessageToChat(message, isMine) {
+    const messagesArea = document.getElementById('messagesArea');
+    const messageHtml = `
+        <div style="display: flex; justify-content: ${isMine ? 'flex-end' : 'flex-start'}; margin-bottom: 16px;">
+            <div style="max-width: 75%; background: ${isMine ? '#27AE60' : 'white'}; color: ${isMine ? 'white' : '#1e293b'}; padding: 12px 16px; border-radius: 18px; ${isMine ? 'border-bottom-right-radius: 4px;' : 'border-bottom-left-radius: 4px;'} box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
+                <div style="font-size: 14px; word-wrap: break-word;">${escapeHtml(message.content)}</div>
+                <div style="font-size: 10px; margin-top: 6px; opacity: 0.7; text-align: ${isMine ? 'right' : 'left'};">${message.time_display || formatTime(message.created_at)}</div>
+                ${isMine ? '<span style="font-size: 10px; margin-left: 6px;">✓</span>' : ''}
+            </div>
+        </div>
+    `;
+    
+    if (messagesArea.innerHTML.includes('Start your conversation')) {
+        messagesArea.innerHTML = '';
+    }
+    
+    messagesArea.innerHTML += messageHtml;
+    messagesArea.scrollTop = messagesArea.scrollHeight;
+}
+
+// Envoyer un message via API (fallback)
+async function sendMessageViaAPI(receiverId, content) {
+    try {
+        const response = await fetch('/api/users/send-message/', {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCSRFToken()
+            },
+            body: JSON.stringify({
+                receiver_id: receiverId,
+                content: content
+            })
+        });
+        
+        if (response.ok) {
+            const data = await response.json();
+            addMessageToChat(data.message, true);
+        }
+    } catch (error) {
+        console.error('Error sending message:', error);
+    }
+}
+
+// Formatage du temps
+function formatTime(isoString) {
+    if (!isoString) return '';
+    const date = new Date(isoString);
+    return date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+}
+
+// Modifier la fonction d'envoi de message
+async function sendMessageToPatient() {
+    if (!currentChatPatientId) {
+        alert('Please select a patient first');
+        return;
+    }
+    
+    const input = document.getElementById('messageInput');
+    const content = input.value.trim();
+    
+    if (!content) return;
+    
+    // Afficher immédiatement
+    addMessageToChat({
+        content: content,
+        time_display: new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }),
+        created_at: new Date().toISOString()
+    }, true);
+    
+    // Vider l'input
+    input.value = '';
+    input.style.height = 'auto';
+    
+    // Envoyer via WebSocket
+    sendMessageViaWebSocket(currentChatPatientId, content);
+}
+
+// Modifier openChatWithPatient pour utiliser WebSocket
+window.openChatWithPatient = function(patientId, patientName, avatar) {
+    currentChatPatientId = patientId;
+    
+    // Connecter WebSocket
+    connectWebSocket(patientId);
+    
+    // Mettre à jour le header
+    document.getElementById('chatWithName').innerHTML = patientName;
+    document.getElementById('chatAvatar').innerText = avatar;
+    document.getElementById('chatStatus').innerHTML = '<i class="fas fa-circle" style="color: #27AE60; font-size: 8px;"></i> Online';
+    
+    document.getElementById('chatHeader').style.display = 'flex';
+    document.getElementById('messageInputArea').style.display = 'block';
+    
+    // Mettre à jour le style de la liste
+    document.querySelectorAll('.patient-chat-item').forEach(item => {
+        item.style.background = '';
+        item.style.borderLeft = '';
+    });
+    const selectedItem = document.querySelector(`.patient-chat-item[data-patient-id="${patientId}"]`);
+    if (selectedItem) {
+        selectedItem.style.background = '#e8f5e9';
+        selectedItem.style.borderLeft = '3px solid #27AE60';
+    }
+    
+    // Charger les messages existants via API
+    loadMessagesHistory(patientId);
+};
+
+// Charger l'historique des messages
+async function loadMessagesHistory(userId) {
+    try {
+        const response = await fetch(`/api/users/messages/${userId}/`, {
+            credentials: 'include'
+        });
+        
+        if (response.ok) {
+            const messages = await response.json();
+            const messagesArea = document.getElementById('messagesArea');
+            
+            if (messages.length === 0) {
+                messagesArea.innerHTML = `
+                    <div style="text-align: center; color: #94a3b8; padding: 60px 20px;">
+                        <i class="fas fa-comment-dots" style="font-size: 48px; margin-bottom: 16px; opacity: 0.3;"></i>
+                        <p>No messages yet</p>
+                        <p style="font-size: 12px; margin-top: 8px;">Send a message to start the conversation!</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            messagesArea.innerHTML = messages.map(msg => `
+                <div style="display: flex; justify-content: ${msg.is_mine ? 'flex-end' : 'flex-start'}; margin-bottom: 16px;">
+                    <div style="max-width: 75%; background: ${msg.is_mine ? '#27AE60' : 'white'}; color: ${msg.is_mine ? 'white' : '#1e293b'}; padding: 12px 16px; border-radius: 18px; ${msg.is_mine ? 'border-bottom-right-radius: 4px;' : 'border-bottom-left-radius: 4px;'} box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
+                        <div style="font-size: 14px; word-wrap: break-word;">${escapeHtml(msg.content)}</div>
+                        <div style="font-size: 10px; margin-top: 6px; opacity: 0.7; text-align: ${msg.is_mine ? 'right' : 'left'};">${msg.time_display || formatTime(msg.created_at)}</div>
+                    </div>
+                </div>
+            `).join('');
+            
+            messagesArea.scrollTop = messagesArea.scrollHeight;
+        }
+    } catch (error) {
+        console.error('Error loading messages:', error);
+    }
+}
+
+// Détecter quand l'utilisateur écrit
+document.getElementById('messageInput')?.addEventListener('input', function() {
+    this.style.height = 'auto';
+    this.style.height = Math.min(this.scrollHeight, 100) + 'px';
+    
+    if (typingTimeout) clearTimeout(typingTimeout);
+    sendTypingIndicator(true);
+    
+    typingTimeout = setTimeout(() => {
+        sendTypingIndicator(false);
+    }, 1000);
+});
+
+    // ==================== INITIALISATION ====================
+    document.addEventListener('DOMContentLoaded', async () => {
+        loadProfileStats();
+        loadUserInfo();
+        loadWeightHistory();
+        loadAchievements();
+        loadWeeklyReport();
+        loadWeeklyCalendar();
+        loadTodayMealsChecklist();
+        loadUserPlan();
+        loadInvoices();
+        loadTodayMeals();
+        loadNutritionists();
+        loadMyConsultations();
+        loadMyNutritionist(); // Charger le nutritionniste pour l'onglet messages
+    });
+
+    document.querySelector('[data-tab="progress"]')?.addEventListener('click', () => {
+        setTimeout(() => { loadWeightHistory(); loadAchievements(); loadWeeklyReport(); }, 100);
+    });
+    
+    // Événements pour la messagerie
+    document.getElementById('sendMsgBtn')?.addEventListener('click', sendMessageToNutritionist);
+    document.getElementById('messageInput')?.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            sendMessageToNutritionist();
+        }
+    });
+    
+    // Auto-resize du textarea
+    document.getElementById('messageInput')?.addEventListener('input', function() {
+        this.style.height = 'auto';
+        this.style.height = Math.min(this.scrollHeight, 100) + 'px';
+    });
+    
+    // Recharger le nutritionniste au clic sur l'onglet Messages
+    document.querySelector('[data-tab="messages"]')?.addEventListener('click', () => {
+        loadMyNutritionist();
+    });
+</script>
+</body>
+</html>
