@@ -1,6 +1,2 @@
-annotations/
-*.json
-__pycache__/
-db.sqlite3
-venv/
-.env
+.venv/ 
+.venv_old/ 
