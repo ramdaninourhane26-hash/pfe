@@ -66,7 +66,7 @@ def book_consultation(request):
     if not nutritionist_id or not date_str:
         return Response({'error': 'Nutritionist and date are required'}, status=400)
     
-    # Vérifier que l'utilisateur qui book est bien un patient
+   
     try:
         if request.user.profile.role != 'client':
             return Response({'error': 'Only patients can book consultations'}, status=403)
@@ -81,9 +81,7 @@ def book_consultation(request):
     
     # Convertir la date
     try:
-        # S'assurer que la date est timezone-aware
         consultation_date = datetime.fromisoformat(date_str)
-        # Rendre la date aware si nécessaire
         if timezone.is_naive(consultation_date):
             consultation_date = timezone.make_aware(consultation_date)
     except Exception as e:
@@ -100,30 +98,27 @@ def book_consultation(request):
         date=consultation_date,
         status='pending',
         notes=notes,
+        is_trial=False,  # ← Important : pas une consultation trial
         zoom_link=None
     )
     
-    # Notifier le nutritionniste
-    try:
-        from nutritionists.models import Notification
-        Notification.objects.create(
-            nutritionist=nutritionist,
-            notification_type='consultation_reminder',
-            title='🔔 New Consultation Request',
-            message=f'{request.user.get_full_name() or request.user.email} has requested a consultation on {consultation_date.strftime("%B %d, %Y at %I:%M %p")}.',
-            related_patient=request.user,
-            related_id=consultation.id,
-            is_read=False
-        )
-    except Exception as e:
-        print(f"Notification error: {e}")
+    # 🔔 NOTIFICATION POUR LE NUTRITIONNISTE
+    from nutritionists.models import Notification
+    Notification.objects.create(
+        nutritionist=nutritionist,
+        notification_type='consultation_reminder',
+        title='🔔 New Consultation Request',
+        message=f'{request.user.get_full_name() or request.user.email} has requested a consultation on {consultation_date.strftime("%B %d, %Y at %I:%M %p")}.',
+        related_patient=request.user,
+        related_id=consultation.id,
+        is_read=False
+    )
     
     return Response({
         'message': 'Consultation requested successfully!', 
         'consultation_id': consultation.id, 
         'status': consultation.status
     }, status=201)
-
 
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
@@ -209,6 +204,7 @@ def get_trial_status(request):
         return Response({
             'has_booked_trial': True,
             'trial_info': {
+                'id': trial.id,
                 'nutritionist_name': trial.nutritionist.get_full_name() if trial.nutritionist else 'Pending assignment',
                 'date': trial.date.strftime('%B %d, %Y') if trial.date else None,
                 'time': trial.date.strftime('%I:%M %p') if trial.date else None,
@@ -217,6 +213,7 @@ def get_trial_status(request):
             }
         })
     return Response({'has_booked_trial': False, 'trial_info': None})
+
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])

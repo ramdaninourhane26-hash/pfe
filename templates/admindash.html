@@ -1273,7 +1273,7 @@
                     <td>${u.goal_weight || '-'} kg</td>
                     <td>${statusBadge}</td>
                     <td>${escapeHtml(assignedNut)}</td>
-                    <td><button class="btn-outline btn-sm" onclick="viewUserDetails(${u.id})">📄 Details</button> <button class="btn-danger btn-sm" onclick="toggleUserStatus(${u.id})">${u.status === 'Active' ? '🔒 Block' : '🔓 Unblock'}</button></td>
+                    <td><button class="btn-outline btn-sm" onclick="viewUserDetails(${u.id})">📄 Details</button> <button class="btn-danger btn-sm" onclick="toggleUserStatus(${u.id})">${u.status === 'Active' ? ' Block' : ' Unblock'}</button></td>
                 </tr>`;
             }).join('');
         } catch(e) { console.error(e); document.getElementById('usersTableBody').innerHTML = '<tr><td colspan="7">Error loading users</td></tr>'; }
@@ -1608,34 +1608,74 @@
                 headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCSRFToken() },
                 credentials: 'include'
             });
-            if (response.status === 401 || response.status === 403) { showSessionExpiredModal(); return; }
+            
             if (response.ok) {
-                showToast('Plan approved!');
-                const row = document.querySelector(`#pendingPlansTableBody tr[data-plan-id="${planId}"]`);
-                let planName = `Plan #${planId}`;
-                let durationWeeks = 4;
-                if (row) {
-                    const cells = row.querySelectorAll('td');
-                    if (cells[0]) planName = cells[0].innerText;
-                    if (cells[2]) durationWeeks = parseInt(cells[2].innerText) || 4;
+                const result = await response.json();
+                
+                // 🔥 CORRECTION : Récupérer les détails complets du plan depuis l'API
+                // pour avoir toutes les informations nécessaires
+                const plansResponse = await fetch('/api/admin/pending-standard-plans/', {
+                    credentials: 'include',
+                    headers: { 'X-CSRFToken': getCSRFToken() }
+                });
+                
+                if (plansResponse.ok) {
+                    const allPlans = await plansResponse.json();
+                    const approvedPlan = allPlans.find(p => p.id == planId);
+                    
+                    if (approvedPlan) {
+                        // Sauvegarder dans les plans approuvés pour la page paiement
+                        let approvedPlans = JSON.parse(localStorage.getItem('approved_standard_plans') || '[]');
+                        
+                        // Extraire les données nécessaires
+                        const extraData = approvedPlan.extra_data || {};
+                        
+                        const planToSave = {
+                            id: approvedPlan.id,
+                            name: approvedPlan.plan_name,
+                            price: 49.99,  // Prix par défaut (tu peux le rendre dynamique)
+                            duration_weeks: extraData.duration_weeks || 4,
+                            weekly_program: extraData.weekly_program || {},
+                            description: approvedPlan.description || '',
+                            sport_advice: extraData.sport_advice || '',
+                            submitted_by: approvedPlan.submitted_by_name || 'Nutritionist'
+                        };
+                        
+                        // Éviter les doublons
+                        const existingIndex = approvedPlans.findIndex(p => p.id === planToSave.id);
+                        if (existingIndex !== -1) {
+                            approvedPlans[existingIndex] = planToSave;
+                        } else {
+                            approvedPlans.push(planToSave);
+                        }
+                        
+                        localStorage.setItem('approved_standard_plans', JSON.stringify(approvedPlans));
+                        console.log('✅ Plan saved to localStorage:', planToSave);
+                        console.log('📦 All approved plans:', approvedPlans);
+                        
+                        // Supprimer des plans en attente
+                        let pendingPlans = JSON.parse(localStorage.getItem('pending_standard_plans') || '[]');
+                        pendingPlans = pendingPlans.filter(p => p.id != planId);
+                        localStorage.setItem('pending_standard_plans', JSON.stringify(pendingPlans));
+                    }
                 }
                 
-                const plan = {
-                    id: planId,
-                    plan_name: planName,
-                    type: "standard",
-                    submitted_by: row ? (row.querySelectorAll('td')[1]?.innerText || "Admin") : "Admin",
-                    duration_weeks: durationWeeks,
-                    status: "approved",
-                    rejection_reason: null,
-                    created_at: new Date().toISOString()
-                };
-                allPlansData.unshift(plan);
-                renderAllPlansList();
+                showToast('✅ Plan approved and added to payment page!');
                 loadPendingPlans();
-                loadNotifications();
+                renderAllPlansList();
+                
+                // Forcer le rechargement de la page paiement si ouverte dans un autre onglet
+                // (optionnel) - envoyer un message à l'autre onglet
+                localStorage.setItem('plans_updated', Date.now().toString());
+                
+            } else {
+                const error = await response.text();
+                showToast('Error approving plan: ' + error, true);
             }
-        } catch(e) { console.error(e); }
+        } catch(e) { 
+            console.error(e); 
+            showToast('Network error: ' + e.message, true);
+        }
     }
     
     async function rejectPlan(planId) {

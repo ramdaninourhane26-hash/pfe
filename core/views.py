@@ -21,6 +21,9 @@ def login_view(request):
 def register_view(request):
     return render(request, 'register.html')
 
+def simple_cons(request):
+    return render(request, 'simple_cons.html')
+
 @login_required
 def admin_dashboard_view(request):
     try:

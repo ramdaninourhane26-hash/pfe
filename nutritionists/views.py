@@ -34,7 +34,7 @@ def get_time_ago(dt):
         return f'{minutes} minutes ago'
     return 'Just now'
 
-from datetime import date  # Assure-toi d'avoir cet import en haut du fichier
+from datetime import date  
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])

@@ -30,4 +30,5 @@ urlpatterns = [
     path('invoice/<int:invoice_id>/download/', views.download_invoice, name='download_invoice'),
     path('diet-plan/<int:plan_id>/download/', views.download_diet_plan_pdf, name='download-diet-plan'),
     path('admin/', views.get_admin_user, name='get-admin'),
+    path('generate_meal_checklist_for_plan/', views.generate_meal_checklist_for_plan, name='generate_meal_checklist_for_plan'),
 ]

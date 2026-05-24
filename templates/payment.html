@@ -786,460 +786,432 @@ body {
 <div class="toast-msg" id="toastMsg"></div>
 
 <script>
-// === Fonctions utilitaires ===
-function getCSRFToken() {
-  let cookieValue = null;
-  if (document.cookie && document.cookie !== '') {
-    const cookies = document.cookie.split(';');
-    for (let i = 0; i < cookies.length; i++) {
-      const cookie = cookies[i].trim();
-      if (cookie.substring(0, 10) === 'csrftoken=') {
-        cookieValue = decodeURIComponent(cookie.substring(10));
-        break;
+  // === Fonctions utilitaires ===
+  function getCSRFToken() {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, 10) === 'csrftoken=') {
+          cookieValue = decodeURIComponent(cookie.substring(10));
+          break;
+        }
       }
     }
+    return cookieValue;
   }
-  return cookieValue;
-}
-
-function showToast(msg, isError = false) {
-  const toast = document.getElementById('toastMsg');
-  toast.textContent = msg;
-  toast.className = `toast-msg ${isError ? 'error' : ''}`;
-  toast.classList.add('show');
-  setTimeout(() => toast.classList.remove('show'), 3000);
-}
-
-// === REDIRECTION VERS TRIAL PAGE ===
-function redirectToTrialPage() {
-  showToast("🎉 Redirecting to free trial booking...");
-  setTimeout(() => {
-    window.location.href = '/trial-consultation/';
-  }, 800);
-}
-
-// Ajouter les écouteurs pour les deux boutons (haut et bas)
-document.getElementById('freeTrialTopBtn').addEventListener('click', redirectToTrialPage);
-document.getElementById('freeTrialBottomBtn').addEventListener('click', redirectToTrialPage);
-
-// === LOGIQUE DE PAIEMENT EXISTANTE ===
-let selectedPlan = null;
-let selectedPlanPrice = 0;
-let selectedPlanType = 'standard';
-let duration = 1;
-let currentTab = 'standard';
-
-let bonusAi = { active: false, weeks: 1, pricePerWeek: 4.99 };
-let bonusConsult = { active: false, sessions: 1, pricePerSession: 19.99 };
-
-const bonusAiCheck = document.getElementById('bonusAiCheckbox');
-const bonusAiSlider = document.getElementById('bonusAiDuration');
-const bonusAiValue = document.getElementById('bonusAiValue');
-const bonusAiPrice = document.getElementById('bonusAiPrice');
-const bonusConsultCheck = document.getElementById('bonusConsultCheckbox');
-const bonusConsultSlider = document.getElementById('bonusConsultSessions');
-const bonusConsultValue = document.getElementById('bonusConsultValue');
-const bonusConsultPrice = document.getElementById('bonusConsultPrice');
-
-function calculateBonusTotal() {
-  let total = 0;
-  if (bonusAi.active) total += bonusAi.weeks * bonusAi.pricePerWeek;
-  if (bonusConsult.active) total += bonusConsult.sessions * bonusConsult.pricePerSession;
-  return total;
-}
-
-function updateTotal() {
-  let total = selectedPlanPrice;
-  if (selectedPlanType === 'premium') {
-    total = selectedPlanPrice * duration;
+  
+  function showToast(msg, isError = false) {
+    const toast = document.getElementById('toastMsg');
+    toast.textContent = msg;
+    toast.className = `toast-msg ${isError ? 'error' : ''}`;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 3000);
   }
-  total += calculateBonusTotal();
-  document.getElementById('selectedOfferPrice').innerHTML = `$${total.toFixed(2)}`;
-  document.getElementById('payBtnPrice').innerHTML = `$${total.toFixed(2)}`;
-  return total;
-}
-
-bonusAiCheck.addEventListener('change', () => {
-  bonusAi.active = bonusAiCheck.checked;
-  bonusAiSlider.disabled = !bonusAi.active;
-  if (bonusAi.active) {
+  
+  function escapeHtml(text) {
+      if (!text) return '';
+      return text.replace(/[&<>]/g, function(m) {
+          if (m === '&') return '&amp;';
+          if (m === '<') return '&lt;';
+          if (m === '>') return '&gt;';
+          return m;
+      });
+  }
+  
+  // === REDIRECTION VERS TRIAL PAGE ===
+  function redirectToTrialPage() {
+    showToast("🎉 Redirecting to free trial booking...");
+    setTimeout(() => {
+      window.location.href = '/trial-consultation/';
+    }, 800);
+  }
+  
+  // Ajouter les écouteurs pour les deux boutons (haut et bas)
+  document.getElementById('freeTrialTopBtn').addEventListener('click', redirectToTrialPage);
+  document.getElementById('freeTrialBottomBtn').addEventListener('click', redirectToTrialPage);
+  
+  // === LOGIQUE DE PAIEMENT EXISTANTE ===
+  let selectedPlan = null;
+  let selectedPlanPrice = 0;
+  let selectedPlanType = 'standard';
+  let duration = 1;
+  let currentTab = 'standard';
+  
+  let bonusAi = { active: false, weeks: 1, pricePerWeek: 4.99 };
+  let bonusConsult = { active: false, sessions: 1, pricePerSession: 19.99 };
+  
+  const bonusAiCheck = document.getElementById('bonusAiCheckbox');
+  const bonusAiSlider = document.getElementById('bonusAiDuration');
+  const bonusAiValue = document.getElementById('bonusAiValue');
+  const bonusAiPrice = document.getElementById('bonusAiPrice');
+  const bonusConsultCheck = document.getElementById('bonusConsultCheckbox');
+  const bonusConsultSlider = document.getElementById('bonusConsultSessions');
+  const bonusConsultValue = document.getElementById('bonusConsultValue');
+  const bonusConsultPrice = document.getElementById('bonusConsultPrice');
+  
+  function calculateBonusTotal() {
+    let total = 0;
+    if (bonusAi.active) total += bonusAi.weeks * bonusAi.pricePerWeek;
+    if (bonusConsult.active) total += bonusConsult.sessions * bonusConsult.pricePerSession;
+    return total;
+  }
+  
+  function updateTotal() {
+    let total = selectedPlanPrice;
+    if (selectedPlanType === 'premium') {
+      total = selectedPlanPrice * duration;
+    }
+    total += calculateBonusTotal();
+    document.getElementById('selectedOfferPrice').innerHTML = `$${total.toFixed(2)}`;
+    document.getElementById('payBtnPrice').innerHTML = `$${total.toFixed(2)}`;
+    return total;
+  }
+  
+  bonusAiCheck.addEventListener('change', () => {
+    bonusAi.active = bonusAiCheck.checked;
+    bonusAiSlider.disabled = !bonusAi.active;
+    if (bonusAi.active) {
+      bonusAi.weeks = parseInt(bonusAiSlider.value);
+      bonusAiValue.innerText = `${bonusAi.weeks} semaine${bonusAi.weeks > 1 ? 's' : ''}`;
+      bonusAiPrice.innerText = `+$${(bonusAi.weeks * bonusAi.pricePerWeek).toFixed(2)}`;
+    } else {
+      bonusAiPrice.innerText = `+$0`;
+    }
+    updateTotal();
+  });
+  
+  bonusAiSlider.addEventListener('input', () => {
     bonusAi.weeks = parseInt(bonusAiSlider.value);
     bonusAiValue.innerText = `${bonusAi.weeks} semaine${bonusAi.weeks > 1 ? 's' : ''}`;
     bonusAiPrice.innerText = `+$${(bonusAi.weeks * bonusAi.pricePerWeek).toFixed(2)}`;
-  } else {
-    bonusAiPrice.innerText = `+$0`;
-  }
-  updateTotal();
-});
-
-bonusAiSlider.addEventListener('input', () => {
-  bonusAi.weeks = parseInt(bonusAiSlider.value);
-  bonusAiValue.innerText = `${bonusAi.weeks} semaine${bonusAi.weeks > 1 ? 's' : ''}`;
-  bonusAiPrice.innerText = `+$${(bonusAi.weeks * bonusAi.pricePerWeek).toFixed(2)}`;
-  updateTotal();
-});
-
-bonusConsultCheck.addEventListener('change', () => {
-  bonusConsult.active = bonusConsultCheck.checked;
-  bonusConsultSlider.disabled = !bonusConsult.active;
-  if (bonusConsult.active) {
+    updateTotal();
+  });
+  
+  bonusConsultCheck.addEventListener('change', () => {
+    bonusConsult.active = bonusConsultCheck.checked;
+    bonusConsultSlider.disabled = !bonusConsult.active;
+    if (bonusConsult.active) {
+      bonusConsult.sessions = parseInt(bonusConsultSlider.value);
+      bonusConsultValue.innerText = `${bonusConsult.sessions} séance${bonusConsult.sessions > 1 ? 's' : ''}`;
+      bonusConsultPrice.innerText = `+$${(bonusConsult.sessions * bonusConsult.pricePerSession).toFixed(2)}`;
+    } else {
+      bonusConsultPrice.innerText = `+$0`;
+    }
+    updateTotal();
+  });
+  
+  bonusConsultSlider.addEventListener('input', () => {
     bonusConsult.sessions = parseInt(bonusConsultSlider.value);
     bonusConsultValue.innerText = `${bonusConsult.sessions} séance${bonusConsult.sessions > 1 ? 's' : ''}`;
     bonusConsultPrice.innerText = `+$${(bonusConsult.sessions * bonusConsult.pricePerSession).toFixed(2)}`;
-  } else {
-    bonusConsultPrice.innerText = `+$0`;
-  }
-  updateTotal();
-});
-
-bonusConsultSlider.addEventListener('input', () => {
-  bonusConsult.sessions = parseInt(bonusConsultSlider.value);
-  bonusConsultValue.innerText = `${bonusConsult.sessions} séance${bonusConsult.sessions > 1 ? 's' : ''}`;
-  bonusConsultPrice.innerText = `+$${(bonusConsult.sessions * bonusConsult.pricePerSession).toFixed(2)}`;
-  updateTotal();
-});
-
-// Tab switching
-document.querySelectorAll('.plan-tab').forEach(tab => {
-  tab.addEventListener('click', () => {
-    document.querySelectorAll('.plan-tab').forEach(t => t.classList.remove('active'));
-    tab.classList.add('active');
-    currentTab = tab.dataset.planType;
-    
-    if (currentTab === 'standard') {
-      document.getElementById('standardPlans').style.display = 'flex';
-      document.getElementById('premiumPlans').style.display = 'none';
-      document.getElementById('durationSection').style.display = 'none';
-      document.getElementById('bonusSection').style.display = 'block';
-      selectedPlanType = 'standard';
-      document.querySelectorAll('.plan-card').forEach(c => c.classList.remove('selected'));
-      selectedPlan = null;
-      document.getElementById('selectedOfferName').innerHTML = 'No plan selected';
-      updateTotal();
-    } else {
-      document.getElementById('standardPlans').style.display = 'none';
-      document.getElementById('premiumPlans').style.display = 'flex';
-      document.getElementById('durationSection').style.display = 'block';
-      document.getElementById('bonusSection').style.display = 'none';
-      bonusAi.active = false;
-      bonusConsult.active = false;
-      bonusAiCheck.checked = false;
-      bonusConsultCheck.checked = false;
-      bonusAiSlider.disabled = true;
-      bonusConsultSlider.disabled = true;
-      bonusAiPrice.innerText = `+$0`;
-      bonusConsultPrice.innerText = `+$0`;
-      selectedPlanType = 'premium';
-      document.querySelectorAll('.plan-card').forEach(c => c.classList.remove('selected'));
-      selectedPlan = null;
-      document.getElementById('selectedOfferName').innerHTML = 'No plan selected';
-      updateTotal();
-    }
-  });
-});
-
-// Select plan
-document.querySelectorAll('.plan-card').forEach(card => {
-  card.addEventListener('click', () => {
-    document.querySelectorAll('.plan-card').forEach(c => c.classList.remove('selected'));
-    card.classList.add('selected');
-    selectedPlan = card.dataset.planName;
-    selectedPlanPrice = parseFloat(card.dataset.planPrice);
-    selectedPlanType = card.dataset.planType;
-    document.getElementById('selectedOfferName').innerHTML = selectedPlan;
     updateTotal();
   });
-});
-
-const slider = document.getElementById('durationSlider');
-const durationDisplay = document.getElementById('durationDisplay');
-const durationValue = document.getElementById('durationValue');
-
-slider.addEventListener('input', () => {
-  duration = parseInt(slider.value);
-  durationDisplay.innerText = `${duration} month${duration > 1 ? 's' : ''}`;
-  durationValue.innerText = `${duration} month${duration > 1 ? 's' : ''}`;
-  if (selectedPlanType === 'premium') {
-    updateTotal();
-  }
-});
-
-// PAYMENT
-document.getElementById('payBtn').addEventListener('click', async () => {
-  if (!selectedPlan) {
-    showToast("Please select a plan first", true);
-    return;
-  }
   
-  const cardNumber = document.getElementById('cardNumber').value;
-  const expiry = document.getElementById('expiry').value;
-  const cvc = document.getElementById('cvc').value;
-  const cardName = document.getElementById('cardName').value;
-  
-  if (!cardNumber || !expiry || !cvc || !cardName) {
-    showToast("Please fill all payment details", true);
-    return;
-  }
-  
-  const total = updateTotal();
-  
-  showToast("Processing payment...");
-  
-  try {
-    const response = await fetch('/api/users/complete-payment/', {
-      method: 'POST',
-      headers: { 
-        'Content-Type': 'application/json',
-        'X-CSRFToken': getCSRFToken()
-      },
-      body: JSON.stringify({
-        plan_name: selectedPlan,
-        amount: total,
-        duration_months: duration,
-        plan_type: selectedPlanType,
-        bonus_ai: bonusAi.active ? { active: true, weeks: bonusAi.weeks, price: bonusAi.weeks * bonusAi.pricePerWeek } : null,
-        bonus_consultation: bonusConsult.active ? { active: true, sessions: bonusConsult.sessions, price: bonusConsult.sessions * bonusConsult.pricePerSession } : null
-      }),
-      credentials: 'include'
+  // Tab switching
+  document.querySelectorAll('.plan-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.plan-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      currentTab = tab.dataset.planType;
+      
+      if (currentTab === 'standard') {
+        document.getElementById('standardPlans').style.display = 'flex';
+        document.getElementById('premiumPlans').style.display = 'none';
+        document.getElementById('durationSection').style.display = 'none';
+        document.getElementById('bonusSection').style.display = 'block';
+        selectedPlanType = 'standard';
+        document.querySelectorAll('.plan-card').forEach(c => c.classList.remove('selected'));
+        selectedPlan = null;
+        document.getElementById('selectedOfferName').innerHTML = 'No plan selected';
+        updateTotal();
+      } else {
+        document.getElementById('standardPlans').style.display = 'none';
+        document.getElementById('premiumPlans').style.display = 'flex';
+        document.getElementById('durationSection').style.display = 'block';
+        document.getElementById('bonusSection').style.display = 'none';
+        bonusAi.active = false;
+        bonusConsult.active = false;
+        bonusAiCheck.checked = false;
+        bonusConsultCheck.checked = false;
+        bonusAiSlider.disabled = true;
+        bonusConsultSlider.disabled = true;
+        bonusAiPrice.innerText = `+$0`;
+        bonusConsultPrice.innerText = `+$0`;
+        selectedPlanType = 'premium';
+        document.querySelectorAll('.plan-card').forEach(c => c.classList.remove('selected'));
+        selectedPlan = null;
+        document.getElementById('selectedOfferName').innerHTML = 'No plan selected';
+        updateTotal();
+      }
     });
+  });
+  
+  // Select plan
+  document.querySelectorAll('.plan-card').forEach(card => {
+    card.addEventListener('click', () => {
+      document.querySelectorAll('.plan-card').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      selectedPlan = card.dataset.planName;
+      selectedPlanPrice = parseFloat(card.dataset.planPrice);
+      selectedPlanType = card.dataset.planType;
+      document.getElementById('selectedOfferName').innerHTML = selectedPlan;
+      updateTotal();
+    });
+  });
+  
+  const slider = document.getElementById('durationSlider');
+  const durationDisplay = document.getElementById('durationDisplay');
+  const durationValue = document.getElementById('durationValue');
+  
+  slider.addEventListener('input', () => {
+    duration = parseInt(slider.value);
+    durationDisplay.innerText = `${duration} month${duration > 1 ? 's' : ''}`;
+    durationValue.innerText = `${duration} month${duration > 1 ? 's' : ''}`;
+    if (selectedPlanType === 'premium') {
+      updateTotal();
+    }
+  });
+  
+  // ============ PAYMENT - VERSION UNIQUE ET CORRECTE ============
+  document.getElementById('payBtn').addEventListener('click', async () => {
+    if (!selectedPlan) {
+      showToast("Please select a plan first", true);
+      return;
+    }
     
-    const data = await response.json();
+    const cardNumber = document.getElementById('cardNumber').value;
+    const expiry = document.getElementById('expiry').value;
+    const cvc = document.getElementById('cvc').value;
+    const cardName = document.getElementById('cardName').value;
     
-    if (response.ok) {
-      showToast("✅ Payment successful! Redirecting to choose your nutritionist...");
-      setTimeout(() => {
-        window.location.href = '/select-nutri/';
-      }, 1500);
+    if (!cardNumber || !expiry || !cvc || !cardName) {
+      showToast("Please fill all payment details", true);
+      return;
+    }
+    
+    const total = updateTotal();
+    
+    // DÉTERMINER CE QUE L'UTILISATEUR A CHOISI
+    const isPremium = selectedPlanType === 'premium';
+    const hasBonusAi = bonusAi.active;
+    const hasBonusConsult = bonusConsult.active;
+    
+    // Pour les plans standard, déterminer le type de package
+    let packageType = 'standard_simple';
+    if (!isPremium) {
+      if (hasBonusAi && hasBonusConsult) {
+        packageType = 'standard_with_both';
+      } else if (hasBonusAi) {
+        packageType = 'standard_with_ai';
+      } else if (hasBonusConsult) {
+        packageType = 'standard_with_consult';
+      } else {
+        packageType = 'standard_simple';
+      }
     } else {
-      showToast(data.error || "Payment failed", true);
+      packageType = 'premium';
     }
-  } catch (err) {
-    console.error('Payment error:', err);
-    showToast("Network error. Please try again.", true);
-  }
-});
-
-// Vérification d'authentification
-async function checkAuth() {
-  try {
-    const response = await fetch('/api/users/my-plan/', { credentials: 'include' });
-    if (response.status === 401) {
-      showToast("You are not logged in. Redirecting to login...", true);
-      setTimeout(() => window.location.href = '/login/', 2000);
-    }
-  } catch (err) {
-    console.error('Auth check error:', err);
-  }
-}
-// === CHARGER LES PLANS STANDARD APPROUVÉS PAR L'ADMIN ===
-function loadApprovedStandardPlans() {
-    const approvedPlans = JSON.parse(localStorage.getItem('approved_standard_plans') || '[]');
-    const standardPlansContainer = document.getElementById('standardPlans');
     
-    if (approvedPlans.length > 0) {
-        // Vider le conteneur
-        standardPlansContainer.innerHTML = '';
+    showToast("Processing payment...");
+    
+    try {
+      const response = await fetch('/api/users/complete-payment/', {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'X-CSRFToken': getCSRFToken()
+        },
+        body: JSON.stringify({
+          plan_name: selectedPlan,
+          amount: total,
+          duration_months: duration,
+          plan_type: selectedPlanType,
+          package_type: packageType,
+          bonus_ai: bonusAi.active ? { active: true, weeks: bonusAi.weeks, price: bonusAi.weeks * bonusAi.pricePerWeek } : null,
+          bonus_consultation: bonusConsult.active ? { active: true, sessions: bonusConsult.sessions, price: bonusConsult.sessions * bonusConsult.pricePerSession } : null
+        }),
+        credentials: 'include'
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok) {
+        showToast("✅ Payment successful!");
         
-        // Ajouter chaque plan approuvé
-        approvedPlans.forEach(plan => {
+        // REDIRECTION CONDITIONNELLE
+        if (packageType === 'standard_simple') {
+          setTimeout(() => {
+            window.location.href = '/home.html';
+          }, 500);
+        } else if (packageType === 'standard_with_consult' || packageType === 'standard_with_ai' || packageType === 'standard_with_both') {
+          sessionStorage.setItem('pending_package', JSON.stringify({
+            type: packageType,
+            has_ai: hasBonusAi,
+            has_consult: hasBonusConsult,
+            plan_name: selectedPlan
+          }));
+          setTimeout(() => {
+            window.location.href = '/simple-consultation/';
+          }, 500);
+        } else if (packageType === 'premium') {
+          setTimeout(() => {
+            window.location.href = '/select-nutri/';
+          }, 1500);
+        }
+      } else {
+        showToast(data.error || "Payment failed", true);
+      }
+    } catch (err) {
+      console.error('Payment error:', err);
+      showToast("Network error. Please try again.", true);
+    }
+  });
+  
+  // === FIN DU BLOC PAYMENT ===
+  
+  // Vérification d'authentification
+  async function checkAuth() {
+    try {
+      const response = await fetch('/api/users/my-plan/', { credentials: 'include' });
+      if (response.status === 401) {
+        showToast("You are not logged in. Redirecting to login...", true);
+        setTimeout(() => window.location.href = '/login/', 2000);
+      }
+    } catch (err) {
+      console.error('Auth check error:', err);
+    }
+  }
+  
+  // === CHARGER LES PLANS STANDARD APPROUVÉS PAR L'ADMIN ===
+  function loadApprovedStandardPlans() {
+      const approvedPlans = JSON.parse(localStorage.getItem('approved_standard_plans') || '[]');
+      const standardPlansContainer = document.getElementById('standardPlans');
+      
+      if (approvedPlans.length > 0) {
+          standardPlansContainer.innerHTML = '';
+          
+          approvedPlans.forEach(plan => {
+              const planCard = document.createElement('div');
+              planCard.className = 'plan-card';
+              planCard.setAttribute('data-plan-name', plan.name);
+              planCard.setAttribute('data-plan-price', plan.price);
+              planCard.setAttribute('data-plan-type', 'standard');
+              planCard.setAttribute('data-plan-id', plan.id);
+              planCard.innerHTML = `
+                  <div class="plan-info">
+                      <h4>${escapeHtml(plan.name)}</h4>
+                      <p>${plan.duration_weeks} weeks program - Approved by admin</p>
+                  </div>
+                  <div class="plan-price">$${parseFloat(plan.price).toFixed(2)}<span>/mo</span></div>
+              `;
+              planCard.addEventListener('click', () => selectPlan(planCard));
+              standardPlansContainer.appendChild(planCard);
+          });
+          
+          const defaultPlans = [
+              { name: "30-Day Metabolic Weight Loss", price: 49.99, id: "default1" },
+              { name: "Muscle Builder Pro", price: 38, id: "default2" }
+          ];
+          
+          defaultPlans.forEach(plan => {
+              const planCard = document.createElement('div');
+              planCard.className = 'plan-card';
+              planCard.setAttribute('data-plan-name', plan.name);
+              planCard.setAttribute('data-plan-price', plan.price);
+              planCard.setAttribute('data-plan-type', 'standard');
+              planCard.innerHTML = `
+                  <div class="plan-info">
+                      <h4>${escapeHtml(plan.name)}</h4>
+                      <p>Popular plan</p>
+                  </div>
+                  <div class="plan-price">$${plan.price}<span>/mo</span></div>
+              `;
+              planCard.addEventListener('click', () => selectPlan(planCard));
+              standardPlansContainer.appendChild(planCard);
+          });
+      }
+      
+      document.querySelectorAll('.plan-card').forEach(card => {
+          card.addEventListener('click', () => selectPlan(card));
+      });
+  }
+  
+  function selectPlan(card) {
+      document.querySelectorAll('.plan-card').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      selectedPlan = card.dataset.planName;
+      selectedPlanPrice = parseFloat(card.dataset.planPrice);
+      selectedPlanType = card.dataset.planType;
+      document.getElementById('selectedOfferName').innerHTML = selectedPlan;
+      updateTotal();
+  }
+  
+  function loadPremiumPlans() {
+    const premiumPlans = JSON.parse(localStorage.getItem('premium_plans') || '[]');
+    const premiumPlansContainer = document.getElementById('premiumPlans');
+    
+    if (premiumPlans.length > 0) {
+        premiumPlansContainer.innerHTML = '';
+        
+        premiumPlans.forEach(plan => {
             const planCard = document.createElement('div');
             planCard.className = 'plan-card';
             planCard.setAttribute('data-plan-name', plan.name);
             planCard.setAttribute('data-plan-price', plan.price);
-            planCard.setAttribute('data-plan-type', 'standard');
+            planCard.setAttribute('data-plan-type', 'premium');
             planCard.setAttribute('data-plan-id', plan.id);
+            
+            let featuresHtml = '';
+            if (plan.features && plan.features.length > 0) {
+                featuresHtml = `<p style="font-size:0.65rem; margin-top:4px; color:#FF7A00;">✨ ${plan.features.slice(0,2).join(' • ')}</p>`;
+            }
+            
             planCard.innerHTML = `
                 <div class="plan-info">
-                    <h4>${escapeHtml(plan.name)}</h4>
-                    <p>${plan.duration_weeks} weeks program - Approved by admin</p>
+                    <h4>⭐ ${escapeHtml(plan.name)}</h4>
+                    <p>${escapeHtml(plan.description || 'Premium plan created by admin')}</p>
+                    ${featuresHtml}
                 </div>
                 <div class="plan-price">$${parseFloat(plan.price).toFixed(2)}<span>/mo</span></div>
             `;
             planCard.addEventListener('click', () => selectPlan(planCard));
-            standardPlansContainer.appendChild(planCard);
-        });
-        
-        // Ajouter aussi les plans par défaut en bas
-        const defaultPlans = [
-            { name: "30-Day Metabolic Weight Loss", price: 49.99, id: "default1" },
-            { name: "Muscle Builder Pro", price: 38, id: "default2" }
-        ];
-        
-        defaultPlans.forEach(plan => {
-            const planCard = document.createElement('div');
-            planCard.className = 'plan-card';
-            planCard.setAttribute('data-plan-name', plan.name);
-            planCard.setAttribute('data-plan-price', plan.price);
-            planCard.setAttribute('data-plan-type', 'standard');
-            planCard.innerHTML = `
-                <div class="plan-info">
-                    <h4>${escapeHtml(plan.name)}</h4>
-                    <p>Popular plan</p>
-                </div>
-                <div class="plan-price">$${plan.price}<span>/mo</span></div>
-            `;
-            planCard.addEventListener('click', () => selectPlan(planCard));
-            standardPlansContainer.appendChild(planCard);
+            premiumPlansContainer.appendChild(planCard);
         });
     }
     
-    // Réattacher les événements de sélection
-    document.querySelectorAll('.plan-card').forEach(card => {
+    const defaultPremiumPlans = [
+        { name: "Ultimate Wellness Premium", price: 79.99, features: ["Full access", "Priority support", "Unlimited consultations"] },
+        { name: "Elite Nutrition Pro", price: 99.99, features: ["Everything in Premium", "1-on-1 weekly coaching", "Custom meal plans"] }
+    ];
+    
+    defaultPremiumPlans.forEach(plan => {
+        const planCard = document.createElement('div');
+        planCard.className = 'plan-card';
+        planCard.setAttribute('data-plan-name', plan.name);
+        planCard.setAttribute('data-plan-price', plan.price);
+        planCard.setAttribute('data-plan-type', 'premium');
+        planCard.innerHTML = `
+            <div class="plan-info">
+                <h4>⭐ ${escapeHtml(plan.name)}</h4>
+                <p style="font-size:0.65rem; margin-top:4px; color:#FF7A00;">✨ ${plan.features.join(' • ')}</p>
+            </div>
+            <div class="plan-price">$${plan.price}<span>/mo</span></div>
+        `;
+        planCard.addEventListener('click', () => selectPlan(planCard));
+        premiumPlansContainer.appendChild(planCard);
+    });
+    
+    document.querySelectorAll('#premiumPlans .plan-card').forEach(card => {
         card.addEventListener('click', () => selectPlan(card));
     });
-}
-
-// Fonction utilitaire pour échapper le HTML
-function escapeHtml(text) {
-    if (!text) return '';
-    return text.replace(/[&<>]/g, function(m) {
-        if (m === '&') return '&amp;';
-        if (m === '<') return '&lt;';
-        if (m === '>') return '&gt;';
-        return m;
-    });
-}
-
-// Fonction de sélection de plan (à adapter si besoin)
-function selectPlan(card) {
-    document.querySelectorAll('.plan-card').forEach(c => c.classList.remove('selected'));
-    card.classList.add('selected');
-    selectedPlan = card.dataset.planName;
-    selectedPlanPrice = parseFloat(card.dataset.planPrice);
-    selectedPlanType = card.dataset.planType;
-    document.getElementById('selectedOfferName').innerHTML = selectedPlan;
-    updateTotal();
-}
-// === CHARGER LES PLANS PREMIUM CRÉÉS PAR L'ADMIN ===
-function loadPremiumPlans() {
-  const premiumPlans = JSON.parse(localStorage.getItem('premium_plans') || '[]');
-  const premiumPlansContainer = document.getElementById('premiumPlans');
-  
-  if (premiumPlans.length > 0) {
-      // Vider le conteneur
-      premiumPlansContainer.innerHTML = '';
-      
-      // Ajouter chaque plan premium créé par l'admin
-      premiumPlans.forEach(plan => {
-          const planCard = document.createElement('div');
-          planCard.className = 'plan-card';
-          planCard.setAttribute('data-plan-name', plan.name);
-          planCard.setAttribute('data-plan-price', plan.price);
-          planCard.setAttribute('data-plan-type', 'premium');
-          planCard.setAttribute('data-plan-id', plan.id);
-          
-          // Créer le HTML des features
-          let featuresHtml = '';
-          if (plan.features && plan.features.length > 0) {
-              featuresHtml = `<p style="font-size:0.65rem; margin-top:4px; color:#FF7A00;">✨ ${plan.features.slice(0,2).join(' • ')}</p>`;
-          }
-          
-          planCard.innerHTML = `
-              <div class="plan-info">
-                  <h4>⭐ ${escapeHtml(plan.name)}</h4>
-                  <p>${escapeHtml(plan.description || 'Premium plan created by admin')}</p>
-                  ${featuresHtml}
-              </div>
-              <div class="plan-price">$${parseFloat(plan.price).toFixed(2)}<span>/mo</span></div>
-          `;
-          planCard.addEventListener('click', () => selectPlan(planCard));
-          premiumPlansContainer.appendChild(planCard);
-      });
   }
   
-  // Ajouter les plans premium par défaut
-  const defaultPremiumPlans = [
-      { name: "Ultimate Wellness Premium", price: 79.99, features: ["Full access", "Priority support", "Unlimited consultations"] },
-      { name: "Elite Nutrition Pro", price: 99.99, features: ["Everything in Premium", "1-on-1 weekly coaching", "Custom meal plans"] }
-  ];
-  
-  defaultPremiumPlans.forEach(plan => {
-      const planCard = document.createElement('div');
-      planCard.className = 'plan-card';
-      planCard.setAttribute('data-plan-name', plan.name);
-      planCard.setAttribute('data-plan-price', plan.price);
-      planCard.setAttribute('data-plan-type', 'premium');
-      planCard.innerHTML = `
-          <div class="plan-info">
-              <h4>⭐ ${escapeHtml(plan.name)}</h4>
-              <p style="font-size:0.65rem; margin-top:4px; color:#FF7A00;">✨ ${plan.features.join(' • ')}</p>
-          </div>
-          <div class="plan-price">$${plan.price}<span>/mo</span></div>
-      `;
-      planCard.addEventListener('click', () => selectPlan(planCard));
-      premiumPlansContainer.appendChild(planCard);
-  });
-  
-  // Réattacher les événements de sélection
-  document.querySelectorAll('#premiumPlans .plan-card').forEach(card => {
-      card.addEventListener('click', () => selectPlan(card));
-  });
-}
-
-// Modifier la fonction loadApprovedStandardPlans pour éviter les doublons
-function loadApprovedStandardPlans() {
-  const approvedPlans = JSON.parse(localStorage.getItem('approved_standard_plans') || '[]');
-  const standardPlansContainer = document.getElementById('standardPlans');
-  
-  // Vider le conteneur
-  standardPlansContainer.innerHTML = '';
-  
-  // Ajouter les plans approuvés par l'admin
-  approvedPlans.forEach(plan => {
-      const planCard = document.createElement('div');
-      planCard.className = 'plan-card';
-      planCard.setAttribute('data-plan-name', plan.name);
-      planCard.setAttribute('data-plan-price', plan.price);
-      planCard.setAttribute('data-plan-type', 'standard');
-      planCard.setAttribute('data-plan-id', plan.id);
-      planCard.innerHTML = `
-          <div class="plan-info">
-              <h4>${escapeHtml(plan.name)}</h4>
-              <p>${plan.duration_weeks} weeks program - Approved by admin</p>
-          </div>
-          <div class="plan-price">$${parseFloat(plan.price).toFixed(2)}<span>/mo</span></div>
-      `;
-      planCard.addEventListener('click', () => selectPlan(planCard));
-      standardPlansContainer.appendChild(planCard);
-  });
-  
-  // Ajouter les plans par défaut
-  const defaultPlans = [
-      { name: "30-Day Metabolic Weight Loss", price: 49.99, id: "default1" },
-      { name: "Muscle Builder Pro", price: 38, id: "default2" }
-  ];
-  
-  defaultPlans.forEach(plan => {
-      const planCard = document.createElement('div');
-      planCard.className = 'plan-card';
-      planCard.setAttribute('data-plan-name', plan.name);
-      planCard.setAttribute('data-plan-price', plan.price);
-      planCard.setAttribute('data-plan-type', 'standard');
-      planCard.innerHTML = `
-          <div class="plan-info">
-              <h4>${escapeHtml(plan.name)}</h4>
-              <p>Popular plan</p>
-          </div>
-          <div class="plan-price">$${plan.price}<span>/mo</span></div>
-      `;
-      planCard.addEventListener('click', () => selectPlan(planCard));
-      standardPlansContainer.appendChild(planCard);
-  });
-  
-  // Réattacher les événements
-  document.querySelectorAll('#standardPlans .plan-card').forEach(card => {
-      card.addEventListener('click', () => selectPlan(card));
-  });
-}
-
-// Appeler loadPremiumPlans() au chargement de la page, juste après loadApprovedStandardPlans()
-loadApprovedStandardPlans();
-loadPremiumPlans();
-
-loadApprovedStandardPlans();
-checkAuth();
-
-
-</script>
+  // Initialisation
+  loadApprovedStandardPlans();
+  loadPremiumPlans();
+  checkAuth();
+  </script>
 </body>
 </html>

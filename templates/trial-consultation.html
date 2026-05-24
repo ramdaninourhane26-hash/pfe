@@ -467,45 +467,74 @@ async function loadNutritionists() {
 
 // Check if user already booked a trial
 async function checkTrialStatus() {
-  try {
-    const response = await fetch('/api/consultations/trial-status/', {
-      credentials: 'include',
-      headers: { 'X-CSRFToken': getCSRFToken() }
-    });
-    if (response.ok) {
-      const data = await response.json();
-      if (data.has_booked_trial) {
-        // Hide booking form, show already booked card
-        document.getElementById('bookingFormContainer').style.display = 'none';
-        document.getElementById('alreadyBookedContainer').style.display = 'block';
-        
-        // Fill trial details
-        document.getElementById('trialDate').textContent = data.trial_info.date || 'Pending';
-        document.getElementById('trialNutritionist').textContent = data.trial_info.nutritionist_name || 'Awaiting assignment';
-        
-        const statusEl = document.getElementById('trialStatus');
-        let statusClass = '';
-        if (data.trial_info.status === 'pending') {
-          statusEl.innerHTML = '⏳ Awaiting nutritionist confirmation';
-          statusClass = 'status-pending';
-        } else if (data.trial_info.status === 'confirmed') {
-          statusEl.innerHTML = '✅ Confirmed! The nutritionist will contact you.';
-          statusClass = 'status-confirmed';
-        } else if (data.trial_info.status === 'completed') {
-          statusEl.innerHTML = '✓ Consultation completed';
-          statusClass = 'status-completed';
-        } else if (data.trial_info.status === 'rejected') {
-          statusEl.innerHTML = '❌ Rejected. Please contact support.';
-          statusClass = 'status-rejected';
+    try {
+      const response = await fetch('/api/consultations/trial-status/', {
+        credentials: 'include',
+        headers: { 'X-CSRFToken': getCSRFToken() }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        if (data.has_booked_trial && data.trial_info) {
+          // Hide booking form, show already booked card
+          document.getElementById('bookingFormContainer').style.display = 'none';
+          document.getElementById('alreadyBookedContainer').style.display = 'block';
+          
+          // Fill trial details with safe fallbacks
+          const trialInfo = data.trial_info;
+          
+          // Format date if exists
+          let dateDisplay = 'Pending';
+          if (trialInfo.date) {
+            dateDisplay = trialInfo.date;
+          } else if (trialInfo.created_at) {
+            dateDisplay = new Date(trialInfo.created_at).toLocaleDateString();
+          }
+          document.getElementById('trialDate').textContent = dateDisplay;
+          
+          // Nutritionist name
+          const nutriName = trialInfo.nutritionist_name || 'Awaiting assignment';
+          document.getElementById('trialNutritionist').textContent = nutriName;
+          
+          // Status
+          const statusEl = document.getElementById('trialStatus');
+          let statusText = '';
+          let statusClass = '';
+          
+          switch(trialInfo.status) {
+            case 'pending':
+              statusText = '⏳ Awaiting nutritionist confirmation';
+              statusClass = 'status-pending';
+              break;
+            case 'confirmed':
+              statusText = '✅ Confirmed! The nutritionist will contact you.';
+              statusClass = 'status-confirmed';
+              break;
+            case 'completed':
+              statusText = '✓ Consultation completed';
+              statusClass = 'status-completed';
+              break;
+            case 'rejected':
+              statusText = '❌ Rejected. Please contact support.';
+              statusClass = 'status-rejected';
+              break;
+            default:
+              statusText = '📋 Request sent, waiting for response';
+              statusClass = 'status-pending';
+          }
+          
+          statusEl.innerHTML = statusText;
+          statusEl.className = statusClass;
+          
+          // Afficher un toast de confirmation
+          showToast("You have already booked your free trial!", false);
         }
-        statusEl.className = statusClass;
       }
+    } catch (err) {
+      console.error('Error checking trial status:', err);
     }
-  } catch (err) {
-    console.error('Error checking trial status:', err);
   }
-}
 
+  
 // Book trial
 document.getElementById('bookTrialBtn').addEventListener('click', async () => {
   const date = document.getElementById('trialDateInput').value;

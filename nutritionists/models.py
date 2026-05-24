@@ -150,7 +150,11 @@ class PatientSubscription(models.Model):
     auto_renew = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    
+    plan_type = models.CharField(max_length=20, choices=[
+        ('standard', 'Standard'),
+        ('premium', 'Premium')
+    ], default='standard')
+
     class Meta:
         ordering = ['-created_at']
     

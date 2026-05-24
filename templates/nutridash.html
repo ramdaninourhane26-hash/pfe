@@ -3009,21 +3009,86 @@ let notifications = [], unreadCount = 0;
 
 async function loadNotifications() {
     try { 
-        const data = await apiGet('/api/nutritionists/notifications/'); 
-        notifications = data.notifications || []; 
-        unreadCount = data.unread_count || 0; 
+        // Essayer d'abord les notifications utilisateur (messages)
+        let userNotifications = [];
+        let userUnreadCount = 0;
+        
+        try {
+            const userNotifResponse = await fetch('/api/users/my-notifications/', {
+                credentials: 'include',
+                headers: { 'X-CSRFToken': getCSRFToken() }
+            });
+            if (userNotifResponse.ok) {
+                const data = await userNotifResponse.json();
+                userNotifications = data.notifications || [];
+                userUnreadCount = data.unread_count || 0;
+                console.log("User notifications:", userNotifications);
+            }
+        } catch(e) {
+            console.log("Error loading user notifications:", e);
+        }
+        
+        // Ensuite les notifications nutritionniste (consultations, etc.)
+        let nutriNotifications = [];
+        let nutriUnreadCount = 0;
+        
+        try {
+            const nutriNotifResponse = await fetch('/api/nutritionists/notifications/', {
+                credentials: 'include',
+                headers: { 'X-CSRFToken': getCSRFToken() }
+            });
+            if (nutriNotifResponse.ok) {
+                const data = await nutriNotifResponse.json();
+                nutriNotifications = data.notifications || [];
+                nutriUnreadCount = data.unread_count || 0;
+                console.log("Nutritionist notifications:", nutriNotifications);
+            }
+        } catch(e) {
+            console.log("Error loading nutritionist notifications:", e);
+        }
+        
+        // Fusionner les deux listes de notifications
+        const allNotifications = [...userNotifications, ...nutriNotifications];
+        const totalUnread = userUnreadCount + nutriUnreadCount;
+        
+        // Mettre à jour le badge
         const badge = document.getElementById('notificationBadge'); 
-        if (unreadCount > 0) { 
+        if (totalUnread > 0) { 
             badge.style.display = 'block'; 
-            badge.innerText = unreadCount > 9 ? '9+' : unreadCount; 
-        } else badge.style.display = 'none'; 
+            badge.innerText = totalUnread > 9 ? '9+' : totalUnread; 
+        } else { 
+            badge.style.display = 'none'; 
+        } 
+        
+        // Mettre à jour la liste des notifications dans le dropdown
         const container = document.getElementById('notificationsList'); 
-        if (!notifications.length) { 
+        if (!allNotifications.length) { 
             container.innerHTML = '<div class="empty-notifications"><i class="fas fa-bell-slash"></i><p>No notifications</p></div>'; 
             return; 
         } 
-        container.innerHTML = notifications.map(n => `<div class="notification-item ${!n.is_read ? 'unread' : ''}" onclick="markNotificationRead(${n.id})"><div class="notification-icon"><i class="fas fa-bell"></i></div><div class="notification-content"><div class="notification-title">${escapeHtml(n.title)}</div><div class="notification-message">${escapeHtml(n.message)}</div><div class="notification-time">${n.time_ago}</div></div></div>`).join(''); 
-    } catch(e) { console.error(e); } 
+        
+        // Trier par date (les plus récentes d'abord)
+        allNotifications.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+        
+        container.innerHTML = allNotifications.map(n => {
+            // Déterminer l'icône en fonction du type
+            let icon = 'fa-bell';
+            if (n.type === 'new_message') icon = 'fa-envelope';
+            else if (n.type === 'consultation_update') icon = 'fa-calendar-check';
+            else if (n.type === 'plan_updated') icon = 'fa-apple-alt';
+            
+            return `<div class="notification-item ${!n.read && !n.is_read ? 'unread' : ''}" onclick="markNotificationRead(${n.id})">
+                <div class="notification-icon"><i class="fas ${icon}"></i></div>
+                <div class="notification-content">
+                    <div class="notification-title">${escapeHtml(n.title)}</div>
+                    <div class="notification-message">${escapeHtml(n.message)}</div>
+                    <div class="notification-time">${n.time_ago || 'Just now'}</div>
+                </div>
+            </div>`;
+        }).join(''); 
+    } catch(e) { 
+        console.error('Error loading notifications:', e);
+    } 
 }
 
 async function markNotificationRead(id) { 
@@ -3032,8 +3097,44 @@ async function markNotificationRead(id) {
 }
 
 async function markAllNotificationsRead() { 
-    await apiPost('/api/nutritionists/notifications/read-all/', {}); 
-    loadNotifications(); 
+    try {
+        // Essayer de marquer les notifications utilisateur
+        try {
+            const userResponse = await fetch('/api/users/notifications/mark-all-read/', {
+                method: 'POST',
+                credentials: 'include',
+                headers: { 'X-CSRFToken': getCSRFToken() }
+            });
+            if (!userResponse.ok) console.log("User notifications API error");
+        } catch(e) {
+            console.log("User notifications API not available");
+        }
+        
+        // Marquer les notifications nutritionniste
+        try {
+            const nutriResponse = await fetch('/api/nutritionists/notifications/read-all/', {
+                method: 'POST',
+                credentials: 'include',
+                headers: { 'X-CSRFToken': getCSRFToken() }
+            });
+            if (!nutriResponse.ok) console.log("Nutritionist notifications API error");
+        } catch(e) {
+            console.log("Nutritionist notifications API not available");
+        }
+        
+        showToast("All notifications marked as read", false);
+        
+        // Recharger les notifications et fermer le dropdown
+        await loadNotifications();
+        
+        // Fermer le dropdown
+        const dropdown = document.getElementById('notificationDropdown');
+        if (dropdown) dropdown.classList.remove('show');
+        
+    } catch(e) {
+        console.error('Error marking all notifications as read:', e);
+        showToast("Error marking notifications as read", true);
+    }
 }
 
 // ============ OTHER FUNCTIONS ============
@@ -3373,6 +3474,109 @@ document.getElementById('saveMealBtn')?.addEventListener('click', saveMealFromMo
 document.getElementById('mealModal')?.addEventListener('click', function(e) { if (e.target === this) closeMealModal(); });
 
 // ============ DIET PLANS LIST ==========
+// ============ SAVE STANDARD PLAN FOR ADMIN APPROVAL ==========
+document.getElementById('saveStandardPlanBtn')?.addEventListener('click', async () => {
+    const planName = document.getElementById('stdPlanName').value.trim();
+    const description = document.getElementById('stdPlanDesc').value.trim();
+    const durationWeeks = parseInt(document.getElementById('stdDurationWeeks').value);
+    const sportAdvice = document.getElementById('stdSportAdvice').value.trim();
+    
+    if (!planName) {
+        showToast("Please enter a plan name", true);
+        return;
+    }
+    
+    // Récupérer le programme alimentaire
+    const weeklyProgram = {};
+    const weekDaysList = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
+    const mealTypes = ['breakfast', 'lunch', 'snack', 'dinner'];
+    
+    // Récupérer les données du programme standard
+    const standardData = window.standardWeeklyMealProgramData;
+    if (!standardData) {
+        showToast("Please add meals to your plan", true);
+        return;
+    }
+    
+    for (const day of weekDaysList) {
+        weeklyProgram[day] = {};
+        for (const mealType of mealTypes) {
+            weeklyProgram[day][mealType] = (standardData[day] && standardData[day][mealType]) ? standardData[day][mealType] : [];
+        }
+    }
+    
+    // Vérifier qu'il y a au moins quelques repas
+    let hasMeals = false;
+    for (const day of weekDaysList) {
+        for (const mealType of mealTypes) {
+            if (weeklyProgram[day][mealType] && weeklyProgram[day][mealType].length > 0) {
+                hasMeals = true;
+                break;
+            }
+        }
+        if (hasMeals) break;
+    }
+    
+    if (!hasMeals) {
+        showToast("Please add at least one meal to your plan", true);
+        return;
+    }
+    
+    const planData = {
+        plan_name: planName,
+        description: description,
+        duration_weeks: durationWeeks,
+        weekly_program: weeklyProgram,
+        sport_advice: sportAdvice
+    };
+    
+    const submitBtn = document.getElementById('saveStandardPlanBtn');
+    const originalText = submitBtn.innerHTML;
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Submitting...';
+    
+    try {
+        const response = await fetch('/api/nutritionists/submit-standard-plan/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCSRFToken()
+            },
+            body: JSON.stringify(planData),
+            credentials: 'include'
+        });
+        
+        if (response.status === 401 || response.status === 403) {
+            showSessionExpiredModal();
+            return;
+        }
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            showToast("✅ Plan submitted for admin approval!");
+            
+            // Réinitialiser le formulaire
+            document.getElementById('stdPlanName').value = '';
+            document.getElementById('stdPlanDesc').value = '';
+            document.getElementById('stdSportAdvice').value = '';
+            
+            // Réinitialiser le programme alimentaire
+            standardWeeklyMealProgramData = initWeeklyMealStructure();
+            renderWeeklyMealProgram('standardWeeklyMealProgram', standardWeeklyMealProgramData);
+            
+        } else {
+            showToast(data.error || "Error submitting plan", true);
+        }
+    } catch (err) {
+        console.error('Error:', err);
+        showToast("Network error", true);
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalText;
+    }
+});
+
 function renderDietPlansList() {
     let allPlans = loadAllDietPlans();
     const typeFilter = document.getElementById('filterPlanType')?.value || 'all';
@@ -3452,7 +3656,6 @@ async function loadConversations() {
     if (!container) return;
     
     try {
-        // Appeler l'API get_conversations
         const response = await fetch('/api/users/conversations/', {
             credentials: 'include',
             headers: { 'X-CSRFToken': getCSRFToken() }
@@ -3488,19 +3691,9 @@ async function loadConversations() {
             return new Date(b.last_message_time) - new Date(a.last_message_time);
         });
         
-        // Mettre à jour le badge de notification global
-        const totalUnread = conversations.reduce((sum, c) => sum + (c.unread_count || 0), 0);
-        const notificationBadge = document.getElementById('notificationBadge');
-        if (totalUnread > 0) {
-            notificationBadge.style.display = 'block';
-            notificationBadge.innerText = totalUnread > 9 ? '9+' : totalUnread;
-        } else {
-            notificationBadge.style.display = 'none';
-        }
-        
+        // ⚠️ NE PAS METTRE À JOUR LE BADGE ICI - laisser loadNotifications() le faire
         // Générer le HTML
         container.innerHTML = conversations.map(conv => {
-            // Déterminer la couleur de fond pour les messages non lus
             const isUnread = conv.unread_count > 0;
             const unreadClass = isUnread ? 'contact-item-unread' : '';
             const highlightStyle = isUnread ? 'style="background: linear-gradient(135deg, rgba(39,174,96,0.15), rgba(255,122,0,0.08)); border-left: 3px solid #FF7A00;"' : '';
@@ -3519,7 +3712,6 @@ async function loadConversations() {
                 avatarBg = 'linear-gradient(135deg, #27AE60, #2ecc71)';
             }
             
-            // Formater l'heure du dernier message
             let lastMsgTime = '';
             if (conv.last_message_time) {
                 const lastDate = new Date(conv.last_message_time);
@@ -3576,26 +3768,23 @@ async function loadConversations() {
 async function selectConversation(userId, userName, userRole) {
     currentConversation = { id: userId, name: userName, role: userRole };
     
-    // Update active state
     document.querySelectorAll('.contact-item').forEach(item => {
         item.classList.remove('active');
     });
     const activeItem = document.querySelector(`.contact-item[data-user-id="${userId}"]`);
     if (activeItem) {
         activeItem.classList.add('active');
-        // Enlever le style "non lu" quand on clique
         activeItem.style.removeProperty('background');
         activeItem.style.removeProperty('border-left');
         const unreadBadge = activeItem.querySelector('.unread-badge');
         if (unreadBadge) unreadBadge.remove();
     }
     
-    // Load messages
     await loadMessages(userId);
-    
-    // Recharger les conversations pour mettre à jour le badge
     await loadConversations();
+    loadNotifications(); // ← Rafraîchir le badge après avoir marqué les messages comme lus
 }
+
 
 async function loadMessages(userId) {
     const chatContainer = document.getElementById('chatContent');
@@ -3916,9 +4105,23 @@ standardWeeklyMealProgramData = initWeeklyMealStructure();
 renderWeeklyMealProgram('weeklyMealProgram', weeklyMealProgramData);
 renderWeeklyMealProgram('standardWeeklyMealProgram', standardWeeklyMealProgramData);
 
+// ============ NOTIFICATION POLLING ============
+let notificationPollingInterval = null;
+
+function startNotificationPolling() {
+    if (notificationPollingInterval) clearInterval(notificationPollingInterval);
+    notificationPollingInterval = setInterval(() => {
+        loadNotifications();
+    }, 15000); // Vérifie toutes les 15 secondes
+}
+
+// Appeler cette fonction au chargement
+startNotificationPolling();
+
 // Load initial data
 loadNutritionistProfile();
 loadNutritionistStats();
+loadNotifications();  
 loadNutritionistProfileData();
 switchTab('dashboard-overview');
 </script>

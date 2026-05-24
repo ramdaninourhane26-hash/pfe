@@ -2278,27 +2278,38 @@ function updateWeightProgress(currentWeight, goalWeight) {
 
 // ============ CONSULTATIONS ==========
 async function loadAssignedNutritionist() {
+    // Si l'utilisateur n'a PAS acheté de consultations, ne RIEN faire
+    if (!userFeatures.has_consultations) {
+        return null;
+    }
+    
     try {
         const response = await apiFetch('/api/users/my-nutritionist/');
         if (response.ok) {
             const nutri = await response.json();
             const container = document.getElementById('assignedNutriName');
-            if (container) container.innerText = nutri.name || 'Votre nutritionniste';
+            if (container) container.innerText = nutri.name || 'Your nutritionist';
             selectedNutritionistId = nutri.id;
             return nutri;
+        } else if (response.status === 404) {
+            const container = document.getElementById('assignedNutriName');
+            if (container) {
+                container.innerText = 'No nutritionist assigned';
+                container.style.color = '#dc2626';
+            }
+            return null;
         } else {
             const container = document.getElementById('assignedNutriName');
             if (container) {
-                container.innerText = 'Aucun nutritionniste assigné';
+                container.innerText = 'Loading error';
                 container.style.color = '#dc2626';
             }
-            showToast("Vous n'avez pas encore de nutritionniste assigné. Veuillez contacter l'administrateur.", true);
             return null;
         }
     } catch (err) {
         console.error(err);
         const container = document.getElementById('assignedNutriName');
-        if (container) container.innerText = 'Erreur de chargement';
+        if (container) container.innerText = 'Loading error';
         return null;
     }
 }
@@ -3184,6 +3195,90 @@ document.addEventListener('input', function(e) {
     }
 });
 
+// ============ GESTION DES ONGLETS SELON LES BONUS ACHETÉS ============
+let userFeatures = {
+    has_ai: false,
+    has_consultations: false,
+    has_diet_plan: false,
+    subscription_plan: 'standard'
+  };
+  
+  async function loadUserFeatures() {
+    try {
+        const response = await apiFetch('/api/users/my-plan/');
+        if (response.ok) {
+            const data = await response.json();
+            userFeatures = {
+                has_ai: data.has_ai || false,
+                has_consultations: data.has_consultations || false,
+                has_diet_plan: data.has_diet_plan || true,
+                subscription_plan: data.subscription_plan || 'standard'
+            };
+            
+            console.log("✅ User features loaded:", userFeatures);
+            
+            // Mettre à jour l'affichage des onglets APRÈS avoir chargé les features
+            updateNavTabsVisibility();
+        }
+    } catch (err) {
+        console.error('Error loading user features:', err);
+    }
+}
+
+function updateNavTabsVisibility() {
+    // Récupérer les éléments des onglets dans la sidebar SEULEMENT
+    const consultationTab = document.querySelector('[data-tab="consultation"]');
+    const aiTrackerTab = document.querySelector('[data-tab="ai-tracker"]');
+    const messagesTab = document.querySelector('[data-tab="messages"]');
+    const progressTab = document.querySelector('[data-tab="progress"]');
+    const paymentsTab = document.querySelector('[data-tab="payments"]');
+    const dietPlansTab = document.querySelector('[data-tab="diet-plans"]');
+    
+    console.log("🔧 Updating tabs visibility - userFeatures:", userFeatures);
+    
+    // ✅ NE PAS toucher aux tab-content !!!
+    // Les tab-content sont gérés par la fonction switchTab()
+    
+    // Cacher/Afficher UNIQUEMENT les onglets dans la sidebar
+    if (consultationTab) {
+        consultationTab.style.display = userFeatures.has_consultations ? 'flex' : 'none';
+        console.log("📋 Consultation tab:", userFeatures.has_consultations ? "SHOW" : "HIDE");
+    }
+    
+    if (aiTrackerTab) {
+        aiTrackerTab.style.display = userFeatures.has_ai ? 'flex' : 'none';
+        console.log("🤖 AI Tracker tab:", userFeatures.has_ai ? "SHOW" : "HIDE");
+    }
+    
+    if (messagesTab) {
+        messagesTab.style.display = userFeatures.has_consultations ? 'flex' : 'none';
+        console.log("💬 Messages tab:", userFeatures.has_consultations ? "SHOW" : "HIDE");
+    }
+    
+    if (progressTab) {
+        progressTab.style.display = (userFeatures.has_ai || userFeatures.has_consultations) ? 'flex' : 'none';
+        console.log("📊 Progress tab:", (userFeatures.has_ai || userFeatures.has_consultations) ? "SHOW" : "HIDE");
+    }
+    
+    if (paymentsTab) {
+        paymentsTab.style.display = 'flex';
+    }
+    
+    if (dietPlansTab) {
+        dietPlansTab.style.display = 'flex';
+    }
+    
+    // Si l'onglet actif est caché, aller sur profile-overview
+    const activeNav = document.querySelector('.nav-item.active');
+    if (activeNav && activeNav.style.display === 'none') {
+        const overviewTab = document.querySelector('[data-tab="profile-overview"]');
+        if (overviewTab) {
+            overviewTab.click();
+        }
+    }
+}
+
+
 // ============ DASHBOARD PRINCIPAL ==========
 async function loadDashboard() {
     try {
@@ -3280,7 +3375,7 @@ async function loadDashboard() {
 }
 
 // ============ INITIALISATION ==========
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     const notificationBell = document.getElementById('notificationBell');
     const notificationDropdown = document.getElementById('notificationDropdown');
 
@@ -3350,23 +3445,30 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     function switchTab(tabId) {
+        // Cacher tous les contenus
         tabs.forEach(t => t.classList.remove('active-tab'));
+        
+        // Afficher le contenu sélectionné
         const target = document.getElementById(tabId);
         if (target) target.classList.add('active-tab');
+        
+        // Mettre à jour la classe active dans la sidebar
         navItems.forEach(i => i.classList.remove('active'));
         const activeNav = document.querySelector(`[data-tab="${tabId}"]`);
         if (activeNav) activeNav.classList.add('active');
+        
+        // Mettre à jour le titre
         if (titles[tabId]) {
             document.getElementById('dynamicTitle').innerText = titles[tabId].title;
             document.getElementById('dynamicSubtitle').innerText = titles[tabId].subtitle;
         }
+        
+        // Charger les données spécifiques si nécessaire
         if (tabId === 'diet-plans') { loadDietPlansTab(); loadReceivedDietPlans(); }
         if (tabId === 'consultation') { loadMyConsultations(); }
         if (tabId === 'progress') loadDashboard();
         if (tabId === 'ai-tracker') loadAIMeals();
-        if (tabId === 'messages') { 
-            loadConversations();  startMessagePolling();  
-        }
+        if (tabId === 'messages') { loadConversations(); startMessagePolling(); }
     }
 
     navItems.forEach(item => { const tabId = item.getAttribute('data-tab'); if (tabId) item.addEventListener('click', () => switchTab(tabId)); });
@@ -3378,6 +3480,9 @@ document.addEventListener('DOMContentLoaded', () => {
     overlay?.addEventListener('click', () => { sidebar.classList.remove('open'); overlay.classList.remove('active'); });
     window.addEventListener('resize', () => { if (window.innerWidth > 1024) { sidebar.classList.remove('open'); overlay.classList.remove('active'); } });
 
+    await loadUserFeatures();  
+  
+    
     loadDashboard();
     loadMyConsultations();
     loadUserCalendarEvents();

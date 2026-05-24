@@ -250,54 +250,174 @@ def complete_meal_checklist(request, checklist_id):
     except PatientMealChecklist.DoesNotExist:
         return Response({'error': 'Meal not found'}, status=404)
 
-
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def complete_payment(request):
     from django.utils import timezone
+    from nutritionists.models import DietPlan, Meal, PatientSubscription, PatientMealChecklist, Notification
+    from datetime import timedelta
+    from django.contrib.auth import get_user_model
     
-    plan_name = request.data.get('plan_name', 'standard')
-    amount = request.data.get('amount', 0)
+    User = get_user_model()
+    
+    plan_name = request.data.get('plan_name', '30-Day Metabolic Weight Loss')
+    amount = request.data.get('amount', 49.99)
     duration_months = request.data.get('duration_months', 1)
     plan_type = request.data.get('plan_type', 'standard')
+    package_type = request.data.get('package_type', 'standard_simple')
     bonus_ai = request.data.get('bonus_ai')
     bonus_consultation = request.data.get('bonus_consultation')
     
-    profile = request.user.profile
+    # Déterminer les fonctionnalités activées
+    has_ai = (plan_type == 'premium') or (bonus_ai and bonus_ai.get('active'))
+    has_consultations = (plan_type == 'premium') or (bonus_consultation and bonus_consultation.get('active'))
     
     # Mettre à jour le profil
-    profile.subscription_plan = plan_type  # 'standard' ou 'premium'
-    profile.payment_completed = True
-    profile.payment_date = timezone.now()
+    from users.models import UserProfile
+    UserProfile.objects.filter(user=request.user).update(
+        subscription_plan='premium' if plan_type == 'premium' else 'standard',
+        payment_completed=True,
+        payment_date=timezone.now(),
+        has_diet_plan=True,
+        has_ai_tracker=has_ai,
+        has_consultations=has_consultations
+    )
     
-    # Activer les fonctionnalités
-    profile.has_diet_plan = True
-    profile.has_ai_tracker = (plan_type == 'premium') or (bonus_ai and bonus_ai.get('active'))
-    profile.has_consultations = (plan_type == 'premium') or (bonus_consultation and bonus_consultation.get('active'))
+    # Créer l'abonnement
+    subscription = PatientSubscription.objects.create(
+        patient=request.user,
+        plan_name=plan_name,
+        plan_type=plan_type,
+        price_paid=amount,
+        duration_months=duration_months,
+        start_date=timezone.now().date(),
+        end_date=timezone.now().date() + timezone.timedelta(days=duration_months * 30),
+        status='active'
+    )
     
-    profile.save()
+    # ========== CRÉER LE DIET PLAN POUR L'UTILISATEUR ==========
+    # Récupérer un nutritionniste (admin par défaut)
+    default_nutritionist = User.objects.filter(
+        profile__role='nutritionist',
+        is_active=True
+    ).first()
     
-    # Enregistrer l'abonnement dans PatientSubscription (si tu utilises ce modèle)
-    try:
-        from nutritionists.models import PatientSubscription, SpecialOffer
-        subscription = PatientSubscription.objects.create(
-            patient=request.user,
-            plan_name=plan_name,
-            price_paid=amount,
-            duration_months=duration_months,
-            start_date=timezone.now().date(),
-            end_date=timezone.now().date() + timezone.timedelta(days=duration_months * 30),
-            status='active'
+    if not default_nutritionist:
+        default_nutritionist = User.objects.filter(is_superuser=True).first()
+    
+    start_date = timezone.now().date()
+    end_date = start_date + timedelta(days=duration_months * 30)
+    
+    # Créer le plan diététique avec le nom choisi par l'utilisateur
+    diet_plan = DietPlan.objects.create(
+        nutritionist=default_nutritionist,
+        patient=request.user,
+        name=plan_name,
+        description=f"Votre plan {plan_name} - {duration_months} mois",
+        start_date=start_date,
+        end_date=end_date,
+        is_active=True
+    )
+    
+    # Définir les repas en fonction du plan choisi
+    meals_to_add = []
+    
+    if "weight loss" in plan_name.lower() or "metabolic" in plan_name.lower():
+        meals_to_add = [
+            {'meal_type': 'breakfast', 'food_name': 'Omelette aux légumes', 'calories': 350, 'quantity': '1 portion'},
+            {'meal_type': 'breakfast', 'food_name': 'Thé vert sans sucre', 'calories': 0, 'quantity': '1 tasse'},
+            {'meal_type': 'lunch', 'food_name': 'Poulet grillé avec quinoa', 'calories': 550, 'quantity': '1 assiette'},
+            {'meal_type': 'lunch', 'food_name': 'Salade verte', 'calories': 50, 'quantity': '1 assiette'},
+            {'meal_type': 'snack', 'food_name': 'Pomme', 'calories': 80, 'quantity': '1 fruit'},
+            {'meal_type': 'snack', 'food_name': 'Amandes', 'calories': 100, 'quantity': '1 poignée'},
+            {'meal_type': 'dinner', 'food_name': 'Saumon avec légumes', 'calories': 500, 'quantity': '1 assiette'},
+            {'meal_type': 'dinner', 'food_name': 'Soupe de légumes', 'calories': 80, 'quantity': '1 bol'},
+        ]
+    elif "muscle" in plan_name.lower() or "builder" in plan_name.lower():
+        meals_to_add = [
+            {'meal_type': 'breakfast', 'food_name': 'Porridge protéiné', 'calories': 500, 'quantity': '1 bol'},
+            {'meal_type': 'breakfast', 'food_name': 'Oeufs brouillés', 'calories': 240, 'quantity': '3 oeufs'},
+            {'meal_type': 'lunch', 'food_name': 'Poulet avec riz complet', 'calories': 650, 'quantity': '1 assiette'},
+            {'meal_type': 'lunch', 'food_name': 'Avocat', 'calories': 160, 'quantity': '1/2'},
+            {'meal_type': 'snack', 'food_name': 'Yaourt grec', 'calories': 180, 'quantity': '1 pot'},
+            {'meal_type': 'snack', 'food_name': 'Barre protéinée', 'calories': 200, 'quantity': '1 barre'},
+            {'meal_type': 'dinner', 'food_name': 'Steak de boeuf', 'calories': 600, 'quantity': '1 assiette'},
+            {'meal_type': 'dinner', 'food_name': 'Légumes verts', 'calories': 80, 'quantity': '1 portion'},
+        ]
+    else:
+        # Plan équilibré standard
+        meals_to_add = [
+            {'meal_type': 'breakfast', 'food_name': 'Céréales complètes', 'calories': 400, 'quantity': '1 bol'},
+            {'meal_type': 'breakfast', 'food_name': 'Jus d\'orange', 'calories': 110, 'quantity': '1 verre'},
+            {'meal_type': 'lunch', 'food_name': 'Pâtes complètes', 'calories': 550, 'quantity': '1 assiette'},
+            {'meal_type': 'lunch', 'food_name': 'Salade verte', 'calories': 50, 'quantity': '1 assiette'},
+            {'meal_type': 'snack', 'food_name': 'Compote', 'calories': 70, 'quantity': '1 pot'},
+            {'meal_type': 'snack', 'food_name': 'Fruits secs', 'calories': 120, 'quantity': '1 poignée'},
+            {'meal_type': 'dinner', 'food_name': 'Dinde avec légumes', 'calories': 480, 'quantity': '1 assiette'},
+            {'meal_type': 'dinner', 'food_name': 'Quinoa', 'calories': 150, 'quantity': '1 portion'},
+        ]
+    
+    # Ajouter tous les repas au plan
+    for meal_data in meals_to_add:
+        Meal.objects.create(
+            plan=diet_plan,
+            meal_type=meal_data['meal_type'],
+            food_name=meal_data['food_name'],
+            quantity=meal_data['quantity'],
+            calories=meal_data['calories']
         )
-    except:
-        pass  # Si le modèle n'existe pas ou erreur
+    
+    # Générer la checklist des repas pour chaque jour de la période
+    meal_time_map = {
+        'breakfast': '08:00',
+        'lunch': '12:30',
+        'snack': '16:00',
+        'dinner': '19:30'
+    }
+    
+    current_date = start_date
+    while current_date <= end_date:
+        for meal in diet_plan.meals.all():
+            meal_type_display = dict(Meal.MEAL_TYPES).get(meal.meal_type, meal.meal_type)
+            meal_name_display = f"{meal_type_display}: {meal.food_name}"
+            meal_time = meal_time_map.get(meal.meal_type, '12:00')
+            
+            PatientMealChecklist.objects.update_or_create(
+                patient=request.user,
+                meal=meal,
+                date=current_date,
+                defaults={
+                    'meal_name': meal_name_display,
+                    'meal_time': meal_time,
+                    'calories': meal.calories,
+                    'status': 'pending'
+                }
+            )
+        current_date += timedelta(days=1)
+    
+    # Notification pour informer l'utilisateur
+    Notification.objects.create(
+        user=request.user,
+        notification_type='plan_updated',
+        title='🎉 Votre plan nutritionnel est prêt !',
+        message=f'Votre plan "{diet_plan.name}" a été activé. Rendez-vous dans "Diet Plans" pour voir vos repas.',
+        related_id=diet_plan.id,
+        is_read=False
+    )
     
     return Response({
         'success': True,
-        'message': f'Payment successful! {plan_type.capitalize()} plan activated.',
-        'redirect': '/select-nutri/'
+        'message': 'Payment successful! Your diet plan has been activated.',
+        'has_ai': has_ai,
+        'has_consultations': has_consultations,
+        'diet_plan_created': True,
+        'subscription': {
+            'plan_type': plan_type,
+            'plan_name': plan_name,
+            'has_ai': has_ai,
+            'has_consultations': has_consultations
+        }
     })
-
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
@@ -386,7 +506,40 @@ def get_conversations(request):
     
     return Response(conversations)
 
-
+def generate_meal_checklist_for_plan(plan):
+    """Génère la checklist des repas pour tous les jours du plan"""
+    from nutritionists.models import PatientMealChecklist
+    from datetime import timedelta
+    
+    meal_time_map = {
+        'breakfast': '08:00',
+        'lunch': '12:30',
+        'snack': '16:00',
+        'dinner': '19:30'
+    }
+    
+    start_date = plan.start_date
+    end_date = plan.end_date if plan.end_date else start_date + timedelta(days=30)
+    
+    current_date = start_date
+    while current_date <= end_date:
+        for meal in plan.meals.all():
+            meal_type_display = dict(Meal.MEAL_TYPES).get(meal.meal_type, meal.meal_type)
+            meal_name = f"{meal_type_display}: {meal.food_name}"
+            meal_time = meal_time_map.get(meal.meal_type, '12:00')
+            
+            PatientMealChecklist.objects.get_or_create(
+                patient=plan.patient,
+                meal=meal,
+                date=current_date,
+                defaults={
+                    'meal_name': meal_name,
+                    'meal_time': meal_time,
+                    'calories': meal.calories,
+                    'status': 'pending'
+                }
+            )
+        current_date += timedelta(days=1)
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
@@ -395,18 +548,28 @@ def get_my_plan(request):
         profile = request.user.profile
         subscription_plan = getattr(profile, 'subscription_plan', 'free')
         payment_completed = getattr(profile, 'payment_completed', False)
+        
+         
+        has_ai = getattr(profile, 'has_ai_tracker', False)
+        has_consultations = getattr(profile, 'has_consultations', False)
+       
+        if subscription_plan == 'premium':
+            has_ai = True
+            has_consultations = True
     else:
-        subscription_plan = 'premium'
-        payment_completed = True
+        subscription_plan = 'free'
+        payment_completed = False
+        has_ai = False
+        has_consultations = False
     
     return Response({
         'subscription_plan': subscription_plan,
         'payment_completed': payment_completed,
-        'has_consultations': subscription_plan == 'premium' or subscription_plan == 'nutritionist',
-        'has_messages': subscription_plan == 'premium' or subscription_plan == 'nutritionist',
-        'has_diet_plan': subscription_plan in ['standard', 'premium', 'nutritionist'],
-        'has_ai': subscription_plan in ['standard', 'premium', 'nutritionist'],
-        'has_progress': subscription_plan in ['standard', 'premium', 'nutritionist']
+        'has_consultations': has_consultations, 
+        'has_messages': has_consultations,        
+        'has_diet_plan': subscription_plan in ['standard', 'premium'] or has_ai or has_consultations,
+        'has_ai': has_ai,                        
+        'has_progress': has_ai or has_consultations
     })
 
 @api_view(['GET'])
@@ -740,13 +903,11 @@ def add_meal_checklist(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_my_subscription(request):
-    """Récupérer l'abonnement actif du patient"""
     from nutritionists.models import PatientSubscription
     from django.utils import timezone
     
     today = timezone.now().date()
     
-    # Récupérer l'abonnement actif
     subscription = PatientSubscription.objects.filter(
         patient=request.user,
         status='active',
@@ -762,21 +923,35 @@ def get_my_subscription(request):
     
     days_left = (subscription.end_date - today).days
     
+    # ✅ Récupérer les bonus depuis le profil utilisateur
+    profile = request.user.profile
+    has_ai = getattr(profile, 'has_ai_tracker', False)
+    has_consultations = getattr(profile, 'has_consultations', False)
+    
+    # ✅ Vérifier aussi dans les champs bonus du subscription si existent
+    # (si vous avez ajouté ces champs dans PatientSubscription)
+    if hasattr(subscription, 'bonus_ai'):
+        has_ai = subscription.bonus_ai or has_ai
+    if hasattr(subscription, 'bonus_consultation'):
+        has_consultations = subscription.bonus_consultation or has_consultations
+    
     return Response({
         'has_active_subscription': True,
         'is_expired': False,
         'subscription': {
             'id': subscription.id,
             'plan_name': subscription.plan_name,
+            'plan_type': getattr(subscription, 'plan_type', 'standard'),
             'amount': float(subscription.price_paid),
             'duration_months': subscription.duration_months,
             'start_date': subscription.start_date.isoformat(),
             'end_date': subscription.end_date.isoformat(),
             'days_left': days_left,
-            'is_active': subscription.is_active
+            'is_active': subscription.is_active,
+            'has_ai': has_ai,                    # ✅ NOUVEAU
+            'has_consultations': has_consultations  # ✅ NOUVEAU
         }
     })
-
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])

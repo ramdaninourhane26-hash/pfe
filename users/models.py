@@ -48,10 +48,10 @@ class UserProfile(models.Model):
     last_streak_date = models.DateField(null=True, blank=True)
     
     # Fonctionnalités activées
-    has_diet_plan = models.BooleanField(default=False)
-    has_ai_tracker = models.BooleanField(default=False)
-    has_consultations = models.BooleanField(default=False)
-    downloaded_plan_pdf = models.BooleanField(default=False)
+    has_diet_plan = models.BooleanField(default=False, null=True)
+    has_ai_tracker = models.BooleanField(default=False, null=True)
+    has_consultations = models.BooleanField(default=False, null=True)
+    downloaded_plan_pdf = models.BooleanField(default=False, null=True)
     
     def get_bmi(self):
         if self.height > 0:
