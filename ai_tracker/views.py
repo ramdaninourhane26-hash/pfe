@@ -9,21 +9,21 @@ from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
 from datetime import date
 
-# Import du module AI
+
 import sys
 
 MODEL_PATH = os.path.join(settings.BASE_DIR, 'ai_tracker', 'Model')
 sys.path.insert(0, MODEL_PATH)
 
 try:
-    from calorie_ai import analyze_meal  # ← C'est calorie_ai.py, pas Model.py
+    from calorie_ai import analyze_meal  
     AI_AVAILABLE = True
     print("✅ AI Calorie Tracker loaded successfully")
 except ImportError as e:
     AI_AVAILABLE = False
     print(f"⚠️ AI model not available: {e}")
 
-# ✅ Importer FoodLog depuis users
+
 from users.models import FoodLog
 
 
@@ -41,7 +41,7 @@ def analyze_food_image(request):
         if not image.content_type.startswith('image/'):
             return Response({'error': 'File must be an image'}, status=400)
         
-        # Sauvegarder l'image temporairement
+        
         image_id = uuid.uuid4().hex
         temp_dir = os.path.join(settings.MEDIA_ROOT, 'temp')
         os.makedirs(temp_dir, exist_ok=True)
@@ -52,11 +52,11 @@ def analyze_food_image(request):
             for chunk in image.chunks():
                 f.write(chunk)
         
-        # Analyser avec l'IA
+        
         if AI_AVAILABLE:
             result = analyze_meal(image_path)
         else:
-            # Mode simulation
+         
             import random
             foods = [
                 {'name': 'Grilled Chicken Salad', 'weight_g': 250, 'calories': 420, 'confidence': 0.94},
@@ -75,7 +75,7 @@ def analyze_food_image(request):
                 'message': f"Detected 1 food item"
             }
         
-        # Nettoyer le fichier temporaire
+        
         os.remove(image_path)
         
         if result['success']:
@@ -108,7 +108,7 @@ def log_ai_meal(request):
         if not food_name or not calories:
             return Response({'error': 'Food name and calories required'}, status=400)
         
-        # ✅ Utiliser FoodLog depuis users.models
+       
         food_log = FoodLog.objects.create(
             user=user,
             meal_type=meal_type,

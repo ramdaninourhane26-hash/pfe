@@ -37,7 +37,7 @@ def get_my_consultations(request):
     
     result = []
     for c in consultations:
-        # Formater la date pour l'affichage
+        
         date_display = None
         if c.date:
             date_display = c.date.strftime('%Y-%m-%d %H:%M')

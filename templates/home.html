@@ -877,6 +877,234 @@ body{
         transform: translateY(-2px);
     }
   
+    /* Plans Section */
+.plans-section {
+    padding: 80px 5%;
+    max-width: 1400px;
+    margin: 0 auto;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+}
+
+.plans-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.plans-header h2 {
+    font-size: 2.8rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #FF7A00 0%, #27AE60 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    margin-bottom: 1rem;
+}
+
+.plans-header h2 em {
+    font-style: italic;
+}
+
+.plans-subtitle {
+    font-size: 1.1rem;
+    color: #64748b;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.plan-tabs {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-bottom: 2rem;
+    background: white;
+    padding: 0.5rem;
+    border-radius: 60px;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.plan-tab {
+    padding: 12px 32px;
+    border-radius: 50px;
+    border: none;
+    background: transparent;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: #64748b;
+}
+
+.plan-tab.active {
+    background: linear-gradient(135deg, #27AE60, #2ecc71);
+    color: white;
+    box-shadow: 0 4px 15px rgba(39,174,96,0.3);
+}
+
+.plan-tab:hover:not(.active) {
+    background: rgba(39,174,96,0.1);
+    color: #27AE60;
+}
+
+.plans-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.plan-card {
+    background: white;
+    border-radius: 28px;
+    padding: 2rem;
+    transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+    box-shadow: 0 20px 35px -12px rgba(0,0,0,0.08);
+    border: 1px solid rgba(39,174,96,0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.plan-card.premium {
+    background: linear-gradient(135deg, #fff8f0, #ffffff);
+    border: 2px solid rgba(255,122,0,0.3);
+}
+
+.plan-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 30px 45px -15px rgba(39,174,96,0.2);
+}
+
+.plan-badge {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: linear-gradient(135deg, #FF7A00, #FF9A40);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 40px;
+    font-size: 0.7rem;
+    font-weight: 700;
+}
+
+.plan-card.premium .plan-badge {
+    background: linear-gradient(135deg, #27AE60, #2ecc71);
+}
+
+.plan-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.plan-card h3 {
+    font-size: 1.4rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+    color: #1e293b;
+}
+
+.plan-price {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #27AE60;
+    margin: 1rem 0;
+}
+
+.plan-price span {
+    font-size: 0.8rem;
+    font-weight: normal;
+    color: #64748b;
+}
+
+.plan-features {
+    list-style: none;
+    margin: 1.5rem 0;
+}
+
+.plan-features li {
+    padding: 8px 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #475569;
+    font-size: 0.9rem;
+}
+
+.plan-features li::before {
+    content: "✓";
+    color: #27AE60;
+    font-weight: bold;
+}
+
+.plan-btn {
+    width: 100%;
+    padding: 14px;
+    border-radius: 50px;
+    border: none;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-top: 1rem;
+}
+
+.plan-btn.standard {
+    background: linear-gradient(135deg, #27AE60, #2ecc71);
+    color: white;
+}
+
+.plan-btn.premium {
+    background: linear-gradient(135deg, #FF7A00, #FF9A40);
+    color: white;
+}
+
+.plan-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.loading-plans {
+    text-align: center;
+    padding: 60px;
+    color: #94a3b8;
+}
+
+/* Health Categories Tabs */
+.health-categories {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.category-tabs {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+}
+
+.cat-btn {
+    padding: 10px 24px;
+    border-radius: 50px;
+    border: 1.5px solid #e2e8f0;
+    background: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    color: #475569;
+}
+
+.cat-btn.active {
+    background: #27AE60;
+    border-color: #27AE60;
+    color: white;
+}
+
+.cat-btn:hover:not(.active) {
+    border-color: #27AE60;
+    color: #27AE60;
+}
     /* Footer */
     .content {
         flex: 1;
@@ -1247,28 +1475,28 @@ body{
 
     <div class="cards">
         <div class="card">
-            <div class="icon-wrapper"> <img src="/static/images/escalader.png" alt=""></div>
+            <div class="icon-wrapper"> <img src="{% staticfiles 'escalader.png' %}" alt=""></div>
             <h3>Weight Loss Resistance</h3>
             <p>Struggling to lose weight despite diet and exercise? We address underlying factors like metabolic adaptation, insulin resistance, and hormonal blockers that prevent sustainable fat loss.</p>
             <span class="card-badge">Metabolic Support</span>
         </div>
 
         <div class="card">
-            <div class="icon-wrapper"> <img src="/static/images/balance-balance-droite.png" alt=""> </div>
+            <div class="icon-wrapper"> <img src="{% static 'balance-balance-droite.png' %}" alt=""> </div>
             <h3>Hormonal Imbalances</h3>
             <p>PCOS, thyroid disorders, cortisol dysregulation, menopause, and andropause. Our nutrition protocols restore hormonal harmony through targeted micronutrients and meal timing.</p>
             <span class="card-badge">Endocrine Health</span>
         </div>
 
         <div class="card">
-            <div class="icon-wrapper"><img src="/static/images/rythme-cardiaque.png" alt=""></div>
+            <div class="icon-wrapper"><img src="{% static 'rythme-cardiaque.png' %}" alt=""></div>
             <h3>Metabolic Disorders</h3>
             <p>Insulin resistance, prediabetes, type 2 diabetes, dyslipidemia, and metabolic syndrome. We use evidence-based nutritional interventions to improve metabolic flexibility.</p>
             <span class="card-badge">Metabolic Health</span>
         </div>
 
         <div class="card">
-            <div class="icon-wrapper"> <img src="/static/images/poignee-de-main-du-partenaire-de-coeur.png" alt=""></div>
+            <div class="icon-wrapper"> <img src="{% static 'poignee-de-main-du-partenaire-de-coeur.png' %}" alt=""></div>
             <h3>Chronic Diseases</h3>
             <p>Cardiovascular conditions, hypertension, inflammatory disorders, autoimmune diseases, and long-term digestive issues. Nutrition as medicine for disease management.</p>
             <span class="card-badge">Chronic Care</span>
@@ -1277,14 +1505,26 @@ body{
 </section>
 
 
-<!-- What we offer -->
-<section class="offer">
-    <div class="offer-header">
-        <h2>What we offer</h2>
-        <p class="offer-subtitle">
-            Discover our comprehensive suite of tools and services designed to transform your nutritional journey
-        </p>
+<!-- Plans Section -->
+<section class="plans-section">
+    <div class="plans-header">
+        <h2>Choose your <em>wellness plan</em></h2>
+        <p class="plans-subtitle">Tailored nutrition programs designed by experts to help you achieve your health goals</p>
     </div>
+
+    <div class="plan-tabs">
+        <button class="plan-tab active" data-plan-type="standard">📋 Standard Plans</button>
+        <button class="plan-tab" data-plan-type="premium">⭐ Premium Plans</button>
+    </div>
+
+    <div class="plans-container" id="plansContainer">
+        <div class="loading-plans">Loading plans...</div>
+    </div>
+</section>
+
+
+
+
 
     <div class="offer-cards">
         <div class="offer-card">
@@ -1524,6 +1764,144 @@ document.querySelectorAll('#navMenu a').forEach(link => {
     link.addEventListener('click', () => {
         document.getElementById('navMenu').classList.remove('active');
     });
+});
+// ==================== HEALTH CATEGORIES DATA ====================
+const healthCategories = {
+    weight: {
+        title: "Weight & Metabolism",
+        cards: [
+            { icon: "⚖️", title: "Weight Loss Resistance", desc: "Struggling to lose weight despite diet and exercise? We address metabolic adaptation, insulin resistance, and hormonal blockers.", badge: "Metabolic Support" },
+            { icon: "🔄", title: "Metabolic Syndrome", desc: "Insulin resistance, prediabetes, type 2 diabetes, and dyslipidemia. Evidence-based nutritional interventions.", badge: "Metabolic Health" },
+            { icon: "🍽️", title: "Emotional Eating", desc: "Break free from stress eating and build a healthier relationship with food through mindful nutrition.", badge: "Behavioral Support" }
+        ]
+    },
+    hormonal: {
+        title: "Hormonal Health",
+        cards: [
+            { icon: "🌸", title: "PCOS", desc: "Polycystic ovary syndrome management through targeted nutrition to restore hormonal balance.", badge: "Women's Health" },
+            { icon: "🦋", title: "Thyroid Disorders", desc: "Hypothyroidism and hyperthyroidism support with iodine, selenium, and timing strategies.", badge: "Endocrine" },
+            { icon: "🌙", title: "Menopause & Andropause", desc: "Hormonal transition support with phytoestrogens, adaptogens, and lifestyle modifications.", badge: "Hormonal Balance" }
+        ]
+    },
+    chronic: {
+        title: "Chronic Conditions",
+        cards: [
+            { icon: "❤️", title: "Cardiovascular Health", desc: "Heart disease, hypertension, and cholesterol management through heart-healthy nutrition.", badge: "Heart Health" },
+            { icon: "🛡️", title: "Autoimmune Diseases", desc: "Rheumatoid arthritis, lupus, Hashimoto's - anti-inflammatory protocols to reduce flare-ups.", badge: "Autoimmune" },
+            { icon: "🧠", title: "Neurological Health", desc: "Migraines, brain fog, and cognitive decline support with neuroprotective nutrients.", badge: "Brain Health" }
+        ]
+    },
+    digestive: {
+        title: "Digestive Wellness",
+        cards: [
+            { icon: "🌿", title: "IBS & SIBO", desc: "Irritable bowel syndrome and bacterial overgrowth management with low FODMAP protocols.", badge: "Gut Health" },
+            { icon: "🦠", title: "Gut Microbiome", desc: "Restore healthy gut flora with prebiotics, probiotics, and fermented foods.", badge: "Microbiome" },
+            { icon: "🚫", title: "Food Sensitivities", desc: "Identify and manage gluten, dairy, and other food intolerances for better digestion.", badge: "Food Allergy" }
+        ]
+    }
+};
+
+function renderHealthCards(category) {
+    const container = document.getElementById('healthCards');
+    const data = healthCategories[category];
+    
+    if (!container || !data) return;
+    
+    container.innerHTML = data.cards.map(card => `
+        <div class="card">
+            <div class="icon-wrapper">${card.icon}</div>
+            <h3>${card.title}</h3>
+            <p>${card.desc}</p>
+            <span class="card-badge">${card.badge}</span>
+        </div>
+    `).join('');
+}
+
+// Category tab event listeners
+document.querySelectorAll('.cat-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        renderHealthCards(btn.dataset.cat);
+    });
+});
+
+// ==================== PLANS FROM API ====================
+async function loadPlans() {
+    const container = document.getElementById('plansContainer');
+    if (!container) return;
+    
+    container.innerHTML = '<div class="loading-plans">Loading plans...</div>';
+    
+    try {
+        // Charger les plans standards approuvés
+        const approvedPlans = JSON.parse(localStorage.getItem('approved_standard_plans') || '[]');
+        const premiumPlans = JSON.parse(localStorage.getItem('premium_plans') || '[]');
+        
+        // Afficher les plans standards par défaut
+        renderPlans('standard', approvedPlans, premiumPlans);
+        
+        // Tab switching
+        document.querySelectorAll('.plan-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.plan-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                const type = tab.dataset.planType;
+                renderPlans(type, approvedPlans, premiumPlans);
+            });
+        });
+        
+    } catch (error) {
+        console.error('Error loading plans:', error);
+        container.innerHTML = '<div class="loading-plans">No plans available</div>';
+    }
+}
+
+function renderPlans(type, standardPlans, premiumPlans) {
+    const container = document.getElementById('plansContainer');
+    if (!container) return;
+    
+    let plans = [];
+    let title = '';
+    
+    if (type === 'standard') {
+        plans = standardPlans;
+        title = 'Standard Plans';
+    } else {
+        plans = premiumPlans;
+        title = 'Premium Plans';
+    }
+    
+    if (!plans.length) {
+        container.innerHTML = `<div class="loading-plans">No ${title} available yet. Check back soon!</div>`;
+        return;
+    }
+    
+    container.innerHTML = plans.map(plan => `
+        <div class="plan-card ${type}">
+            <div class="plan-badge">${type === 'premium' ? '⭐ PREMIUM' : '📋 STANDARD'}</div>
+            <div class="plan-icon">${type === 'premium' ? '👑' : '📋'}</div>
+            <h3>${escapeHtml(plan.name)}</h3>
+            <p style="color:#64748b; font-size:0.85rem;">${plan.description || 'Complete nutrition program'}</p>
+            <div class="plan-price">$${plan.price}<span>/${type === 'premium' ? 'month' : 'month'}</span></div>
+            <ul class="plan-features">
+                ${plan.features ? plan.features.slice(0,4).map(f => `<li>${escapeHtml(f)}</li>`).join('') : 
+                  '<li>Personalized meal planning</li><li>Progress tracking</li><li>Nutritionist support</li>'}
+            </ul>
+            <button class="plan-btn ${type}" onclick="window.location.href='/payment/'">Choose Plan →</button>
+        </div>
+    `).join('');
+}
+
+function escapeHtml(text) {
+    if (!text) return '';
+    return String(text).replace(/[&<>]/g, m => ({ '&':'&amp;','<':'&lt;','>':'&gt;' }[m]));
+}
+
+// Initialiser les plans et les catégories au chargement
+document.addEventListener('DOMContentLoaded', () => {
+    renderHealthCards('weight');
+    loadPlans();
 });
 </script>
 </body>

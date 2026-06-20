@@ -3647,6 +3647,109 @@ document.getElementById('filterPlanType')?.addEventListener('change', renderDiet
 document.getElementById('searchDietPlan')?.addEventListener('input', renderDietPlansList);
 document.getElementById('refreshDietPlansBtn')?.addEventListener('click', renderDietPlansList);
 
+// ============ BLOG POST SUBMISSION - URL CORRIGÉE ============
+document.getElementById('submitBlogPostBtn')?.addEventListener('click', async () => {
+    // Récupérer les valeurs du formulaire
+    const title = document.getElementById('blogTitle').value.trim();
+    const excerpt = document.getElementById('blogExcerpt').value.trim();
+    const category = document.getElementById('blogCategory').value;
+    const readTime = document.getElementById('blogReadTime').value.trim();
+    const featuredImage = document.getElementById('blogImage').value.trim();
+    const keyPointsRaw = document.getElementById('blogKeyPoints').value;
+    const content = document.getElementById('blogContent').value.trim();
+    
+    // Validation
+    if (!title) {
+        showToast("❌ Title is required", true);
+        return;
+    }
+    if (!excerpt) {
+        showToast("❌ Excerpt is required", true);
+        return;
+    }
+    if (!content) {
+        showToast("❌ Content is required", true);
+        return;
+    }
+    
+    // Traiter les key points (une ligne par point, max 5)
+    let keyPoints = [];
+    if (keyPointsRaw) {
+        keyPoints = keyPointsRaw.split('\n')
+            .map(line => line.trim())
+            .filter(line => line.length > 0)
+            .slice(0, 5);
+    }
+    
+    // Préparer les données
+    const postData = {
+        title: title,
+        excerpt: excerpt,
+        category: category,
+        read_time: readTime || '5 min',
+        featured_image: featuredImage || null,
+        key_points: keyPoints,
+        content: content
+    };
+    
+    console.log("📤 Submitting blog post to:", '/api/blog/posts/create/');
+    console.log("📤 Data:", postData);
+    
+    const submitBtn = document.getElementById('submitBlogPostBtn');
+    const originalText = submitBtn.innerHTML;
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Submitting...';
+    
+    try {
+        // ✅ URL CORRIGÉE
+        const response = await fetch('/api/blog/posts/create/', {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCSRFToken()
+            },
+            body: JSON.stringify(postData)
+        });
+        
+        if (response.status === 401 || response.status === 403) {
+            showSessionExpiredModal();
+            return;
+        }
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            showToast("✅ Blog post submitted for admin review!");
+            
+            // Réinitialiser le formulaire
+            document.getElementById('blogTitle').value = '';
+            document.getElementById('blogExcerpt').value = '';
+            document.getElementById('blogCategory').value = 'articles';
+            document.getElementById('blogReadTime').value = '';
+            document.getElementById('blogImage').value = '';
+            document.getElementById('blogKeyPoints').value = '';
+            document.getElementById('blogContent').value = '';
+            
+            // Cacher le formulaire
+            document.getElementById('blogFormPanel').style.display = 'none';
+            document.getElementById('createBlogPostBtn').style.display = 'block';
+            
+            // Recharger la liste des articles
+            await loadMyBlogPosts();
+            
+        } else {
+            showToast(data.error || "Error submitting blog post", true);
+        }
+    } catch(err) {
+        console.error('Error:', err);
+        showToast("Network error. Please try again.", true);
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalText;
+    }
+});
+
 // ============ MESSAGING SYSTEM AVEC POLLING ET NOTIFICATIONS ============
 let currentConversation = null;
 let messagePollingInterval = null;

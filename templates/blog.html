@@ -372,17 +372,33 @@ nav a:hover::before, nav a.active::before { width: 100%; }
   z-index: 5;
   transition: transform 0.7s cubic-bezier(0.4, 0.2, 0.2, 1);
 }
-.flip-front, .flip-back {
+ .flip-back {
   position: absolute;
   inset: 0;
   backface-visibility: hidden;
   overflow: hidden;
 }
-.flip-front img, .flip-back img {
+.flip-back img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
+.flip-front {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #c8e6d5;
+}
+
+.flip-front img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
 .flip-back { transform: rotateY(180deg); }
 .img-overlay {
   position: absolute;
@@ -1196,12 +1212,27 @@ function renderGrid() {
   const cat = DATA[activeCat];
   gridTitle.innerHTML = cat.badgeIcon + ' More ' + cat.label;
   if (cat.grid && cat.grid.length > 0) {
-    articleGrid.innerHTML = cat.grid.map(a => `<div class="article-card" onclick="openModalFromGrid(${JSON.stringify(a.modal).replace(/"/g, '&quot;')})"><div class="card-img">${a.img}</div><div class="card-body"><div class="card-meta"><span class="card-cat-tag tag-${a.tag}">${cat.label}</span><span class="card-date">2026</span></div><h3>${a.title}</h3><p>${a.desc}</p><div class="card-footer"><span class="card-read-time">⏱ ${a.time}</span><div class="card-arrow">→</div></div></div></div>`).join('');
+    articleGrid.innerHTML = cat.grid.map(a => `
+      <div class="article-card" onclick="openModalFromGrid(${JSON.stringify(a.modal).replace(/"/g, '&quot;')})">
+        <div class="card-img">${cat.badgeIcon}</div>
+        <div class="card-body">
+          <div class="card-meta">
+            <span class="card-cat-tag tag-${a.tag}">${cat.label}</span>
+            <span class="card-date">2026</span>
+          </div>
+          <h3>${a.title}</h3>
+          <p>${a.desc}</p>
+          <div class="card-footer">
+            <span class="card-read-time">⏱ ${a.time}</span>
+            <div class="card-arrow">→</div>
+          </div>
+        </div>
+      </div>
+    `).join('');
   } else {
     articleGrid.innerHTML = '<div style="text-align:center; padding:40px;">No articles yet in this category</div>';
   }
 }
-
 function openCurrentModal() { if(DATA[activeCat].slides[current]) openModal(DATA[activeCat].slides[current].modal); }
 function openModalFromGrid(modalData) { openModal(modalData); }
 
@@ -1236,7 +1267,8 @@ function updateCounters() {
 // ==================== APPEL API POUR RÉCUPÉRER LES ARTICLES PUBLIÉS ====================
 async function loadPostsFromAPI() {
   try {
-    const response = await fetch('/api/blog/posts/', { credentials: 'include' });
+ 
+    const response = await fetch('/api/blog/posts/all/', { credentials: 'include' });
     if (response.ok) {
       const posts = await response.json();
       console.log('Posts loaded from API:', posts.length);
@@ -1249,15 +1281,18 @@ async function loadPostsFromAPI() {
       DATA.wellness.slides = [];
       DATA.wellness.grid = [];
       
-      posts.forEach((post, index) => {
+      posts.forEach((post) => {
         // Déterminer la catégorie correcte
         let category = post.category;
         if (category === 'nutrition') category = 'articles';
         if (category === 'success_stories') category = 'articles';
         
+        // Utiliser featured_image pour l'image (comme dans la version originale)
+        const imageUrl = post.featured_image || "https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=800&q=80";
+        
         const slideData = {
           id: post.id,
-          img: post.featured_image || "https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=800&q=80",
+          img: imageUrl,
           title: post.title,
           excerpt: post.excerpt,
           points: post.key_points && post.key_points.length > 0 ? post.key_points : (post.excerpt ? post.excerpt.split('. ').slice(0,3) : ['Coming soon...']),
@@ -1270,7 +1305,7 @@ async function loadPostsFromAPI() {
         
         const gridData = {
           id: post.id,
-          img: post.icon || "📄",
+          img: imageUrl,  
           title: post.title.length > 40 ? post.title.slice(0,37)+"..." : post.title,
           desc: post.excerpt ? (post.excerpt.slice(0,70) + (post.excerpt.length > 70 ? "..." : "")) : 'Read this article to learn more',
           time: post.read_time || '5 min read',
@@ -1303,15 +1338,14 @@ async function loadPostsFromAPI() {
         renderGrid();
       } else {
         titleEl.innerHTML = 'No articles yet';
-        excerptEl.textContent = 'Check back soon for new content!';
+        excerptEl.content = 'Check back soon for new content!';
         kpEl.innerHTML = '';
         buildDots();
         updateDots();
         renderGrid();
       }
     } else {
-      console.error('Failed to load posts from API');
-      // Fallback to mock data if needed
+      console.error('Failed to load posts from API, status:', response.status);
       loadMockData();
     }
   } catch (error) {

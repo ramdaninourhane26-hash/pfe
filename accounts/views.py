@@ -31,7 +31,7 @@ def register_user(request):
         profile.weight = float(data.get('weight', 70))
         profile.height = float(data.get('height', 170))
         profile.phone = data.get('phone', '')
-        # Dans register_user, ajoute cette ligne :
+       
         profile.goal = float(data.get('goal', 70))  
         if data.get('healthConditions'):
             profile.health_conditions = data.get('healthConditions')
@@ -61,17 +61,17 @@ def login_user(request):
     if user:
         login(request, user)
         try:
-            # Le rôle est dans user.profile.role
+        
             role = user.profile.role
         except:
-            # Si pas de profil, créer un profil par défaut
+           
             from users.models import UserProfile
             profile = UserProfile.objects.create(user=user, role='client')
             role = 'client'
         
         return Response({
             'message': 'Login success',
-            'role': role,  # 'client', 'nutritionist', ou 'admin'
+            'role': role, 
             'email': user.email,
             'first_name': user.first_name,
             'last_name': user.last_name
